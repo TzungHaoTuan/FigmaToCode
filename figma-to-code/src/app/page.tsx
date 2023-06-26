@@ -10,14 +10,28 @@ const Home: React.FC = () => {
 
   const [data, setData] = useState();
   const [imagesData, setImagesData] = useState<ImageData[]>();
-  const [pages, setPages] = useState(); // array of pages obj
+  const [pages, setPages] = useState<Page[]>();
 
   interface Image {
     page: string;
+    frame: string[];
     id: string;
     url: string;
   }
-  const [images, setImages] = useState<Image[]>([]); // array of pages array, pages array of frames
+  interface Frame {
+    id: string;
+    name: string;
+  }
+  interface Page {
+    id: string;
+    name: string;
+    frames: Frame[];
+  }
+  interface ImageSliderProps {
+    pages: Page[];
+    images: Image[];
+  }
+  const [images, setImages] = useState<Image[]>([]); // array of pages array, pages array of Images
 
   async function fetchData(fileKey: string) {
     try {
@@ -49,17 +63,23 @@ const Home: React.FC = () => {
 
   async function fetchImages(
     fileKey: string,
-    pageName: string,
+    pages: string,
+    frames: string[],
     imageIds: string[]
   ) {
     try {
       const data = await api.fetchImages(token, fileKey, imageIds);
 
       const images = imageIds.map((id) => {
-        return { page: pageName, id: id, url: data.images[id] } as Image;
+        return {
+          page: pages,
+          frame: frames,
+          id: id,
+          url: data.images[id],
+        } as Image;
       });
-
-      setImages((prev: Image[]) => [...prev, ...images]);
+      console.log(images);
+      setImages((prev: Image[]) => [...prev, ...images] as Image[]);
     } catch {}
   }
 
@@ -77,22 +97,25 @@ const Home: React.FC = () => {
 
       const data = await fetchData(fileKey);
       const pages = await data.document.children.map(
-        (page: { id: string; name: string }) => ({
+        (page: { id: string; name: string; children: Frame[] }) => ({
           id: page.id,
           name: page.name,
+          frames: page.children,
         })
       );
       setPages(pages);
 
-      const pagesOfFrames = await data.document.children.map(
-        (page: { name: string; children: { id: string }[] }) => ({
-          pageName: page.name,
-          frames: page.children.map((frame) => frame.id),
+      const pagesOfImages = await data.document.children.map(
+        (page: { name: string; children: { name: string; id: string }[] }) => ({
+          pages: page.name,
+          frames: page.children.map((Image) => Image.name),
+          Images: page.children.map((Image) => Image.id),
         })
       );
       await fetchImageData(fileKey);
-      pagesOfFrames.map((page: { pageName: string; frames: string[] }) =>
-        fetchImages(fileKey, page.pageName, page.frames)
+      pagesOfImages.map(
+        (page: { pages: string; frames: string[]; Images: string[] }) =>
+          fetchImages(fileKey, page.pages, page.frames, page.Images)
       );
     }
   };
@@ -100,7 +123,7 @@ const Home: React.FC = () => {
   return (
     <div>
       <SearchForm handleFetch={handleFetch} />
-      <ImageSlider />
+      {pages && <ImageSlider pages={pages} images={images} />}
     </div>
   );
 };

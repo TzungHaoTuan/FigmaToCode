@@ -2,7 +2,7 @@
 import { useState, useRef, SyntheticEvent } from "react";
 import api from "@/app/utils/api";
 import SearchForm from "@/components/searchForm";
-
+import ImageSlider from "@/components/imageSlider";
 const Home: React.FC = () => {
   // const token = process.env.FM_TOKEN as string;
   const token: string = "figd_EGQtzqG_ioIj1o80DEBr4edXVXvDgumg-2LRJdvq";
@@ -100,6 +100,7 @@ const Home: React.FC = () => {
   return (
     <div>
       <SearchForm handleFetch={handleFetch} />
+      <ImageSlider />
     </div>
   );
 };

@@ -1,8 +1,11 @@
 "use client";
 import { useState, useRef, SyntheticEvent } from "react";
+import { Provider } from "react-redux";
+import store from "./store";
 import api from "@/app/utils/api";
 import SearchForm from "@/components/searchForm";
 import ImageSlider from "@/components/imageSlider";
+import CodeBlock from "@/components/codeBlock";
 const Home: React.FC = () => {
   // const token = process.env.FM_TOKEN as string;
   const token: string = "figd_EGQtzqG_ioIj1o80DEBr4edXVXvDgumg-2LRJdvq";
@@ -27,10 +30,7 @@ const Home: React.FC = () => {
     name: string;
     frames: Frame[];
   }
-  interface ImageSliderProps {
-    pages: Page[];
-    images: Image[];
-  }
+
   const [images, setImages] = useState<Image[]>([]); // array of pages array, pages array of Images
 
   async function fetchData(fileKey: string) {
@@ -121,10 +121,11 @@ const Home: React.FC = () => {
   };
 
   return (
-    <div>
+    <Provider store={store}>
       <SearchForm handleFetch={handleFetch} />
       {pages && <ImageSlider pages={pages} images={images} />}
-    </div>
+      <CodeBlock data={data} />
+    </Provider>
   );
 };
 export default Home;

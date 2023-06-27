@@ -23,14 +23,10 @@ interface ImageSliderProps {
 }
 const ImageSlider: React.FC<ImageSliderProps> = ({ pages, images }) => {
   const [currentPage, setCurrentPage] = useState<string>(pages[0].name);
-  const defaultFrame = images[0];
 
   const [currentFrame, setCurrentFrame] = useState<string>(
     pages[0].frames[0].id
   );
-
-  console.log(defaultFrame);
-  console.log(pages);
 
   const handlePage = (name: string): void => {
     setCurrentPage(name);

@@ -43,9 +43,7 @@ interface PagesState {
 const ImageSlider = () => {
   const pages = useSelector((state: PagesState) => state.pages.pages);
   const currentPage = useSelector((state: any) => state.currentPage.page);
-  console.log(currentPage);
   const currentFrame = useSelector((state: any) => state.currentFrame.frame);
-  console.log(currentFrame);
 
   const images = useSelector((state: ImagesState) => state.frameImages.images);
 

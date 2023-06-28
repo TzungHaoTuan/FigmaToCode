@@ -11,8 +11,30 @@ export default function CodeBlock() {
   const currentFrame = useSelector((state: any) => state.currentFrame.frame);
   console.log(currentFrame);
 
-  console.log(pages[0].frames[0].children);
+  // JSX
+  const renderChildrenJSX = (children: any) => {
+    if (!children) {
+      return null;
+    }
 
+    return children.map((child: any) => {
+      if (child.type === "GROUP") {
+        return renderChildrenJSX(child.children);
+      } else {
+        return (
+          <div>
+            <div className="ml-4">{`<${
+              child.name.length >= 3 ? child.name.slice(0, 3) : child.name
+            }>${child.name}<${
+              child.name.length >= 3 ? child.name.slice(0, 3) : child.name
+            }>`}</div>
+          </div>
+        );
+      }
+    });
+  };
+
+  // Declare constant variable
   const renderChildren = (children: any) => {
     if (!children) {
       return null;
@@ -24,7 +46,7 @@ export default function CodeBlock() {
       } else {
         if (child.type === "RECTANGLE") {
           return (
-            <div>
+            <div key={child.id}>
               <div>{`const ${
                 child.name.length >= 3 ? child.name.slice(0, 3) : child.name
               } = styled.div\``}</div>
@@ -38,7 +60,7 @@ export default function CodeBlock() {
           );
         } else if (child.type === "TEXT") {
           return (
-            <div>
+            <div key={child.id}>
               <div>{`const ${
                 child.name.length >= 3 ? child.name.slice(0, 3) : child.name
               } = styled.div\``}</div>
@@ -58,14 +80,28 @@ export default function CodeBlock() {
 
   return (
     <div>
-      {pages.length !== 0 &&
-        pages
-          .filter((page: any) => page.name === currentPage)[0]
-          .frames.map((frame: any) => {
-            if (frame.id === currentFrame) {
-              return renderChildren(frame.children);
-            }
-          })}
+      <div>
+        <div>{`<div>`}</div>
+        {pages.length !== 0 &&
+          pages
+            .filter((page: any) => page.name === currentPage)[0]
+            .frames.map((frame: any) => {
+              if (frame.id === currentFrame) {
+                return renderChildrenJSX(frame.children);
+              }
+            })}
+        <div>{`</div>`}</div>
+      </div>
+      <div>
+        {pages.length !== 0 &&
+          pages
+            .filter((page: any) => page.name === currentPage)[0]
+            .frames.map((frame: any) => {
+              if (frame.id === currentFrame) {
+                return renderChildren(frame.children);
+              }
+            })}
+      </div>
     </div>
   );
 }

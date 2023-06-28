@@ -6,18 +6,18 @@ const initialState = {
 };
 
 // Redux slice
-const frameImagesSlice = createSlice({
-  name: "frameImages",
+const imagesSlice = createSlice({
+  name: "images",
   initialState,
   reducers: {
-    setFrameImages(state, action) {
+    setImages(state, action) {
       state.images = action.payload;
     },
   },
 });
 
 // Export actions
-export const { setFrameImages } = frameImagesSlice.actions;
+export const { setImages } = imagesSlice.actions;
 
 // Export reducer
-export default frameImagesSlice.reducer;
+export default imagesSlice.reducer;

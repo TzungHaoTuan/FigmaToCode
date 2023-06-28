@@ -11,8 +11,8 @@ const Home: React.FC = () => {
     <Provider store={store}>
       <SearchForm />
       <ImageSlider />
-      <CodeBlock />
       <FrameScaled />
+      <CodeBlock />
     </Provider>
   );
 };

@@ -2,9 +2,9 @@ import { configureStore } from "@reduxjs/toolkit";
 import frameSliceReducer from "./frameSlice";
 import pagesSliceReducer from "./pagesSlice";
 import currentPageSliceReducer from "./currentPageSlice";
-import frameImagesSliceReducer from "./imagesSlice";
+import frameImagesSliceReducer from "./frameImagesSlice";
 import currentFrameSliceReducer from "./currentFrameSlice";
-import AimagesSliceReducer from "./aimagesSlice";
+import imagesSliceReducer from "./imagesSlice";
 
 const store = configureStore({
   reducer: {
@@ -13,7 +13,7 @@ const store = configureStore({
     pages: pagesSliceReducer,
     currentPage: currentPageSliceReducer,
     frameImages: frameImagesSliceReducer,
-    images: AimagesSliceReducer,
+    images: imagesSliceReducer,
   },
 });
 

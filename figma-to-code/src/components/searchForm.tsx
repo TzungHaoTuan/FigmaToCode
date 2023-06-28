@@ -3,6 +3,8 @@ import React, { useState, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { setFrame } from "@/store/frameSlice";
 import { setPages } from "@/store/pagesSlice";
+import { setCurrentPage } from "@/store/currentPageSlice";
+import { setCurrentFrame } from "@/store/currentFrameSlice";
 import { setFrameImages } from "@/store/imagesSlice";
 import api from "@/app/utils/api";
 
@@ -95,6 +97,9 @@ const SearchForm = () => {
       );
       // setPages(pages);
       dispatch(setPages(pages));
+      dispatch(setCurrentPage(pages[0].name));
+      dispatch(setCurrentFrame(pages[0].frames[0].id));
+
       dispatch(setFrame(pages[0].frames[0].id));
 
       const arrayOfPages: { page: string; ids: string[] }[] =

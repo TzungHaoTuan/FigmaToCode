@@ -1,6 +1,9 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { setCurrentPage } from "@/store/currentPageSlice";
+import { setCurrentFrame } from "@/store/currentFrameSlice";
 
 interface Image {
   page: string;
@@ -39,28 +42,29 @@ interface PagesState {
 
 const ImageSlider = () => {
   const pages = useSelector((state: PagesState) => state.pages.pages);
+  const currentPage = useSelector((state: any) => state.currentPage.page);
+  console.log(currentPage);
+  const currentFrame = useSelector((state: any) => state.currentFrame.frame);
+  console.log(currentFrame);
+
   const images = useSelector((state: ImagesState) => state.frameImages.images);
 
-  const [currentPage, setCurrentPage] = useState<string>();
-  const [currentFrame, setCurrentFrame] = useState<string>();
+  const [currentPageState, setCurrentPageState] = useState<string>();
+  const [currentFrameState, setCurrentFrameState] = useState<string>();
 
-  // useEffect(() => {
-  //   pages && setCurrentPage(pages[0].name);
-  // }, []);
+  const dispatch = useDispatch();
 
   const initialFrame = useSelector(
     (state: FrameState) => state.initialFrame.frame
   );
 
-  console.log(pages);
-  console.log(images);
-  console.log(currentPage);
-  console.log(initialFrame);
   const handlePage = (name: string): void => {
-    setCurrentPage(name);
+    setCurrentPageState(name);
+    dispatch(setCurrentPage(name));
   };
   const handleFrame = (id: string): void => {
-    setCurrentFrame(id);
+    setCurrentFrameState(id);
+    dispatch(setCurrentFrame(id));
   };
   return (
     <div>
@@ -77,9 +81,9 @@ const ImageSlider = () => {
           ))}
       </div>
       <div className="flex">
-        {pages && currentPage
+        {pages
           ? pages
-              .filter((page) => page.name === currentPage)
+              .filter((page) => page.name === currentPageState)
               .map((page) =>
                 page.frames.map((frame) => (
                   <div key={frame.id} onClick={() => handleFrame(frame.id)}>
@@ -96,11 +100,11 @@ const ImageSlider = () => {
             null}
       </div>
       <div className="flex">
-        {currentFrame && images.length !== 0
+        {currentFrameState && images.length !== 0
           ? images.map(
               (image) =>
-                image.page === currentPage &&
-                image.id === currentFrame && (
+                image.page === currentPageState &&
+                image.id === currentFrameState && (
                   <div key={image.id}>
                     <img
                       key={image.id}

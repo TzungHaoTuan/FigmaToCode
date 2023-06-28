@@ -13,6 +13,7 @@ const Home: React.FC = () => {
       <ImageSlider />
       <FrameScaled />
       <CodeBlock />
+      <FrameScaled />
     </Provider>
   );
 };

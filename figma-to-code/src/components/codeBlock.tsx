@@ -80,28 +80,26 @@ export default function CodeBlock() {
 
   return (
     <div>
-      <div>
-        <div>{`<div>`}</div>
-        {pages.length !== 0 &&
-          pages
-            .filter((page: any) => page.name === currentPage)[0]
-            .frames.map((frame: any) => {
-              if (frame.id === currentFrame) {
-                return renderChildrenJSX(frame.children);
-              }
-            })}
-        <div>{`</div>`}</div>
-      </div>
-      <div>
-        {pages.length !== 0 &&
-          pages
-            .filter((page: any) => page.name === currentPage)[0]
-            .frames.map((frame: any) => {
-              if (frame.id === currentFrame) {
-                return renderChildren(frame.children);
-              }
-            })}
-      </div>
+      {pages.length !== 0 && <div>&lt;div&gt;</div>}
+
+      {pages.length !== 0 &&
+        pages
+          .filter((page: any) => page.name === currentPage)[0]
+          .frames.map((frame: any) => {
+            if (frame.id === currentFrame) {
+              return renderChildrenJSX(frame.children);
+            }
+          })}
+      {pages.length !== 0 && <div>&lt;/div&gt;</div>}
+
+      {pages.length !== 0 &&
+        pages
+          .filter((page: any) => page.name === currentPage)[0]
+          .frames.map((frame: any) => {
+            if (frame.id === currentFrame) {
+              return renderChildren(frame.children);
+            }
+          })}
     </div>
   );
 }

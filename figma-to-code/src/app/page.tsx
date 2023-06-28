@@ -14,6 +14,7 @@ const Home: React.FC = () => {
       <FrameScaled />
       <CodeBlock />
       <FrameScaled />
+      <CodeBlock />
     </Provider>
   );
 };

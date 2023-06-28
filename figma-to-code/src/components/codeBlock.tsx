@@ -5,11 +5,8 @@ import { useSelector } from "react-redux";
 
 export default function CodeBlock() {
   const pages = useSelector((state: any) => state.pages.pages);
-  console.log(pages);
   const currentPage = useSelector((state: any) => state.currentPage.page);
-  console.log(currentPage);
   const currentFrame = useSelector((state: any) => state.currentFrame.frame);
-  console.log(currentFrame);
 
   // JSX
   const renderChildrenJSX = (children: any) => {

@@ -4,6 +4,7 @@ import store from "@/store/store";
 import SearchForm from "@/components/searchForm";
 import ImageSlider from "@/components/imageSlider";
 import CodeBlock from "@/components/codeBlock";
+import FrameScaled from "@/components/frameScaled";
 
 const Home: React.FC = () => {
   return (
@@ -11,6 +12,7 @@ const Home: React.FC = () => {
       <SearchForm />
       <ImageSlider />
       <CodeBlock />
+      <FrameScaled />
     </Provider>
   );
 };

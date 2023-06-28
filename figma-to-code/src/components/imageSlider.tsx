@@ -1,12 +1,25 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 
 interface Image {
   page: string;
-  frame: string[];
   id: string;
   url: string;
 }
+interface Images {
+  images: Image[];
+}
+
+interface ImagesState {
+  frameImages: Images;
+}
+
+type FrameState = {
+  initialFrame: {
+    frame: string;
+  };
+};
 interface Frame {
   id: string;
   name: string;
@@ -17,17 +30,32 @@ interface Page {
   frames: Frame[];
 }
 
-interface ImageSliderProps {
+interface Pages {
   pages: Page[];
-  images: Image[];
 }
-const ImageSlider: React.FC<ImageSliderProps> = ({ pages, images }) => {
-  const [currentPage, setCurrentPage] = useState<string>(pages[0].name);
+interface PagesState {
+  pages: Pages;
+}
 
-  const [currentFrame, setCurrentFrame] = useState<string>(
-    pages[0].frames[0].id
+const ImageSlider = () => {
+  const pages = useSelector((state: PagesState) => state.pages.pages);
+  const images = useSelector((state: ImagesState) => state.frameImages.images);
+
+  const [currentPage, setCurrentPage] = useState<string>();
+  const [currentFrame, setCurrentFrame] = useState<string>();
+
+  // useEffect(() => {
+  //   pages && setCurrentPage(pages[0].name);
+  // }, []);
+
+  const initialFrame = useSelector(
+    (state: FrameState) => state.initialFrame.frame
   );
 
+  console.log(pages);
+  console.log(images);
+  console.log(currentPage);
+  console.log(initialFrame);
   const handlePage = (name: string): void => {
     setCurrentPage(name);
   };
@@ -49,31 +77,55 @@ const ImageSlider: React.FC<ImageSliderProps> = ({ pages, images }) => {
           ))}
       </div>
       <div className="flex">
-        {pages &&
-          pages
-            .filter((page) => page.name === currentPage)[0]
-            .frames.map((frame) => (
-              <div key={frame.id} onClick={() => handleFrame(frame.id)}>
-                {frame.name}
-              </div>
-            ))}
+        {pages && currentPage
+          ? pages
+              .filter((page) => page.name === currentPage)
+              .map((page) =>
+                page.frames.map((frame) => (
+                  <div key={frame.id} onClick={() => handleFrame(frame.id)}>
+                    {frame.name}
+                  </div>
+                ))
+              )
+          : // : pages
+            // ? pages[0].frames.map((frame) => (
+            //     <div key={frame.id} onClick={() => handleFrame(frame.id)}>
+            //       {frame.name}
+            //     </div>
+            //   ))
+            null}
       </div>
       <div className="flex">
-        {pages &&
-          images &&
-          images
-            .filter((image) => image.page === currentPage)
-            .filter((image) => image.id === currentFrame)
-            .map((image) => (
-              <div key={image.id}>
-                <img
-                  key={image.id}
-                  src={image.url}
-                  alt="ImageImage"
-                  className="max-h-96"
-                />
-              </div>
-            ))}
+        {currentFrame && images.length !== 0
+          ? images.map(
+              (image) =>
+                image.page === currentPage &&
+                image.id === currentFrame && (
+                  <div key={image.id}>
+                    <img
+                      key={image.id}
+                      src={image.url}
+                      alt="ImageImage"
+                      className="max-h-96"
+                    />
+                  </div>
+                )
+            )
+          : images.length !== 0
+          ? images.map(
+              (image) =>
+                image.id === initialFrame && (
+                  <div key={image.id}>
+                    <img
+                      key={image.id}
+                      src={image.url}
+                      alt="ImageImage"
+                      className="max-h-96"
+                    />
+                  </div>
+                )
+            )
+          : null}
       </div>
     </div>
   );

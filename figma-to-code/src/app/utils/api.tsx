@@ -29,7 +29,7 @@ const api = {
   async fetchImages(
     token: string,
     fileKey: string,
-    imageId: string[]
+    imageId: string
   ): Promise<any> {
     try {
       const response = await fetch(

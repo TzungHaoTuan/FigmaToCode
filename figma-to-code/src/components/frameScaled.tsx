@@ -35,7 +35,7 @@ export default function FrameScaled() {
                     }}
                   />
                 )}
-                <div
+                {/* <div
                   className="absolute"
                   style={{
                     width: child.absoluteBoundingBox.width,
@@ -43,7 +43,7 @@ export default function FrameScaled() {
                     left: child.absoluteBoundingBox.x,
                     top: child.absoluteBoundingBox.y,
                   }}
-                />
+                /> */}
               </div>
             );
           } else if (child.fills[0]?.type === "SOLID") {

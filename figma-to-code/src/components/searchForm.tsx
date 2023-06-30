@@ -5,7 +5,9 @@ import { setFrame } from "@/store/frameSlice";
 import { setPages } from "@/store/pagesSlice";
 import { setCurrentPage } from "@/store/currentPageSlice";
 import { setCurrentFrame } from "@/store/currentFrameSlice";
-import { setFrameImages } from "@/store/imagesSlice";
+import { setFrameImages } from "@/store/frameImagesSlice";
+import { setImages } from "@/store/imagesSlice";
+
 import api from "@/app/utils/api";
 
 interface Image {
@@ -53,6 +55,7 @@ const SearchForm = () => {
       const imagesData: ImageData[] = [];
       imagesData.push(data.meta.images);
       setImagesData(imagesData);
+      dispatch(setImages(imagesData));
     } catch {}
   }
 

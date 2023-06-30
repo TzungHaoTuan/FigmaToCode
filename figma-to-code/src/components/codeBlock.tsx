@@ -214,7 +214,7 @@ export default function CodeBlock() {
 
     return children.map((child: any) => {
       if (child.type === "GROUP" || child.type === "INSTANCE") {
-        return renderChildrenJSX(child.children);
+        return renderTagSC(child.children);
       } else {
         return (
           <div key={child.id}>
@@ -239,7 +239,7 @@ export default function CodeBlock() {
 
     return children.map((child: any) => {
       if (child.type === "GROUP" || child.type === "INSTANCE") {
-        return renderChildren(child.children);
+        return renderStyleSC(child.children);
       } else {
         if (child.type === "RECTANGLE") {
           if (child.fills[0]?.type === "IMAGE") {

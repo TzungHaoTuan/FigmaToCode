@@ -1,9 +1,11 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
 
 export default function CodeBlock() {
+  const [currentStyle, setCurrentStyle] = useState("Tailwind");
+
   const pages = useSelector((state: any) => state.pages.pages);
   const currentPage = useSelector((state: any) => state.currentPage.page);
   const currentFrame = useSelector((state: any) => state.currentFrame.frame);
@@ -170,8 +172,8 @@ export default function CodeBlock() {
           );
         } else if (child.type === "TEXT") {
           return (
-            <div>
-              <div key={child.id}>
+            <div key={child.id}>
+              <div>
                 {`<div className="
             absolute 
             w-[${child.absoluteBoundingBox.width}px] 
@@ -452,9 +454,25 @@ export default function CodeBlock() {
 
   return (
     <div>
+      <div className="flex">
+        <button
+          onClick={() => setCurrentStyle("Tailwind")}
+          className="mx-10 px-10 border-2 border-black rounded-xl"
+        >
+          Tailwind
+        </button>
+        <button
+          onClick={() => setCurrentStyle("SC")}
+          className="mx-10 px-10 border-2 border-black rounded-xl"
+        >
+          Styled Component
+        </button>
+      </div>
+
       {/* Tailwind */}
       <div className="mx-10 px-10 border-2 border-black rounded-xl">
-        {pages.length !== 0 &&
+        {currentStyle === "Tailwind" &&
+          pages.length !== 0 &&
           pages
             .filter((page: any) => page.name === currentPage)[0]
             .frames.map((frame: any) => {
@@ -465,26 +483,27 @@ export default function CodeBlock() {
       </div>
       {/* SC */}
       <div className="mx-10 px-10 border-2 border-black rounded-xl">
-        {pages.length !== 0 && <div>&lt;div&gt;</div>}
-
-        {pages.length !== 0 &&
-          pages
-            .filter((page: any) => page.name === currentPage)[0]
-            .frames.map((frame: any) => {
-              if (frame.id === currentFrame) {
-                return renderTagSC(frame.children);
-              }
-            })}
-        {pages.length !== 0 && <div>&lt;/div&gt;</div>}
-
-        {pages.length !== 0 &&
-          pages
-            .filter((page: any) => page.name === currentPage)[0]
-            .frames.map((frame: any) => {
-              if (frame.id === currentFrame) {
-                return renderStyleSC(frame.children);
-              }
-            })}
+        {currentStyle === "SC" && pages.length !== 0 && (
+          <div>
+            <div>&lt;div&gt;</div>
+            {pages
+              .filter((page: any) => page.name === currentPage)[0]
+              .frames.map((frame: any) => {
+                if (frame.id === currentFrame) {
+                  return renderTagSC(frame.children);
+                }
+              })}
+            <div>&lt;/div&gt;</div>
+            <br></br>
+            {pages
+              .filter((page: any) => page.name === currentPage)[0]
+              .frames.map((frame: any) => {
+                if (frame.id === currentFrame) {
+                  return renderStyleSC(frame.children);
+                }
+              })}
+          </div>
+        )}
       </div>
     </div>
   );

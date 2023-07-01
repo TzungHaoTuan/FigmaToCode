@@ -52,10 +52,6 @@ const ImageSlider = () => {
 
   const dispatch = useDispatch();
 
-  const initialFrame = useSelector(
-    (state: FrameState) => state.initialFrame.frame
-  );
-
   const handlePage = (name: string): void => {
     setCurrentPageState(name);
     dispatch(setCurrentPage(name));
@@ -116,7 +112,7 @@ const ImageSlider = () => {
           : images.length !== 0
           ? images.map(
               (image) =>
-                image.id === initialFrame && (
+                image.id === currentFrame && (
                   <div key={image.id}>
                     <img
                       key={image.id}

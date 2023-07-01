@@ -13,7 +13,7 @@ const api = {
       console.error("Error fetching data from Figma API:", error);
     }
   },
-  async fetchImagesData(token: string, fileKey: string): Promise<any> {
+  async fetchImages(token: string, fileKey: string): Promise<any> {
     try {
       const response = await fetch(`${this.hostname}files/${fileKey}/images`, {
         headers: {
@@ -26,7 +26,7 @@ const api = {
       console.error("Error fetching data from Figma API:", error);
     }
   },
-  async fetchImages(
+  async fetchFrameImages(
     token: string,
     fileKey: string,
     imageId: string

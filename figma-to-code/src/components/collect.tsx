@@ -1,41 +1,60 @@
 "use client";
+import React from "react";
+import { useSelector } from "react-redux";
 
 import {
-  getFirestore,
   collection,
   doc,
   getDoc,
   getDocs,
   setDoc,
+  addDoc,
+  deleteDoc,
 } from "firebase/firestore";
 
 import db from "../app/firebase/firebase";
 
-import React from "react";
-
 export default function Collect() {
-  const getDocument = async () => {
-    const docRef = doc(db, "products", "Top");
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-      console.log("Document data:", docSnap.data());
-    } else {
-      console.log("No such document!");
-    }
-  };
+  const data = useSelector((state: any) => state.figmaData.data);
 
   const getDocuments = async () => {
     const ref = collection(db, "products");
     const querySnapshot = await getDocs(ref);
     const docs = querySnapshot.docs.map((doc) => doc.data());
     console.log(docs);
+
+    await deleteDoc(doc(db, "products", "data2"));
   };
 
   const addDocument = async () => {
-    await setDoc(doc(db, "products", "LA"), {
-      name: "Los Angeles",
-      state: "CA",
-      country: "USA",
+    const productsRef = doc(db, "products", "data2");
+
+    // Create the main document
+    await setDoc(productsRef, {
+      name: data.name,
+    });
+
+    // Create the "pages" subcollection and inside
+    const pagesRef = collection(productsRef, "pages");
+
+    await data.document.children.map(async (page: any) => {
+      setDoc(doc(pagesRef, page.name), { pageName: page.name });
+
+      const pagesSnapshot = await getDocs(pagesRef);
+      pagesSnapshot.forEach(async (pageDoc) => {
+        const framesRef = collection(pageDoc.ref, "frames");
+        await page.children.map(async (frame: any) => {
+          setDoc(doc(framesRef, frame.name), { id: frame.id });
+
+          const framesSnapshot = await getDocs(framesRef);
+          framesSnapshot.forEach(async (frameDoc) => {
+            const childrenRef = collection(frameDoc.ref, "children");
+            await frame.children.map((child: any) => {
+              setDoc(doc(childrenRef, child.name), child);
+            });
+          });
+        });
+      });
     });
   };
 
@@ -47,7 +66,12 @@ export default function Collect() {
       >
         Add to collection
       </button>
-      {/* <button onClick={getDocuments}>getDoc</button> */}
+      <button
+        onClick={getDocuments}
+        className="border-2 border-black rounded-xl text-black px-4"
+      >
+        get aand delete Doc
+      </button>
     </div>
   );
 }

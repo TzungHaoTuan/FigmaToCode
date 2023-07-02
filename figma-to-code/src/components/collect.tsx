@@ -1,6 +1,8 @@
 "use client";
 import React from "react";
 import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { setCollection } from "@/store/collectionSlice";
 
 import {
   collection,
@@ -12,10 +14,24 @@ import {
   deleteDoc,
 } from "firebase/firestore";
 
-import db from "../app/firebase/firebase";
+import { db } from "../app/firebase/firebase";
 
 export default function Collect() {
   const data = useSelector((state: any) => state.figmaData.data);
+  const currentPage = useSelector((state: any) => state.currentPage.page);
+  const currentFrame = useSelector((state: any) => state.currentFrame.frame);
+  const userCollection = useSelector((state: any) => state.collection.frames);
+
+  const dispatch = useDispatch();
+
+  const handleCollection = () => {
+    handleCollectionState();
+    addDocument();
+  };
+
+  const handleCollectionState = () => {
+    dispatch(setCollection([{ page: currentPage, frame: currentFrame }]));
+  };
 
   const getDocuments = async () => {
     const ref = collection(db, "products");
@@ -61,7 +77,7 @@ export default function Collect() {
   return (
     <div>
       <button
-        onClick={addDocument}
+        onClick={handleCollection}
         className="border-2 border-black rounded-xl text-black px-4"
       >
         Add to collection

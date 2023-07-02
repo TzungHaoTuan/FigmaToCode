@@ -44,7 +44,6 @@ const ImageSlider = () => {
   const pages = useSelector((state: PagesState) => state.pages.pages);
   const currentPage = useSelector((state: any) => state.currentPage.page);
   const currentFrame = useSelector((state: any) => state.currentFrame.frame);
-
   const images = useSelector((state: ImagesState) => state.frameImages.images);
 
   const [currentPageState, setCurrentPageState] = useState<string>();

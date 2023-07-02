@@ -6,8 +6,6 @@ export default function FrameScaled() {
   const currentPage = useSelector((state: any) => state.currentPage.page);
   const currentFrame = useSelector((state: any) => state.currentFrame.frame);
   const images = useSelector((state: any) => state.images.images);
-  console.log(pages);
-  console.log(currentPage);
   const renderChildren = (children: any) => {
     if (!children) {
       return null;

@@ -1,14 +1,27 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useSelector } from "react-redux";
 
 export default function CodeBlock() {
   const [currentStyle, setCurrentStyle] = useState("Tailwind");
+  const taiRef = useRef<HTMLDivElement>(null);
+  const SCTagRef = useRef<HTMLDivElement>(null);
+  const SCStyleRef = useRef<HTMLDivElement>(null);
 
   const pages = useSelector((state: any) => state.pages.pages);
   const currentPage = useSelector((state: any) => state.currentPage.page);
   const currentFrame = useSelector((state: any) => state.currentFrame.frame);
+
+  const copyCode = (ref: any) => {
+    if (ref === "taiRef" && taiRef.current) {
+      navigator.clipboard.writeText(taiRef.current.innerText);
+    } else if (ref === "SCTagRef" && SCTagRef.current) {
+      navigator.clipboard.writeText(SCTagRef.current.innerText);
+    } else if (ref === "SCStyleRef" && SCStyleRef.current) {
+      navigator.clipboard.writeText(SCStyleRef.current.innerText);
+    }
+  };
 
   // Tailwind
   const renderTai = (children: any) => {
@@ -127,9 +140,9 @@ export default function CodeBlock() {
           h-[${child.absoluteBoundingBox.height}px] 
           ml-[${child.absoluteBoundingBox.x}px] 
           mt-[${child.absoluteBoundingBox.y}px] 
-          bg-[rgb(${Math.round(child.fills[0].color.r * 255)},${Math.round(
+          bg-[rgb(${Math.round(child.fills[0]?.color.r * 255)},${Math.round(
                   child.fills[0]?.color.g * 255
-                )},${Math.round(child.fills[0].color.b * 255)}]/${
+                )},${Math.round(child.fills[0]?.color.b * 255)}]/${
                   child.fills[0]?.color.a * 100
                 }] 
                 ${child.cornerRadius ? `rounded-[${child.cornerRadius}px]` : ""}
@@ -456,7 +469,9 @@ export default function CodeBlock() {
     <div>
       <div className="flex">
         <button
-          onClick={() => setCurrentStyle("Tailwind")}
+          onClick={(e) => {
+            setCurrentStyle("Tailwind");
+          }}
           className="mx-10 px-10 border-2 border-black rounded-xl"
         >
           Tailwind
@@ -470,41 +485,62 @@ export default function CodeBlock() {
       </div>
 
       {/* Tailwind */}
-      <div className="mx-10 px-10 border-2 border-black rounded-xl">
-        {currentStyle === "Tailwind" &&
-          pages.length !== 0 &&
-          pages
-            .filter((page: any) => page.name === currentPage)[0]
-            .frames.map((frame: any) => {
-              if (frame.id === currentFrame) {
-                return renderTai(frame.children);
-              }
-            })}
-      </div>
-      {/* SC */}
-      <div className="mx-10 px-10 border-2 border-black rounded-xl">
-        {currentStyle === "SC" && pages.length !== 0 && (
-          <div>
-            <div>&lt;div&gt;</div>
-            {pages
-              .filter((page: any) => page.name === currentPage)[0]
-              .frames.map((frame: any) => {
-                if (frame.id === currentFrame) {
-                  return renderTagSC(frame.children);
-                }
-              })}
-            <div>&lt;/div&gt;</div>
-            <br></br>
-            {pages
-              .filter((page: any) => page.name === currentPage)[0]
-              .frames.map((frame: any) => {
-                if (frame.id === currentFrame) {
-                  return renderStyleSC(frame.children);
-                }
-              })}
+      {currentStyle === "Tailwind" && (
+        <div className="mx-10 px-10 border-2 border-black rounded-xl">
+          <button
+            onClick={() => copyCode("taiRef")}
+            className="w-4 h-4 ml-96 mt-4 border-2 border-black rounded-xl"
+          ></button>
+          <div ref={taiRef}>
+            {pages.length !== 0 &&
+              pages
+                .filter((page: any) => page.name === currentPage)[0]
+                .frames.map((frame: any) => {
+                  if (frame.id === currentFrame) {
+                    return renderTai(frame.children);
+                  }
+                })}
           </div>
-        )}
-      </div>
+        </div>
+      )}
+      {/* SC */}
+
+      {currentStyle === "SC" && pages.length !== 0 && (
+        <div>
+          <div className="mx-10 px-10 border-2 border-black rounded-xl">
+            <button
+              onClick={() => copyCode("SCTagRef")}
+              className="w-4 h-4 ml-96 mt-4 border-2 border-black rounded-xl"
+            ></button>
+            <div ref={SCTagRef}>
+              <div>&lt;div&gt;</div>
+              {pages
+                .filter((page: any) => page.name === currentPage)[0]
+                .frames.map((frame: any) => {
+                  if (frame.id === currentFrame) {
+                    return renderTagSC(frame.children);
+                  }
+                })}
+              <div>&lt;/div&gt;</div>
+            </div>
+          </div>
+          <div className="mx-10 px-10 border-2 border-black rounded-xl">
+            <button
+              onClick={() => copyCode("SCStyleRef")}
+              className="w-4 h-4 ml-96 mt-4 border-2 border-black rounded-xl"
+            ></button>
+            <div ref={SCStyleRef}>
+              {pages
+                .filter((page: any) => page.name === currentPage)[0]
+                .frames.map((frame: any) => {
+                  if (frame.id === currentFrame) {
+                    return renderStyleSC(frame.children);
+                  }
+                })}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

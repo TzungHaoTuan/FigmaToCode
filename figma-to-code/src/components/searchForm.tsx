@@ -21,13 +21,14 @@ const SearchForm = () => {
       if (result) {
         const { data, pages, currentPage, currentFrame, frameImages, images } =
           result;
+        console.log(data);
+
         dispatch(setData(data));
         dispatch(setPages(pages));
         dispatch(setCurrentPage(currentPage));
         dispatch(setCurrentFrame(currentFrame));
         dispatch(setFrameImages(frameImages));
         dispatch(setImages(images));
-        console.log(frameImages);
       }
     }
   };

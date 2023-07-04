@@ -107,13 +107,13 @@ export default function FrameScaled() {
                   left: child.absoluteRenderBounds.x,
                   top: child.absoluteRenderBounds.y,
                   backgroundColor: `rgba(${Math.round(
-                    child.fills[0].color.r * 255
-                  )},${Math.round(child.fills[0].color.g * 255)},${Math.round(
-                    child.fills[0].color.b * 255
+                    child.fills[0]?.color.r * 255
+                  )},${Math.round(child.fills[0]?.color.g * 255)},${Math.round(
+                    child.fills[0]?.color.b * 255
                   )},${
-                    child.fills[0].opacity
-                      ? child.fills[0].opacity * child.fills[0].color.a
-                      : child.fills[0].color.a
+                    child.fills[0]?.opacity
+                      ? child.fills[0]?.opacity * child.fills[0]?.color.a
+                      : child.fills[0]?.color.a
                   })`,
                 }}
               />
@@ -130,13 +130,13 @@ export default function FrameScaled() {
                   left: child.absoluteRenderBounds.x,
                   top: child.absoluteRenderBounds.y,
                   backgroundColor: `rgba(${Math.round(
-                    child.strokes[0].color.r * 255
-                  )},${Math.round(child.strokes[0].color.g * 255)},${Math.round(
-                    child.strokes[0].color.b * 255
-                  )},${
-                    child.strokes[0].opacity
-                      ? child.strokes[0].opacity * child.strokes[0].color.a
-                      : child.strokes[0].color.a
+                    child.strokes[0]?.color.r * 255
+                  )},${Math.round(
+                    child.strokes[0]?.color.g * 255
+                  )},${Math.round(child.strokes[0]?.color.b * 255)},${
+                    child.strokes[0]?.opacity
+                      ? child.strokes[0]?.opacity * child.strokes[0]?.color.a
+                      : child.strokes[0]?.color.a
                   })`,
                 }}
               />
@@ -167,13 +167,13 @@ export default function FrameScaled() {
                 textAlign: child.style.textAlignHorizontal.toLowerCase(),
 
                 color: `rgba(${Math.round(
-                  child.fills[0].color.r * 255
-                )},${Math.round(child.fills[0].color.g * 255)},${Math.round(
-                  child.fills[0].color.b * 255
+                  child.fills[0]?.color.r * 255
+                )},${Math.round(child.fills[0]?.color.g * 255)},${Math.round(
+                  child.fills[0]?.color.b * 255
                 )},${
-                  child.fills[0].opacity
-                    ? child.fills[0].opacity * child.fills[0].color.a
-                    : child.fills[0].color.a
+                  child.fills[0]?.opacity
+                    ? child.fills[0]?.opacity * child.fills[0]?.color.a
+                    : child.fills[0]?.color.a
                 })`,
               }}
             >

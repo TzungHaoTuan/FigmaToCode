@@ -203,7 +203,7 @@ export default function CodeBlock() {
             </div>
           );
         }
-        return <div>{child.name}</div>;
+        return <div key={child.id}>{child.name}</div>;
       }
     });
   };

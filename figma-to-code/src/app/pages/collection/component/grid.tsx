@@ -123,7 +123,7 @@ export default function Grid() {
           src={frameImages[0]}
           className="w-1/4 hover:w-full object-cover overflow-scroll h-40 hover:h-[500px] mx-10 border-2 border-black rounded-xl"
         ></img>
-        <div className="  w-2/4 hover:w-full h-40 hover:h-[500px]  bg-white overflow-scroll mr-10 px-4 border-2 border-black rounded-xl">
+        <div className="w-2/4 hover:w-full h-40 hover:h-[500px]  bg-white overflow-scroll mr-10 px-4 border-2 border-black rounded-xl">
           {collectionGrid[0]}
         </div>
       </div>

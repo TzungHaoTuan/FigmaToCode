@@ -5,6 +5,8 @@ import { useSelector } from "react-redux";
 
 export default function CodeBlock() {
   const [currentStyle, setCurrentStyle] = useState("Tailwind");
+  const [text, setText] = useState();
+
   const taiRef = useRef<HTMLDivElement>(null);
   const SCTagRef = useRef<HTMLDivElement>(null);
   const SCStyleRef = useRef<HTMLDivElement>(null);
@@ -12,6 +14,10 @@ export default function CodeBlock() {
   const pages = useSelector((state: any) => state.pages.pages);
   const currentPage = useSelector((state: any) => state.currentPage.page);
   const currentFrame = useSelector((state: any) => state.currentFrame.frame);
+
+  const handleTextChange = (event: any) => {
+    setText(event.target.innerText);
+  };
 
   const copyCode = (ref: any) => {
     if (ref === "taiRef" && taiRef.current) {
@@ -238,7 +244,10 @@ export default function CodeBlock() {
                 child.characters
               }<${child.name.slice(0, 2)}>`}</div>
             ) : (
-              <div className="ml-4">{`<${child.name}><${child.name}>`}</div>
+              <div
+                contentEditable={true}
+                className="ml-4"
+              >{`<${child.name}><${child.name}>`}</div>
             )}
           </div>
         );

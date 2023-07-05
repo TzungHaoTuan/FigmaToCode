@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import { Provider } from "react-redux";
 import store from "@/store/store";
 
@@ -11,13 +12,17 @@ import FrameScaled from "@/components/frameScaled";
 import Collect from "@/components/collect";
 
 const Home: React.FC = () => {
+  const [frameIsScaled, setFrameIsScaled] = useState(false);
+  function toggleScaled() {
+    setFrameIsScaled(!frameIsScaled);
+  }
   return (
     <Provider store={store}>
       <Header />
       <SearchForm />
-      <ImageSlider />
+      <ImageSlider toggleScaled={toggleScaled} />
       <Collect />
-      <FrameScaled />
+      {frameIsScaled && <FrameScaled />}
       <CodeBlock />
       <FrameScaled />
       <CodeBlock />

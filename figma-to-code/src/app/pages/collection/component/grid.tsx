@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { getStorage, ref, getDownloadURL } from "firebase/storage";
+import {
+  getStorage,
+  ref,
+  getDownloadURL,
+  getMetadata,
+  list,
+} from "firebase/storage";
 import {
   collection,
   doc,
@@ -15,11 +21,22 @@ import {
 } from "firebase/firestore";
 
 import { db } from "@/app/firebase/firebase";
+import convertToTai from "@/app/utils/convertToTai";
 
 export default function Grid() {
   const userCollection = useSelector((state: any) => state.collection.frames);
-  const [collectionGrid, setCollectionGrid] = useState<any>([{ name: "Tuan" }]);
+  const [collectionGrid, setCollectionGrid] = useState<any>([]);
+  const [frameImages, setFrameImages] = useState<any>([]);
   const storage = getStorage();
+
+  useEffect(() => {
+    const showDocument = async () => {
+      const frameElements = await getDocument();
+      handleConvertToTai(frameElements);
+    };
+
+    showDocument();
+  }, []);
 
   // console.log(userCollection);
 
@@ -28,7 +45,7 @@ export default function Grid() {
     const pagesSnapshot = await getDocs(
       collection(productsSnapshot.ref, "pages")
     );
-
+    const frameElements: any[] = [];
     for (const pageDoc of pagesSnapshot.docs) {
       for (const eachCollection of userCollection) {
         const pageData = pageDoc.data();
@@ -42,105 +59,74 @@ export default function Grid() {
             // console.log(frameData);
 
             if (frameData.id === eachCollection.frame) {
+              console.log(frameData.storagePath);
+              await getFrameImageUrl(frameData.storagePath);
               const childrenSnapshot = await getDocs(
                 collection(frameDoc.ref, "children")
               );
-              // childrenSnapshot.forEach((childDoc) => {
-              //   const childData = childDoc.data();
-              // });
-              // console.log(childrenSnapshot.docs);
+
               childrenSnapshot.docs.forEach((childDoc) => {
                 const childData = childDoc.data();
-
-                setCollectionGrid((prev: any) => [...prev, childData]);
+                frameElements.push(childData);
+                // setCollectionGrid((prev: any) => [...prev, childData]);
               });
             }
           }
-
-          // childrenSnapshot.forEach((child) => {
-          //   childrenNames.push(child.data().name);
-          // });
-          // console.log(childrenNames);
         }
       }
     }
-
-    // const documentRef = doc(db, "products", "LA");
-
-    // getDoc(documentRef)
-    //   .then((docSnapshot) => {
-    //     if (docSnapshot.exists()) {
-    //       const data = docSnapshot.data();
-
-    //       // Retrieve the storagePath from the Firestore document
-    //       const storagePath = data.storagePath;
-
-    //       // Construct the download URL for the image
-    //       const storageRef = ref(storage, storagePath);
-
-    //       // Get the download URL
-    //       getDownloadURL(storageRef)
-    //         .then((downloadURL) => {
-    //           console.log(downloadURL);
-    //         })
-    //         .catch((error) => {
-    //           console.error("Error retrieving download URL:", error);
-    //         });
-    //     } else {
-    //       console.log("Document does not exist");
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     console.error("Error retrieving document:", error);
-    //   });
+    return frameElements;
   }
 
-  // async function getDocument() {
-  //   const productsSnapshot = await getDoc(doc(db, "products", "data2"));
-  //   const productsData = productsSnapshot.data();
-  //   console.log(productsData);
+  async function getFrameImageUrl(storagePath: any) {
+    const storageRef = ref(storage, storagePath);
 
-  //   const pagesRef = collection(productsSnapshot.ref, "pages");
-  //   const pagesSnapshot = await getDocs(pagesRef);
-  //   console.log(pagesSnapshot.docs.forEach((doc) => doc.data()));
-
-  //   const q = query(
-  //     collection(db, "pages"),
-  //     where("pageName", "==", userCollection.page)
-  //   );
-  //   for (const pageDoc of pagesSnapshot.docs) {
-  //     for (const eachCollection of collection) {
-  //       if (eachCollection.page === pageDoc.data()) {
-  //         console.log(pageDoc.data());
-  //       }
-  //     }
+    const downloadURL = await getDownloadURL(storageRef);
+    setFrameImages((prev: any) => [...prev, downloadURL]);
+  }
+  // while (downloadURL === null) {
+  //   // List items under the storage reference
+  //   const items = await list(storageRef);
+  //   console.log(items);
+  //   // Check if any items exist
+  //   if (items && items.items.length > 0) {
+  //     downloadURL = await getDownloadURL(storageRef);
+  //     console.log(downloadURL);
+  //     setFrameImages((prev: any) => [...prev, downloadURL]);
+  //   } else {
+  //     // Wait for 1 second before checking again
+  //     await new Promise((resolve) => setTimeout(resolve, 1000));
   //   }
-
-  //   // const pagesData = [];
-  //   // for (const pageDoc of pagesSnapshot.docs) {
-  //   //   const pageData = pageDoc.data();
-  //   //   pagesData.push(pageData);
-  //   // }
-  //   // console.log(pagesData);
   // }
 
-  useEffect(() => {
-    getDocument();
-  }, []);
+  //   const items = await list(storageRef);
 
-  // if (!collectionGrid) {
-  //   return;
+  //   if (items && items.items.length > 0) {
+  //     const downloadURL = await getDownloadURL(storageRef);
+  //     console.log(downloadURL);
+  //     setFrameImages((prev: any) => [...prev, downloadURL]);
+  //   } else {
+  //     console.error("File does not exist:", storagePath);
+  //   }
   // }
-  // console.log(collectionGrid);
-  // console.log(collectionGrid[0]?.name);
+
+  const handleConvertToTai = async (frameElements: any) => {
+    const code = await convertToTai(frameElements);
+
+    setCollectionGrid((prev: any) => [...prev, code]);
+  };
 
   return (
     <div>
-      <div onClick={() => console.log(collectionGrid)}>Grid</div>
-      {collectionGrid.map((child: any) => {
-        <div key={child.id}>{child.name}</div>;
-      })}
-      <div>{collectionGrid[12]?.name}</div>
+      <div className="flex">
+        <img
+          src={frameImages[0]}
+          className="w-1/4 hover:w-full object-cover overflow-scroll h-40 hover:h-[500px] mx-10 border-2 border-black rounded-xl"
+        ></img>
+        <div className="  w-2/4 hover:w-full h-40 hover:h-[500px]  bg-white overflow-scroll mr-10 px-4 border-2 border-black rounded-xl">
+          {collectionGrid[0]}
+        </div>
+      </div>
     </div>
   );
 }

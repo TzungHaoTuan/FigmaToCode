@@ -380,9 +380,9 @@ export default function CodeBlock() {
                 ${Math.round(child.fills[0]?.color.g * 255)},
                 ${Math.round(child.fills[0]?.color.b * 255)},
                 ${
-                  child.fills[0].opacity
-                    ? child.fills[0].opacity * child.fills[0].color.a
-                    : child.fills[0].color.a
+                  child.fills[0]?.opacity
+                    ? child.fills[0]?.opacity * child.fills[0]?.color.a
+                    : child.fills[0]?.color.a
                 })`}
               </div>
               {child.strokes.length !== 0 && (
@@ -391,9 +391,9 @@ export default function CodeBlock() {
                 ${child.strokeWeight}px 
                 ${child.strokes[0].type.toLowerCase()} 
                   rgba(
-                    ${Math.round(child.strokes[0].color.r * 255)},
-                    ${Math.round(child.strokes[0].color.g * 255)},
-                    ${Math.round(child.strokes[0].color.b * 255)},
+                    ${Math.round(child.strokes[0]?.color.r * 255)},
+                    ${Math.round(child.strokes[0]?.color.g * 255)},
+                    ${Math.round(child.strokes[0]?.color.b * 255)},
                     ${child.strokes[0].color.a})`}
                 </div>
               )}
@@ -416,9 +416,9 @@ export default function CodeBlock() {
                 ${Math.round(child.strokes[0]?.color.g * 255)},
                 ${Math.round(child.strokes[0]?.color.b * 255)},
                 ${
-                  child.strokes[0].opacity
-                    ? child.strokes[0].opacity * child.strokes[0].color.a
-                    : child.strokes[0].color.a
+                  child.strokes[0]?.opacity
+                    ? child.strokes[0]?.opacity * child.strokes[0]?.color.a
+                    : child.strokes[0]?.color.a
                 })`}
               </div>
               <div>`</div>
@@ -450,9 +450,9 @@ export default function CodeBlock() {
               <div className="ml-4">{` text-align: ${child.style.textAlignHorizontal.toLowerCase()};`}</div>
               <div className="ml-4">
                 {` color: rgba(
-                ${Math.round(child.fills[0].color.r * 255)},
-                ${Math.round(child.fills[0].color.g * 255)},
-                ${Math.round(child.fills[0].color.b * 255)},
+                ${Math.round(child.fills[0]?.color.r * 255)},
+                ${Math.round(child.fills[0]?.color.g * 255)},
+                ${Math.round(child.fills[0]?.color.b * 255)},
                 ${child.fills[0].color.a})`}
               </div>
               <div>`</div>
@@ -486,12 +486,12 @@ export default function CodeBlock() {
 
       {/* Tailwind */}
       {currentStyle === "Tailwind" && (
-        <div className="mx-10 px-10 border-2 border-black rounded-xl">
+        <div className="mx-10 mb-10 px-4 border-2 border-black rounded-xl">
           <button
             onClick={() => copyCode("taiRef")}
             className="w-4 h-4 ml-96 mt-4 border-2 border-black rounded-xl"
           ></button>
-          <div ref={taiRef}>
+          <div ref={taiRef} className="h-60 overflow-scroll ">
             {pages.length !== 0 &&
               pages
                 .filter((page: any) => page.name === currentPage)[0]
@@ -506,13 +506,13 @@ export default function CodeBlock() {
       {/* SC */}
 
       {currentStyle === "SC" && pages.length !== 0 && (
-        <div>
-          <div className="mx-10 px-10 border-2 border-black rounded-xl">
+        <div className="flex">
+          <div className=" px-4 w-1/2 border-2 border-black rounded-xl">
             <button
               onClick={() => copyCode("SCTagRef")}
-              className="w-4 h-4 ml-96 mt-4 border-2 border-black rounded-xl"
+              className="w-4 h-4  border-2 border-black rounded-xl"
             ></button>
-            <div ref={SCTagRef}>
+            <div ref={SCTagRef} className=" h-60 overflow-scroll ">
               <div>&lt;div&gt;</div>
               {pages
                 .filter((page: any) => page.name === currentPage)[0]
@@ -524,12 +524,12 @@ export default function CodeBlock() {
               <div>&lt;/div&gt;</div>
             </div>
           </div>
-          <div className="mx-10 px-10 border-2 border-black rounded-xl">
+          <div className=" px-4 w-1/2 border-2 border-black rounded-xl">
             <button
               onClick={() => copyCode("SCStyleRef")}
-              className="w-4 h-4 ml-96 mt-4 border-2 border-black rounded-xl"
+              className="w-4 h-4  mt-4 border-2 border-black rounded-xl"
             ></button>
-            <div ref={SCStyleRef}>
+            <div ref={SCStyleRef} className=" h-60 overflow-scroll ">
               {pages
                 .filter((page: any) => page.name === currentPage)[0]
                 .frames.map((frame: any) => {

@@ -40,7 +40,7 @@ interface PagesState {
   pages: Pages;
 }
 
-const ImageSlider = () => {
+const ImageSlider = ({ toggleScaled }: any) => {
   const pages = useSelector((state: PagesState) => state.pages.pages);
   const currentPage = useSelector((state: any) => state.currentPage.page);
   const currentFrame = useSelector((state: any) => state.currentFrame.frame);
@@ -92,7 +92,7 @@ const ImageSlider = () => {
             //   ))
             null}
       </div>
-      <div className="flex">
+      <div className="flex" onClick={toggleScaled}>
         {currentFrameState && images.length !== 0
           ? images.map(
               (image) =>

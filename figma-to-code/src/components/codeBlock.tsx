@@ -1,11 +1,23 @@
 "use client";
 
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  setDoc,
+  addDoc,
+  deleteDoc,
+  updateDoc,
+  arrayUnion,
+} from "firebase/firestore";
+import { db } from "../app/firebase/firebase";
 import React, { useState, useRef } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { setTag } from "@/store/tagsSlice";
 
 export default function CodeBlock() {
   const [currentStyle, setCurrentStyle] = useState("Tailwind");
-  const [text, setText] = useState();
 
   const taiRef = useRef<HTMLDivElement>(null);
   const SCTagRef = useRef<HTMLDivElement>(null);
@@ -14,10 +26,46 @@ export default function CodeBlock() {
   const pages = useSelector((state: any) => state.pages.pages);
   const currentPage = useSelector((state: any) => state.currentPage.page);
   const currentFrame = useSelector((state: any) => state.currentFrame.frame);
+  const tags = useSelector((state: any) => state.tag.tags);
 
-  const handleTextChange = (event: any) => {
-    setText(event.target.innerText);
-  };
+  const dispatch = useDispatch();
+
+  // const handleTag = async (id: any, tag: any) => {
+  //   console.log(id, tag);
+
+  //   const productsRef = doc(db, "products", "data");
+  //   const pagesRef = collection(productsRef, "pages");
+  //   const pagesSnapshot = await getDocs(pagesRef);
+
+  //   await Promise.all(
+  //     pagesSnapshot.docs.map(async (pageDoc) => {
+  //       const framesRef = collection(pageDoc.ref, "frames");
+  //       const framesSnapshot = await getDocs(framesRef);
+
+  //       await Promise.all(
+  //         framesSnapshot.docs.map(async (frameDoc) => {
+  //           const childrenRef = collection(frameDoc.ref, "children");
+  //           const childrenSnapshot = await getDocs(childrenRef);
+
+  //           await Promise.all(
+  //             childrenSnapshot.docs.map(async (childDoc) => {
+  //               const children = childDoc.data().children;
+
+  //               children.forEach(async (child: any) => {
+  //                 if (child.id === id) {
+  //                   child.name = tag;
+
+  //                   const myDoc = childDoc;
+  //                   await updateDoc(myDoc.ref, { children: children });
+  //                 }
+  //               });
+  //             })
+  //           );
+  //         })
+  //       );
+  //     })
+  //   );
+  // };
 
   const copyCode = (ref: any) => {
     if (ref === "taiRef" && taiRef.current) {
@@ -240,14 +288,38 @@ export default function CodeBlock() {
         return (
           <div key={child.id}>
             {child.type === "TEXT" ? (
-              <div className="ml-4">{`<${child.name.slice(0, 2)}>${
-                child.characters
-              }<${child.name.slice(0, 2)}>`}</div>
+              <div className="ml-4">
+                &lt;
+                <span
+                  contentEditable
+                  dir="RTL"
+                  suppressContentEditableWarning={true}
+                  onBlur={(event) => {
+                    dispatch(
+                      setTag({ [child.id]: event.currentTarget.textContent })
+                    );
+                    console.log(tags);
+                  }}
+                >
+                  {/* {tags[child.id] ? tags[child.id] : ""} */}
+                  {tags[child.id] ? tags[child.id] : child.name}
+
+                  {/* {child.name} */}
+                </span>
+                &gt;{child.characters}&lt;
+                <span
+                  contentEditable
+                  suppressContentEditableWarning={true}
+                  // onInput={(event) =>
+                  //   handleTag(child.id, event.currentTarget.innerText)
+                  // }
+                >
+                  {tags[child.id] ? tags[child.id] : child.name}
+                </span>
+                &gt;
+              </div>
             ) : (
-              <div
-                contentEditable={true}
-                className="ml-4"
-              >{`<${child.name}><${child.name}>`}</div>
+              <div className="ml-4">{`<${child.name}><${child.name}>`}</div>
             )}
           </div>
         );
@@ -437,7 +509,7 @@ export default function CodeBlock() {
         } else if (child.type === "TEXT") {
           return (
             <div key={child.id}>
-              <div>{`const Text_${child.name.slice(0, 2)} = styled.div\``}</div>
+              <div>{`const ${child.name} = styled.div\``}</div>
               <div className="ml-4">{` width: ${child.absoluteBoundingBox.width}px;`}</div>
               <div className="ml-4">{` height: ${child.absoluteBoundingBox.height}px;`}</div>
               <div className="ml-4">{` left: ${child.absoluteBoundingBox.x}px;`}</div>

@@ -6,6 +6,7 @@ import currentFrameSliceReducer from "./currentFrameSlice";
 import imagesSliceReducer from "./imagesSlice";
 import figmaDataSliceReducer from "./figmaDataSlice";
 import collectionSliceReducer from "./collectionSlice";
+import tagNameSliceReducer from "./tagsSlice";
 
 const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ const store = configureStore({
     frameImages: frameImagesSliceReducer,
     images: imagesSliceReducer,
     collection: collectionSliceReducer,
+    tag: tagNameSliceReducer,
   },
 });
 

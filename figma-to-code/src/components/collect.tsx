@@ -24,20 +24,23 @@ export default function Collect() {
   const currentFrame = useSelector((state: any) => state.currentFrame.frame);
   const userCollection = useSelector((state: any) => state.collection.frames);
   const frameImages = useSelector((state: any) => state.frameImages.images);
+  const tags = useSelector((state: any) => state.tag.tags);
   const dispatch = useDispatch();
   const storage = getStorage();
 
   const handleCollection = async () => {
-    await frameImages
-      .filter((image: any) => image.id === currentFrame)
-      .map((image: any) =>
-        uploadImage(
-          image.id,
-          "https://corsproxy.io/?" + encodeURIComponent(image.url)
-        )
-      );
+    // await frameImages
+    //   .filter((image: any) => image.id === currentFrame)
+    //   .map((image: any) =>
+    //     uploadImage(
+    //       image.id,
+    //       "https://corsproxy.io/?" + encodeURIComponent(image.url)
+    //     )
+    //   );
     await handleCollectionState();
     await addDocument();
+    console.log(tags);
+    await handleTag(tags);
   };
 
   const handleCollectionState = async () => {
@@ -71,13 +74,10 @@ export default function Collect() {
 
         return Promise.all(childrenPromises);
       });
-      console.log("Store children successfully!");
 
       return Promise.all(framesPromises);
     });
-    console.log("Store frames successfully!");
     await Promise.all(pagesPromises);
-    console.log("Store pages successfully!");
     console.log("Finish writing data");
 
     // await data.document.children.map(async (page: any) => {
@@ -99,6 +99,41 @@ export default function Collect() {
     //     });
     //   });
     // });
+  };
+
+  const handleTag = async (tags: any) => {
+    const productsRef = doc(db, "products", "data");
+    const pagesRef = collection(productsRef, "pages");
+    const pagesSnapshot = await getDocs(pagesRef);
+
+    await Promise.all(
+      pagesSnapshot.docs.map(async (pageDoc) => {
+        const framesRef = collection(pageDoc.ref, "frames");
+        const framesSnapshot = await getDocs(framesRef);
+
+        await Promise.all(
+          framesSnapshot.docs.map(async (frameDoc) => {
+            const childrenRef = collection(frameDoc.ref, "children");
+            const childrenSnapshot = await getDocs(childrenRef);
+
+            await Promise.all(
+              childrenSnapshot.docs.map(async (childDoc) => {
+                const children = childDoc.data().children;
+
+                children.forEach(async (child: any) => {
+                  if (tags[child.id]) {
+                    child.name = tags[child.id];
+
+                    const myDoc = childDoc;
+                    await updateDoc(myDoc.ref, { children: children });
+                  }
+                });
+              })
+            );
+          })
+        );
+      })
+    );
   };
 
   function loadImageAsBlob(imageUrl: any) {

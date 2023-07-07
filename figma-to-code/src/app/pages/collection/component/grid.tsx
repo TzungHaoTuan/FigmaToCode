@@ -22,6 +22,7 @@ import {
 
 import { db } from "@/app/firebase/firebase";
 import convertToTai from "@/app/utils/convertToTai";
+import convertToSCTag from "@/app/utils/convertToSC";
 
 export default function Grid() {
   const userCollection = useSelector((state: any) => state.collection.frames);
@@ -32,11 +33,11 @@ export default function Grid() {
   useEffect(() => {
     const showDocument = async () => {
       const frameElements = await getDocument();
-      handleConvertToTai(frameElements);
+      handleConvertCode(frameElements);
     };
 
     showDocument();
-  }, []);
+  }, [db]);
 
   // console.log(userCollection);
 
@@ -60,7 +61,7 @@ export default function Grid() {
 
             if (frameData.id === eachCollection.frame) {
               console.log(frameData.storagePath);
-              await getFrameImageUrl(frameData.storagePath);
+              // await getFrameImageUrl(frameData.storagePath);
               const childrenSnapshot = await getDocs(
                 collection(frameDoc.ref, "children")
               );
@@ -110,21 +111,25 @@ export default function Grid() {
   //   }
   // }
 
-  const handleConvertToTai = async (frameElements: any) => {
-    const code = await convertToTai(frameElements);
+  const handleConvertCode = async (frameElements: any) => {
+    const taiCode = await convertToTai(frameElements);
+    const SCCode = await convertToSCTag(frameElements);
 
-    setCollectionGrid((prev: any) => [...prev, code]);
+    setCollectionGrid((prev: any) => [...prev, { tai: taiCode, sc: SCCode }]);
   };
 
   return (
     <div>
-      <div className="flex">
+      <div>
         <img
           src={frameImages[0]}
           className="w-1/4 hover:w-full object-cover overflow-scroll h-40 hover:h-[500px] mx-10 border-2 border-black rounded-xl"
         ></img>
         <div className="w-2/4 hover:w-full h-40 hover:h-[500px]  bg-white overflow-scroll mr-10 px-4 border-2 border-black rounded-xl">
-          {collectionGrid[0]}
+          {collectionGrid[0]?.tai}
+        </div>
+        <div className="w-2/4 hover:w-full h-40 hover:h-[500px]  bg-white overflow-scroll mr-10 px-4 border-2 border-black rounded-xl">
+          {collectionGrid[0]?.sc}
         </div>
       </div>
     </div>

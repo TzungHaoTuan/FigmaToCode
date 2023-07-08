@@ -1,4 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
+
+import userSliceReducer from "./userSlice";
 import pagesSliceReducer from "./pagesSlice";
 import currentPageSliceReducer from "./currentPageSlice";
 import frameImagesSliceReducer from "./frameImagesSlice";
@@ -10,6 +12,7 @@ import tagNameSliceReducer from "./tagsSlice";
 
 const store = configureStore({
   reducer: {
+    user: userSliceReducer,
     figmaData: figmaDataSliceReducer,
     currentFrame: currentFrameSliceReducer,
     pages: pagesSliceReducer,

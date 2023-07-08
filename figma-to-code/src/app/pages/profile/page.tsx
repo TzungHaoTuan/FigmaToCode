@@ -1,7 +1,21 @@
 "use client";
-import SignIn from "./component/signIn";
+
+import Link from "next/link";
+
+import { Provider } from "react-redux";
+import store from "@/store/store";
+import Main from "./component/main";
+import { signIn } from "@/app/utils/signIn";
 
 function Profile() {
+  async function getSignInData() {
+    const response = signIn();
+    if (response) {
+      console.log((await response).user.displayName);
+      console.log((await response).user.email);
+    }
+  }
+
   //   signInWithPopup(auth, provider)
   //     .then((result) => {
   //       // This gives you a Google Access Token. You can use it to access the Google API.
@@ -33,8 +47,12 @@ function Profile() {
   //     }
   //   });
   return (
-    <div>
-      <SignIn />
+    <Provider store={store}>
+      <Link href="/">Home</Link>
+
+      <Main />
+      <button onClick={getSignInData}>sign in</button>
+
       {/* <form className="flex flex-col m-10">
         <input
           placeholder="email"
@@ -54,7 +72,7 @@ function Profile() {
           logout
         </button>
       </form> */}
-    </div>
+    </Provider>
   );
 }
 

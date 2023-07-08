@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   profile: {
     name: "",
-    age: 0,
+    email: "",
     login: false,
   },
 };
@@ -13,10 +13,15 @@ const userSlice = createSlice({
   initialState: initialState,
   reducers: {
     setLogin(state, action) {
-      state.profile = { ...state.profile, login: true };
+      const { name, email } = action.payload;
+      state.profile = {
+        name,
+        email,
+        login: true,
+      };
     },
     setLogout(state) {
-      state.profile = { ...state.profile, login: false };
+      state.profile = { ...initialState.profile };
     },
   },
 });

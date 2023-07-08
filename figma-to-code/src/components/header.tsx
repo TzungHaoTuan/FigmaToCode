@@ -10,6 +10,12 @@ export default function Header() {
       >
         Collection
       </Link>
+      <Link
+        href="/pages/profile"
+        className="border-2 border-black rounded-xl text-black px-4"
+      >
+        Profile
+      </Link>
     </div>
   );
 }

@@ -1,20 +1,35 @@
 "use client";
 
-import Link from "next/link";
+import { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { setLogin } from "@/store/userSlice";
+import { setLogout } from "@/store/userSlice";
 
+import Link from "next/link";
 import { Provider } from "react-redux";
+import {
+  getAuth,
+  signInWithPopup,
+  signOut,
+  onAuthStateChanged,
+  GoogleAuthProvider,
+} from "firebase/auth";
 import store from "@/store/store";
-import Main from "./component/main";
-import { signIn } from "@/app/utils/signIn";
+
+import { auth } from "@/app/firebase/firebase";
+import NewMain from "./component/newMain";
+
+// import Main from "./component/main";
+// import { signIn } from "@/app/utils/signIn";
 
 function Profile() {
-  async function getSignInData() {
-    const response = signIn();
-    if (response) {
-      console.log((await response).user.displayName);
-      console.log((await response).user.email);
-    }
-  }
+  // async function getSignInData() {
+  //   const response = signIn();
+  //   if (response) {
+  //     console.log((await response).user.displayName);
+  //     console.log((await response).user.email);
+  //   }
+  // }
 
   //   signInWithPopup(auth, provider)
   //     .then((result) => {
@@ -49,9 +64,10 @@ function Profile() {
   return (
     <Provider store={store}>
       <Link href="/">Home</Link>
+      <NewMain />
 
-      <Main />
-      <button onClick={getSignInData}>sign in</button>
+      {/* <Main />
+      <button onClick={getSignInData}>sign in</button> */}
 
       {/* <form className="flex flex-col m-10">
         <input

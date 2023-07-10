@@ -3,7 +3,7 @@
 import hljs from "highlight.js/lib/core";
 import html from "highlight.js/lib/languages/xml";
 hljs.registerLanguage("html", html);
-import "highlight.js/styles/myStyle3.css";
+import "highlight.js/styles/github.css";
 
 import { Tab } from "@headlessui/react";
 import {

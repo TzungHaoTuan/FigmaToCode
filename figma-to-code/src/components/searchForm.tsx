@@ -32,19 +32,31 @@ const SearchForm = () => {
       }
     }
   };
+
   return (
-    <div className="w-full">
-      <form onSubmit={handleSubmit} className="w-1/2 flex ">
+    <div
+      className="w-full h-screen bg-gradient-to-br 
+    from-red-200
+    from-10%
+    via-purple-800
+    via-70% 
+    to-violet-900 
+    animate-gradient-x flex flex-col justify-center items-center px-12 pt-28"
+    >
+      <form
+        onSubmit={handleSubmit}
+        className="flex w-full justify-center items-center"
+      >
         <input
           type="text"
           ref={urlRef}
-          className="w-full h-10 border-2 border-black rounded-xl text-black px-4"
+          className="w-1/2 h-12 border-2 border-white   rounded-full drop-shadow-lg text-black px-4"
         ></input>
         <button
           type="submit"
-          className=" h-10 border-2 border-black rounded-xl"
+          className="h-12  border-2 border-white text-white rounded-full drop-shadow-lg ml-10 px-4 py-2"
         >
-          Search
+          Convert
         </button>
       </form>
     </div>

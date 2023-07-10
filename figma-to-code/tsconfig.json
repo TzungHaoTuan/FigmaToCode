@@ -34,7 +34,8 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/store/userSlice.js"
+    "src/store/userSlice.js",
+    "src/app/firebase/firebase.js"
   ],
   "exclude": [
     "node_modules",

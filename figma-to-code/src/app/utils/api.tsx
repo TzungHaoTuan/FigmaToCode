@@ -33,7 +33,7 @@ const api = {
   ): Promise<any> {
     try {
       const response = await fetch(
-        `${this.hostname}images/${fileKey}?ids=${imageId}&scale=0.3`,
+        `${this.hostname}images/${fileKey}?ids=${imageId}`,
         {
           headers: {
             "X-Figma-Token": token,

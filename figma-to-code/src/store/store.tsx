@@ -9,6 +9,7 @@ import imagesSliceReducer from "./imagesSlice";
 import figmaDataSliceReducer from "./figmaDataSlice";
 import collectionSliceReducer from "./collectionSlice";
 import tagNameSliceReducer from "./tagsSlice";
+import codeStateSliceReducer from "./codeStateSlice";
 
 const store = configureStore({
   reducer: {
@@ -21,6 +22,7 @@ const store = configureStore({
     images: imagesSliceReducer,
     collection: collectionSliceReducer,
     tag: tagNameSliceReducer,
+    codeState: codeStateSliceReducer,
   },
 });
 

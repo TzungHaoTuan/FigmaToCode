@@ -29,18 +29,18 @@ export default function Collect() {
   const storage = getStorage();
 
   const handleCollection = async () => {
-    // await frameImages
-    //   .filter((image: any) => image.id === currentFrame)
-    //   .map((image: any) =>
-    //     uploadImage(
-    //       image.id,
-    //       "https://corsproxy.io/?" + encodeURIComponent(image.url)
-    //     )
-    //   );
+    console.log(data);
+    await frameImages
+      .filter((image: any) => image.id === currentFrame)
+      .map((image: any) =>
+        uploadImage(
+          image.id,
+          "https://corsproxy.io/?" + encodeURIComponent(image.url)
+        )
+      );
     await handleCollectionState();
     await addDocument();
-    console.log(tags);
-    await handleTag(tags);
+    // await handleTag(tags);
   };
 
   const handleCollectionState = async () => {
@@ -69,7 +69,7 @@ export default function Collect() {
         const frameRef = doc(framesRef, frame.name);
         const childrenRef = collection(frameRef, "children");
         const childrenPromises = frame.children.map((child: any) => {
-          return setDoc(doc(childrenRef, child.name), child);
+          return setDoc(doc(childrenRef, child.name), { children: child });
         });
 
         return Promise.all(childrenPromises);

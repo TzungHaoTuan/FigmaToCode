@@ -12,6 +12,8 @@ import ConvertedArea from "@/components/convertedArea";
 
 import Collect from "@/components/collect";
 
+import Link from "next/link";
+
 const Home: React.FC = () => {
   const [frameIsScaled, setFrameIsScaled] = useState(false);
   function toggleScaled() {
@@ -19,7 +21,7 @@ const Home: React.FC = () => {
   }
   return (
     <Provider store={store}>
-      <Header />
+      {/* <Header /> */}
       <SearchForm />
       <ConvertedArea />
       {/* <ImageSlider toggleScaled={toggleScaled} /> */}

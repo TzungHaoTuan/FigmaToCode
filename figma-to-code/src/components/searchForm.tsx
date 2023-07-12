@@ -41,7 +41,9 @@ const SearchForm = () => {
     via-purple-800
     via-70% 
     to-violet-900 
-    animate-gradient-x flex flex-col justify-center items-center px-12 pt-28"
+    animate-gradient-x 
+    
+    flex flex-col justify-center items-center px-12 pt-28"
     >
       <form
         onSubmit={handleSubmit}

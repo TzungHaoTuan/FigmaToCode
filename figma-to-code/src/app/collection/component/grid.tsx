@@ -119,17 +119,22 @@ export default function Grid() {
   };
 
   return (
-    <div>
-      <div>
-        <img
-          src={frameImages[0]}
-          className="w-1/4 hover:w-full object-cover overflow-scroll h-40 hover:h-[500px] mx-10 border-2 border-black rounded-xl"
-        ></img>
-        <div className="w-2/4 hover:w-full h-40 hover:h-[500px]  bg-white overflow-scroll mr-10 px-4 border-2 border-black rounded-xl">
-          {collectionGrid[0]?.tai}
-        </div>
-        <div className="w-2/4 hover:w-full h-40 hover:h-[500px]  bg-white overflow-scroll mr-10 px-4 border-2 border-black rounded-xl">
+    <div className="relative w-screen h-screen">
+      <div className="w-full h-full bg-color-ball-2  py-48  px-24">
+        <div className="relative w-full h-full bg-white bg-opacity-20 rounded-3xl backdrop-blur backdrop-brightness-110 p-4">
+          <div className="w-full h-40  flex justify-between items-center  bg-slate-900 bg-opacity-50 rounded-3xl  px-2 py-2 ">
+            <img
+              src={frameImages[0]}
+              className="w-36 h-36 bg-white object-cover overflow-scroll rounded-3xl  "
+            ></img>
+            <div className="w-[calc(100%-152px)]  h-36  bg-white no-scrollbar overflow-scroll rounded-3xl  px-4  ">
+              {collectionGrid[0]?.tai}
+            </div>
+          </div>
+          {/* <div className="w-2/4  h-40  bg-white overflow-scroll mr-10 px-4 border-2 border-black rounded-xl">
           {collectionGrid[0]?.sc}
+        </div> */}
+          {/* </div> */}
         </div>
       </div>
     </div>

@@ -22,9 +22,7 @@ interface Page {
 async function fetchData(fileKey: string) {
   try {
     const data = await api.fetchData(token, fileKey);
-    console.log(data);
-    console.log(data.document.children[0].children[0].children[0].children);
-
+    // console.log(data);
     return data;
   } catch {}
 }

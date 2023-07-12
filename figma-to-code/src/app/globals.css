@@ -15,6 +15,64 @@
         scrollbar-width: none;  /* Firefox */
     }
   }
+
+  .footer {
+    width: 100%;
+    position: static;
+    top: 100%;
+    bottom: 0;
+  }
+  
+  /* .pre-wrap {
+    white-space: pre-wrap
+  } */
+
+  .code {
+    white-space: nowrap;
+  }
+  .boxshadow{
+    box-shadow: 0 0 5px #6f00ff,
+    0 0 25px #6f00ff,
+    0 0 50px #6f00ff,
+    0 0 100px #6f00ff;
+  }
+
+  .bg-color-ball {
+    position: relative
+  }
+  .bg-color-ball::before {
+    content: '';
+
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('./images/color-ball.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    filter: brightness(80%);
+
+  }
+  .bg-color-ball-2 {
+    position: relative
+  }
+  .bg-color-ball-2::before {
+    content: '';
+
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('./images/color-ball-2.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    filter: brightness(80%);
+
+  }
 }
  /* :root {
   --foreground-rgb: 0, 0, 0;

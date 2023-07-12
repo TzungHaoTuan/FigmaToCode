@@ -215,10 +215,10 @@ export default function Collect() {
   }
 
   return (
-    <div>
+    <div className="w-full flex justify-center items-center mt-8">
       <button
         onClick={handleCollection}
-        className="border-2 border-black rounded-xl text-black px-4"
+        className="w-2/3 h-12 bg-indigo-800  text-white font-semibold outline outline-2 outline-offset-4 outline-indigo-500 rounded-xl px-4"
       >
         Add to collection
       </button>

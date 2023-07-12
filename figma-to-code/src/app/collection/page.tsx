@@ -10,7 +10,6 @@ import Grid from "./component/grid";
 export default function Collection() {
   return (
     <Provider store={store}>
-      <Link href="/">Home</Link>
       <Grid />
       {/* <div>{data && data.document.children}</div> */}
     </Provider>

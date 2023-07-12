@@ -1,9 +1,14 @@
 "use client";
 
+// import Prism from "prismjs";
+// import "prismjs/components/prism-core";
+// import "prismjs/components/prism-markup";
+// import "prismjs/themes/prism-solarizedlight.css";
+
 import hljs from "highlight.js/lib/core";
 import html from "highlight.js/lib/languages/xml";
-hljs.registerLanguage("html", html);
-import "highlight.js/styles/github.css";
+// hljs.registerLanguage("html", html);
+import "highlight.js/styles/tokyo-night-dark.css";
 
 import { Tab } from "@headlessui/react";
 import {
@@ -29,17 +34,32 @@ export default function divBlock() {
   const SCTagRef = useRef<HTMLDivElement>(null);
   const SCStyleRef = useRef<HTMLDivElement>(null);
 
+  const taiCodeRef = useRef<HTMLDivElement>(null);
+
   const pages = useSelector((state: any) => state.pages.pages);
   const currentPage = useSelector((state: any) => state.currentPage.page);
   const currentFrame = useSelector((state: any) => state.currentFrame.frame);
   const tags = useSelector((state: any) => state.tag.tags);
 
+  console.log(pages);
+
   const dispatch = useDispatch();
+
+  // useEffect(() => {
+  //   Prism.highlightAll();
+  // }, [currentStyle]);
 
   // color div
   useEffect(() => {
-    hljs.highlightAll();
+    if (taiCodeRef.current) {
+      hljs.highlightElement(taiCodeRef.current);
+    }
   }, []);
+  // useEffect(() => {
+  //   hljs.highlightAll();
+  //   hljs.configure({ ignoreUnescapedHTML: true });
+  // }),
+  //   [];
   // useEffect(() => {
   //   if (divRef.current) {
   //     hljs.highlightElement(divRef.current);
@@ -99,177 +119,135 @@ export default function divBlock() {
       return null;
     }
 
-    return children.map((child: any) => {
-      if (child.type === "GROUP" || child.type === "INSTANCE") {
+    const renderedChildren = children.flatMap((child: any) => {
+      if (
+        child.type === "GROUP" ||
+        child.type === "INSTANCE" ||
+        child.type === "FRAME"
+      ) {
         return renderTai(child.children);
       } else {
         if (child.type === "RECTANGLE") {
           if (child.fills[0]?.type === "IMAGE") {
-            return (
-              <code key={child.id} className="html">
-                {`<img className="w-[${child.absoluteBoundingBox.width}px] h-[${
-                  child.absoluteBoundingBox.height
-                }px] left-[${child.absoluteBoundingBox.x}px] top-[${
-                  child.absoluteBoundingBox.y
-                }px] ${
-                  child.cornerRadius ? `rounded-[${child.cornerRadius}px]` : ""
-                } ${
-                  child.strokes.length !== 0
-                    ? `border-[${
-                        child.strokeWeight
-                      }px] border-${child.strokes[0].type.toLowerCase()} border-[rgb(${Math.round(
-                        child.strokes[0].color.r * 255
-                      )},${Math.round(
-                        child.strokes[0].color.g * 255
-                      )},${Math.round(child.strokes[0].color.b * 255)}]/${
-                        child.strokes[0].color.a * 100
-                      }]`
-                    : ""
-                } absolute"/>`}
-              </code>
-            );
-          } else if (child.fills[0]?.type === "SOLID") {
-            return (
-              <div key={child.id} className="html">
-                {`<div className="
-            absolute 
-            w-[${child.absoluteBoundingBox.width}px] 
-            h-[${child.absoluteBoundingBox.height}px] 
-            ml-[${child.absoluteBoundingBox.x}px] 
-            mt-[${child.absoluteBoundingBox.y}px] 
-            bg-[rgb(${Math.round(child.fills[0].color.r * 255)},${Math.round(
-                  child.fills[0].color.g * 255
-                )},${Math.round(child.fills[0].color.b * 255)}]/${
-                  child.fills[0].color.a * 100
-                }] 
-            ${child.cornerRadius ? `rounded-[${child.cornerRadius}px]` : ""}
-            ${
+            return `<img className="w-[${
+              child.absoluteBoundingBox.width
+            }px] h-[${child.absoluteBoundingBox.height}px] left-[${
+              child.absoluteBoundingBox.x
+            }px] top-[${child.absoluteBoundingBox.y}px] ${
+              child.cornerRadius ? `rounded-[${child.cornerRadius}px]` : ""
+            } ${
               child.strokes.length !== 0
-                ? `border-[${child.strokeWeight}px] 
-              border-${child.strokes[0].type.toLowerCase()}
-              border-[rgb(${Math.round(
-                child.strokes[0].color.r * 255
-              )},${Math.round(child.strokes[0].color.g * 255)},${Math.round(
-                    child.strokes[0].color.b * 255
-                  )}]/${child.strokes[0].color.a * 100}]
-              `
-                : ""
-            }">${child.name}
-            </div>`}
-              </div>
-            );
-          } else {
-            return (
-              <div key={child.id} className="html">
-                {`<div className="
-                  absolute 
-                  w-[${child.absoluteBoundingBox.width}px] 
-                  h-[${child.absoluteBoundingBox.height}px] 
-                  ml-[${child.absoluteBoundingBox.x}px] 
-                  mt-[${child.absoluteBoundingBox.y}px] 
-                  ${
-                    child.cornerRadius
-                      ? `rounded-[${child.cornerRadius}px]`
-                      : ""
-                  }
-                  ${
-                    child.strokes.length !== 0
-                      ? `border-[${child.strokeWeight}px] 
-                    border-${child.strokes[0].type.toLowerCase()}
-                    border-[rgb(${Math.round(
-                      child.strokes[0].color.r * 255
-                    )},${Math.round(
-                          child.strokes[0].color.g * 255
-                        )},${Math.round(child.strokes[0].color.b * 255)}]/${
-                          child.strokes[0].color.a * 100
-                        }]
-                    `
-                      : ""
-                  }">${child.name}</div>`}
-              </div>
-            );
-          }
-        } else if (child.type === "ELLIPSE") {
-          return (
-            <div key={child.id} className="html">
-              {`<div className="
-          absolute 
-          rounded-full 
-          w-[${child.absoluteBoundingBox.width}px] 
-          h-[${child.absoluteBoundingBox.height}px] 
-          ml-[${child.absoluteBoundingBox.x}px] 
-          mt-[${child.absoluteBoundingBox.y}px] 
-          bg-[rgb(${Math.round(child.fills[0]?.color.r * 255)},${Math.round(
-                child.fills[0]?.color.g * 255
-              )},${Math.round(child.fills[0]?.color.b * 255)}]/${
-                child.fills[0]?.color.a * 100
-              }] 
-                ${child.cornerRadius ? `rounded-[${child.cornerRadius}px]` : ""}
-                ${
-                  child.strokes.length !== 0
-                    ? `border-[${child.strokeWeight}px] 
-                  border-${child.strokes[0].type.toLowerCase()}
-                  border-[rgb(${Math.round(
+                ? `border-[${
+                    child.strokeWeight
+                  }px] border-${child.strokes[0].type.toLowerCase()} border-[rgb(${Math.round(
                     child.strokes[0].color.r * 255
                   )},${Math.round(child.strokes[0].color.g * 255)},${Math.round(
-                        child.strokes[0].color.b * 255
-                      )}]/${child.strokes[0].color.a * 100}]
-                  `
-                    : ""
-                }">${child.name}</div>`}
-            </div>
-          );
-        } else if (child.type === "LINE") {
-          return (
-            <div key={child.id} className="html">
-              {`<div className="
-          absolute 
-          w-[${child.absoluteBoundingBox.width}px] 
-          h-[${child.absoluteBoundingBox.height}px] 
-          ml-[${child.absoluteBoundingBox.x}px] 
-          mt-[${child.absoluteBoundingBox.y}px] 
-          bg-[rgb(${Math.round(child.strokes[0]?.color.r * 255)},${Math.round(
-                child.strokes[0]?.color.g * 255
-              )},${Math.round(child.strokes[0]?.color.b * 255)}]/${
-                child.strokes[0].opacity
-                  ? child.strokes[0].opacity * child.strokes[0].color.a * 100
-                  : child.strokes[0].color.a * 100
-              }]">${child.name}</div>`}
-            </div>
-          );
-        } else if (child.type === "TEXT") {
-          return (
-            <div key={child.id} className="html">
-              {`<div className="
-            absolute 
-            w-[${child.absoluteBoundingBox.width}px] 
-            h-[${child.absoluteBoundingBox.height}px] 
-            ml-[${child.absoluteBoundingBox.x}px] 
-            mt-[${child.absoluteBoundingBox.y}px] 
-            font-["${child.style.fontFamily}"] 
-            ${child.style.italic ? "italic" : ""} 
-            font-[${child.style.fontWeight}] 
-            text-[${child.style.fontSize}px] 
-            leading-[${Math.round(child.style.lineHeightPx * 10) / 10}px]
-            ${
-              child.style.letterSpacing
-                ? `tracking-[${
-                    Math.round(child.style.letterSpacing * 10) / 10
-                  }px]`
+                    child.strokes[0].color.b * 255
+                  )}]/${child.strokes[0].color.a * 100}]`
                 : ""
-            }
-            text-[${child.style.textAlignHorizontal.toLowerCase()}] 
-            bg-[rgb(${Math.round(child.fills[0].color.r * 255)},${Math.round(
-                child.fills[0].color.g * 255
-              )},${Math.round(child.fills[0].color.b * 255)}]/${
-                child.fills[0].color.a * 100
-              }]">${child.name}</div>`}
-            </div>
-          );
+            } absolute"/>`;
+          } else if (child.fills[0]?.type === "SOLID") {
+            return `<div className="w-[${
+              child.absoluteBoundingBox.width
+            }px] h-[${child.absoluteBoundingBox.height}px] ml-[${
+              child.absoluteBoundingBox.x
+            }px] mt-[${child.absoluteBoundingBox.y}px] bg-[rgb(${Math.round(
+              child.fills[0].color.r * 255
+            )},${Math.round(child.fills[0].color.g * 255)},${Math.round(
+              child.fills[0].color.b * 255
+            )}]/${child.fills[0].color.a * 100}] ${
+              child.cornerRadius ? `rounded-[${child.cornerRadius}px]` : ""
+            } ${
+              child.strokes.length !== 0
+                ? `border-[${
+                    child.strokeWeight
+                  }px] border-${child.strokes[0].type.toLowerCase()} border-[rgb(${Math.round(
+                    child.strokes[0].color.r * 255
+                  )},${Math.round(child.strokes[0].color.g * 255)},${Math.round(
+                    child.strokes[0].color.b * 255
+                  )}]/${child.strokes[0].color.a * 100}]`
+                : ""
+            } absolute">${child.name}</div>`;
+          } else {
+            return `<div className="absolute w-[${
+              child.absoluteBoundingBox.width
+            }px] h-[${child.absoluteBoundingBox.height}px] ml-[${
+              child.absoluteBoundingBox.x
+            }px] mt-[${child.absoluteBoundingBox.y}px] ${
+              child.cornerRadius ? `rounded-[${child.cornerRadius}px]` : ""
+            } ${
+              child.strokes.length !== 0
+                ? `border-[${
+                    child.strokeWeight
+                  }px] border-${child.strokes[0].type.toLowerCase()} border-[rgb(${Math.round(
+                    child.strokes[0].color.r * 255
+                  )},${Math.round(child.strokes[0].color.g * 255)},${Math.round(
+                    child.strokes[0].color.b * 255
+                  )}]/${child.strokes[0].color.a * 100}]`
+                : ""
+            }">${child.name}</div>`;
+          }
+        } else if (child.type === "ELLIPSE") {
+          return `<div className="absolute rounded-full w-[${
+            child.absoluteBoundingBox.width
+          }px] h-[${child.absoluteBoundingBox.height}px] ml-[${
+            child.absoluteBoundingBox.x
+          }px] mt-[${child.absoluteBoundingBox.y}px] bg-[rgb(${Math.round(
+            child.fills[0]?.color?.r * 255
+          )},${Math.round(child.fills[0]?.color?.g * 255)},${Math.round(
+            child.fills[0]?.color?.b * 255
+          )}]/${child.fills[0]?.color?.a * 100}] ${
+            child.cornerRadius ? `rounded-[${child.cornerRadius}px]` : ""
+          } ${
+            child.strokes.length !== 0
+              ? `border-[${
+                  child.strokeWeight
+                }px] border-${child.strokes[0].type.toLowerCase()} border-[rgb(${Math.round(
+                  child.strokes[0].color.r * 255
+                )},${Math.round(child.strokes[0].color.g * 255)},${Math.round(
+                  child.strokes[0].color.b * 255
+                )}]/${child.strokes[0].color.a * 100}]`
+              : ""
+          }">${child.name}</div>`;
+        } else if (child.type === "LINE" || child.type === "VECTOR") {
+          return `<div className="absolute w-[${
+            child.absoluteBoundingBox.width
+          }px] h-[${child.absoluteBoundingBox.height}px] ml-[${
+            child.absoluteBoundingBox.x
+          }px] mt-[${child.absoluteBoundingBox.y}px] bg-[rgb(${Math.round(
+            child.strokes[0]?.color.r * 255
+          )},${Math.round(child.strokes[0]?.color.g * 255)},${Math.round(
+            child.strokes[0]?.color.b * 255
+          )}]/${
+            child.strokes[0]?.opacity
+              ? child.strokes[0]?.opacity * child.strokes[0]?.color.a * 100
+              : child.strokes[0]?.color.a * 100
+          }]">${child.name}</div>`;
+        } else if (child.type === "TEXT") {
+          return `<div className="w-[${child.absoluteBoundingBox.width}px] h-[${
+            child.absoluteBoundingBox.height
+          }px] left-[${child.absoluteBoundingBox.x}px] top-[${
+            child.absoluteBoundingBox.y
+          }px] font-["${child.style.fontFamily}"] ${
+            child.style.italic ? "italic" : ""
+          } font-[${child.style.fontWeight}] text-[${
+            child.style.fontSize
+          }px] leading-[${Math.round(child.style.lineHeightPx * 10) / 10}px] ${
+            child.style.letterSpacing
+              ? `tracking-[${
+                  Math.round(child.style.letterSpacing * 10) / 10
+                }px]`
+              : ""
+          } text-[${child.style.textAlignHorizontal.toLowerCase()}] bg-[rgb(${Math.round(
+            child.fills[0].color.r * 255
+          )},${Math.round(child.fills[0].color.g * 255)},${Math.round(
+            child.fills[0].color.b * 255
+          )}]/${child.fills[0].color.a * 100}] absolute">${child.name}</div>`;
         }
-        return <div key={child.id}>{child.name}</div>;
+        // return <div key={child.id}>{child.name}</div>;
       }
     });
+    return renderedChildren.join("\n");
   };
 
   // SC Tag
@@ -278,8 +256,12 @@ export default function divBlock() {
       return null;
     }
 
-    return children.map((child: any) => {
-      if (child.type === "GROUP" || child.type === "INSTANCE") {
+    const renderedChildren = children.flatMap((child: any) => {
+      if (
+        child.type === "GROUP" ||
+        child.type === "INSTANCE" ||
+        child.type === "FRAME"
+      ) {
         return renderTagSC(child.children);
       } else {
         return (
@@ -287,7 +269,7 @@ export default function divBlock() {
             {child.type === "TEXT" ? (
               <div className="ml-4">
                 &lt;
-                <span
+                <code
                   contentEditable
                   dir="RTL"
                   suppressContentEditableWarning={true}
@@ -302,9 +284,9 @@ export default function divBlock() {
                   {tags[child.id] ? tags[child.id] : child.name}
 
                   {/* {child.name} */}
-                </span>
+                </code>
                 &gt;{child.characters}&lt;
-                <span
+                <code
                   contentEditable
                   suppressContentEditableWarning={true}
                   // onInput={(event) =>
@@ -312,7 +294,7 @@ export default function divBlock() {
                   // }
                 >
                   {tags[child.id] ? tags[child.id] : child.name}
-                </span>
+                </code>
                 &gt;
               </div>
             ) : (
@@ -322,6 +304,7 @@ export default function divBlock() {
         );
       }
     });
+    return renderedChildren;
   };
 
   // SC Style
@@ -548,7 +531,7 @@ export default function divBlock() {
 
   return (
     <div
-      className="w-1/2 h-full flex flex-col justify-center items-center pr-12"
+      className="w-1/2 h-full  flex flex-col justify-center items-center pr-12"
       onClick={() => {
         console.log(pages);
 
@@ -556,12 +539,6 @@ export default function divBlock() {
         console.log(currentFrame);
       }}
     >
-      <pre>
-        <div className="hljs html">
-          {`<div className="w-1/2 h-full flex flex-col justify-center items-center pr-12"></div>`}
-        </div>
-      </pre>
-
       {/* Tab */}
       <div className="w-full h-full">
         <Tab.Group>
@@ -571,11 +548,11 @@ export default function divBlock() {
                 key={category}
                 className={({ selected }) =>
                   classNames(
-                    "w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-blue-700",
-                    "ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2",
+                    "w-full rounded-lg py-2.5 text-sm font-bold tracking-wide leading-5 text-violet-600 ",
+                    "ring-pink ring-opacity-60 ring-offset-2 ring-offset-purple-400 focus:outline-none focus:ring-1",
                     selected
-                      ? "bg-white shadow"
-                      : "text-blue-100 hover:bg-white/[0.12] hover:text-white"
+                      ? "bg-gradient-to-r from-pink-400/80 to-violet-600  text-slate-900"
+                      : "text-blue-100   hover:text-pink hover:shadow-[0_0px_20px_0px_rgba(0,0,0,1)] hover:shadow-violet-600"
                   )
                 }
               >
@@ -583,50 +560,98 @@ export default function divBlock() {
               </Tab>
             ))}
           </Tab.List>
-          <Tab.Panels className="w-full h-full mt-2">
+          <Tab.Panels className="w-full max-h-screen h-[calc(100%-90px)] mt-2">
             <Tab.Panel
-              className={classNames(" h-3/4 rounded-xl bg-slate-800  p-3")}
+              className={classNames(
+                " h-4/5  rounded-xl bg-[#1a1b26] shadow-[inset_0_0px_10px_0px_rgba(15,23,42,1)] ring-1 ring-violet-100 my-8 p-3"
+              )}
             >
-              <pre className="w-full h-full overflow-auto  whitespace-nowrap text-ellipsis">
-                <code className="html no-scrollbar">
-                  {pages.length !== 0 &&
-                    pages
-                      .filter((page: any) => page.name === currentPage)[0]
-                      .frames.map((frame: any) => {
-                        if (frame.id === currentFrame) {
-                          return renderTai(frame.children);
-                        }
-                      })}
+              <div className="">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-10 h-10 stroke-white ml-auto border-[1px] border-white rounded p-2"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75"
+                  />
+                </svg>
+              </div>
+
+              <pre className="w-full h-[calc(100%-64px)] overflow-auto no-scrollbar mt-4 rounded">
+                <code ref={taiCodeRef} className="html">
+                  {pages.length !== 0
+                    ? pages
+                        .filter((page: any) => page.name === currentPage)[0]
+                        .frames.map((frame: any) => {
+                          if (frame.id === currentFrame) {
+                            console.log(renderTai(frame.children));
+
+                            return renderTai(frame.children);
+                          }
+                        })
+                    : ""}
                 </code>
               </pre>
             </Tab.Panel>
             <Tab.Panel
               className={classNames(
-                " h-3/4 flex flex-col justify-between rounded-xl bg-blue-100  p-3"
+                " h-4/5  rounded-xl bg-[#1a1b26] shadow-[inset_0_0px_10px_0px_rgba(15,23,42,1)] ring-1 ring-violet-100 my-8 p-3"
               )}
             >
-              <pre className="w-full h-[calc((100%-16px)/2)] bg-slate-100 p-3 overflow-scroll no-scrollbar  whitespace-nowrap text-ellipsis">
-                <div>
-                  {pages.length !== 0 &&
-                    pages
-                      .filter((page: any) => page.name === currentPage)[0]
-                      .frames.map((frame: any) => {
-                        if (frame.id === currentFrame) {
-                          return renderTagSC(frame.children);
-                        }
-                      })}
-                </div>
-              </pre>
-              <div className="w-full h-[calc((100%-16px)/2)] bg-slate-100 p-3 overflow-scroll no-scrollbar  whitespace-nowrap text-ellipsis">
-                {pages.length !== 0 &&
-                  pages
-                    .filter((page: any) => page.name === currentPage)[0]
-                    .frames.map((frame: any) => {
-                      if (frame.id === currentFrame) {
-                        return renderStyleSC(frame.children);
-                      }
-                    })}
+              <div className="">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-10 h-10 stroke-white ml-auto border-[1px] border-white rounded p-2"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75"
+                  />
+                </svg>
               </div>
+
+              <pre className="w-full h-[calc((100%-64px)/2)] overflow-auto no-scrollbar mt-4 rounded">
+                <code ref={taiCodeRef} className="html">
+                  {pages.length !== 0
+                    ? pages
+                        .filter((page: any) => page.name === currentPage)[0]
+                        .frames.map((frame: any) => {
+                          if (frame.id === currentFrame) {
+                            console.log(renderTai(frame.children));
+
+                            return renderTagSC(frame.children);
+                          }
+                        })
+                    : ""}
+                </code>
+              </pre>
+
+              <pre className="w-full h-[calc((100%-64px)/2)] overflow-auto no-scrollbar mt-4 rounded">
+                <code ref={taiCodeRef} className="html">
+                  {pages.length !== 0
+                    ? pages
+                        .filter((page: any) => page.name === currentPage)[0]
+                        .frames.map((frame: any) => {
+                          if (frame.id === currentFrame) {
+                            console.log(renderTai(frame.children));
+
+                            return renderStyleSC(frame.children);
+                          }
+                        })
+                    : ""}
+                </code>
+              </pre>
             </Tab.Panel>
           </Tab.Panels>
         </Tab.Group>

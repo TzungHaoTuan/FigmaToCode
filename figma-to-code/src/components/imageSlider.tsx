@@ -106,15 +106,15 @@ const ImageSlider = ({ toggleScaled }: any) => {
 
   //
   return (
-    <div className="w-1/2 h-full flex flex-col">
+    <div className="w-full h-2/3 flex flex-col">
       <div className="flex justify-between px-16">
         <div className="w-[calc((100%-32px)/2)]">
           <Listbox
             value={currentPageState}
             onChange={(value) => handlePage(value)}
           >
-            <div className=" relative mt-1">
-              <Listbox.Button className="relative w-full text-center cursor-default rounded-lg bg-white py-2   shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
+            <div className="relative">
+              <Listbox.Button className="relative w-full h-[42px] text-center text-sm font-bold cursor-default rounded-lg border-2 border-pink-400 text-white my-1 py-2   shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
                 <span className="block truncate">{currentPageState}</span>
                 {/* <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2"></span> */}
               </Listbox.Button>
@@ -159,8 +159,8 @@ const ImageSlider = ({ toggleScaled }: any) => {
             value={currentFrameState}
             onChange={(value) => handleFrame(value)}
           >
-            <div className=" relative mt-1">
-              <Listbox.Button className="relative w-full text-center cursor-default rounded-lg bg-white py-2   shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
+            <div className=" relative">
+              <Listbox.Button className="relative w-full h-[42px] text-center text-sm font-bold cursor-default rounded-lg border-2 border-violet-400 text-white my-1 py-2   shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
                 <span className="block truncate">{currentFrameState}</span>
                 {/* <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2"></span> */}
               </Listbox.Button>
@@ -223,7 +223,7 @@ const ImageSlider = ({ toggleScaled }: any) => {
         </div>
       </div>
       <div
-        className="w-full h-[calc(100%-40px)] flex justify-center items-center px-16 py-8"
+        className="w-full h-[calc(100%-54px)] flex justify-center items-center px-16 py-8"
         onClick={() => {
           console.log(currentPage);
           console.log(currentPageState);
@@ -273,73 +273,73 @@ const ImageSlider = ({ toggleScaled }: any) => {
     </div>
   );
 
-  return (
-    <div className="w-1/2">
-      <div className="flex">
-        {pages &&
-          pages.map((page) => (
-            <div
-              key={page.id}
-              className="border-2 border-black"
-              onClick={() => handlePage(page.name)}
-            >
-              {page.name}
-            </div>
-          ))}
-      </div>
-      <div className="flex">
-        {pages
-          ? pages
-              .filter((page) => page.name === currentPageState)
-              .map((page) =>
-                page.frames.map((frame) => (
-                  <div key={frame.id} onClick={() => handleFrame(frame.id)}>
-                    {frame.name}
-                  </div>
-                ))
-              )
-          : // : pages
-            // ? pages[0].frames.map((frame) => (
-            //     <div key={frame.id} onClick={() => handleFrame(frame.id)}>
-            //       {frame.name}
-            //     </div>
-            //   ))
-            null}
-      </div>
-      <div className="flex" onClick={toggleScaled}>
-        {currentFrameState && images.length !== 0
-          ? images.map(
-              (image) =>
-                image.page === currentPageState &&
-                image.id === currentFrameState && (
-                  <div key={image.id}>
-                    <img
-                      key={image.id}
-                      src={image.url}
-                      alt="ImageImage"
-                      className="max-h-96"
-                    />
-                  </div>
-                )
-            )
-          : images.length !== 0
-          ? images.map(
-              (image) =>
-                image.id === currentFrame && (
-                  <div key={image.id}>
-                    <img
-                      key={image.id}
-                      src={image.url}
-                      alt="ImageImage"
-                      className="max-h-96"
-                    />
-                  </div>
-                )
-            )
-          : null}
-      </div>
-    </div>
-  );
+  // return (
+  //   <div className="w-1/2">
+  //     <div className="flex">
+  //       {pages &&
+  //         pages.map((page) => (
+  //           <div
+  //             key={page.id}
+  //             className="border-2 border-black"
+  //             onClick={() => handlePage(page.name)}
+  //           >
+  //             {page.name}
+  //           </div>
+  //         ))}
+  //     </div>
+  //     <div className="flex">
+  //       {pages
+  //         ? pages
+  //             .filter((page) => page.name === currentPageState)
+  //             .map((page) =>
+  //               page.frames.map((frame) => (
+  //                 <div key={frame.id} onClick={() => handleFrame(frame.id)}>
+  //                   {frame.name}
+  //                 </div>
+  //               ))
+  //             )
+  //         : // : pages
+  //           // ? pages[0].frames.map((frame) => (
+  //           //     <div key={frame.id} onClick={() => handleFrame(frame.id)}>
+  //           //       {frame.name}
+  //           //     </div>
+  //           //   ))
+  //           null}
+  //     </div>
+  //     <div className="flex" onClick={toggleScaled}>
+  //       {currentFrameState && images.length !== 0
+  //         ? images.map(
+  //             (image) =>
+  //               image.page === currentPageState &&
+  //               image.id === currentFrameState && (
+  //                 <div key={image.id}>
+  //                   <img
+  //                     key={image.id}
+  //                     src={image.url}
+  //                     alt="ImageImage"
+  //                     className="max-h-96"
+  //                   />
+  //                 </div>
+  //               )
+  //           )
+  //         : images.length !== 0
+  //         ? images.map(
+  //             (image) =>
+  //               image.id === currentFrame && (
+  //                 <div key={image.id}>
+  //                   <img
+  //                     key={image.id}
+  //                     src={image.url}
+  //                     alt="ImageImage"
+  //                     className="max-h-96"
+  //                   />
+  //                 </div>
+  //               )
+  //           )
+  //         : null}
+  //     </div>
+  //   </div>
+  // );
 };
 
 export default ImageSlider;

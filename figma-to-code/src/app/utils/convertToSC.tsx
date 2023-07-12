@@ -5,8 +5,12 @@ export default function convertToSCTag(children: any) {
     return null;
   }
 
-  return children.map((child: any) => {
-    if (child.type === "GROUP" || child.type === "INSTANCE") {
+  const renderedChildren = children.flatMap((child: any) => {
+    if (
+      child.type === "GROUP" ||
+      child.type === "INSTANCE" ||
+      child.type === "FRAME"
+    ) {
       return convertToSCTag(child.children);
     } else {
       return (
@@ -14,16 +18,20 @@ export default function convertToSCTag(children: any) {
           {child.type === "TEXT" ? (
             <div className="ml-4">
               &lt;
-              {child.name}
+              {child.name.slice(0, 4)}
               &gt;{child.characters}&lt;
-              {child.name}
+              {child.name.slice(0, 4)}
               &gt;
             </div>
           ) : (
-            <div className="ml-4">{`<${child.name}><${child.name}>`}</div>
+            <div className="ml-4">{`<${child.name.slice(
+              0,
+              4
+            )}><${child.name.slice(0, 4)}>`}</div>
           )}
         </div>
       );
     }
   });
+  return renderedChildren;
 }

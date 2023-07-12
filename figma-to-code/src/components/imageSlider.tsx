@@ -73,11 +73,11 @@ const ImageSlider = ({ toggleScaled }: any) => {
 
   const handlePage = (name: string): void => {
     dispatch(setCurrentPage(name));
-    setCurrentPageState(name);
+    // setCurrentPageState(name);
   };
   const handleFrame = (value: any): void => {
     dispatch(setCurrentFrame(value.id));
-    setCurrentFrameState(value.name);
+    // setCurrentFrameState(value.name);
   };
 
   // images
@@ -111,7 +111,8 @@ const ImageSlider = ({ toggleScaled }: any) => {
         <div className="w-[calc((100%-32px)/2)]">
           <Listbox
             value={currentPageState}
-            onChange={(value) => handlePage(value)}
+            onChange={setCurrentPageState}
+            // onChange={(value) => handlePage(value)}
           >
             <div className="relative">
               <Listbox.Button className="relative w-full h-[42px] text-center text-sm font-bold cursor-default rounded-lg border-2 border-pink-400 text-white my-1 py-2   shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
@@ -142,8 +143,6 @@ const ImageSlider = ({ toggleScaled }: any) => {
                           }`
                         }
                         value={page.name}
-
-                        // onClick={() => handlePage(page.name)}
                       >
                         {page.name}
                       </Listbox.Option>
@@ -157,7 +156,9 @@ const ImageSlider = ({ toggleScaled }: any) => {
         <div className="w-[calc((100%-32px)/2)]">
           <Listbox
             value={currentFrameState}
-            onChange={(value) => handleFrame(value)}
+            onChange={setCurrentFrameState}
+
+            // onChange={(value) => handleFrame(value)}
           >
             <div className=" relative">
               <Listbox.Button className="relative w-full h-[42px] text-center text-sm font-bold cursor-default rounded-lg border-2 border-violet-400 text-white my-1 py-2   shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
@@ -188,7 +189,8 @@ const ImageSlider = ({ toggleScaled }: any) => {
                                   : "font-normal"
                               }`
                             }
-                            value={{ id: frame.id, name: frame.name }}
+                            value={frame.name}
+                            // onClick={() => handleFrame(frame.id)}
                           >
                             {frame.name}
                           </Listbox.Option>
@@ -210,7 +212,8 @@ const ImageSlider = ({ toggleScaled }: any) => {
                                       : "font-normal"
                                   }`
                                 }
-                                value={{ id: frame.id, name: frame.name }}
+                                value={frame.name}
+                                // onClick={() => handleFrame(frame.id)}
                               >
                                 {frame.name}
                               </Listbox.Option>

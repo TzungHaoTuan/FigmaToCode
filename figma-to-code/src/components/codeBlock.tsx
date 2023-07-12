@@ -69,42 +69,69 @@ export default function divBlock() {
   //   }
   // }, []);
 
-  // const handleTag = async (id: any, tag: any) => {
-  //   console.log(id, tag);
+  const newhandleTag = async (id: any, tag: any) => {
+    console.log(id, tag);
 
-  //   const productsRef = doc(db, "products", "data");
-  //   const pagesRef = collection(productsRef, "pages");
-  //   const pagesSnapshot = await getDocs(pagesRef);
+    const productsRef = doc(db, "products", "data");
+    const pagesRef = collection(productsRef, "pages");
+    const pagesSnapshot = await getDocs(pagesRef);
 
-  //   await Promise.all(
-  //     pagesSnapshot.docs.map(async (pageDoc) => {
-  //       const framesRef = collection(pageDoc.ref, "frames");
-  //       const framesSnapshot = await getDocs(framesRef);
+    const firstPageDoc = pagesSnapshot.docs[0];
+    const framesRef = collection(firstPageDoc.ref, "frames");
+    const framesSnapshot = await getDocs(framesRef);
 
-  //       await Promise.all(
-  //         framesSnapshot.docs.map(async (frameDoc) => {
-  //           const childrenRef = collection(frameDoc.ref, "children");
-  //           const childrenSnapshot = await getDocs(childrenRef);
+    const firstFrameDoc = framesSnapshot.docs[0];
+    const childrenRef = collection(firstFrameDoc.ref, "children");
+    const childrenSnapshot = await getDocs(childrenRef);
 
-  //           await Promise.all(
-  //             childrenSnapshot.docs.map(async (childDoc) => {
-  //               const children = childDoc.data().children;
+    const firstChildDoc = childrenSnapshot.docs[0];
+    const childrenData = firstChildDoc.data();
+    if (childrenData && childrenData.children) {
+      const children = childrenData.children;
+      children[1].children[0].name = tag;
+      await updateDoc(firstChildDoc.ref, { children: children });
+    }
+  };
 
-  //               children.forEach(async (child: any) => {
-  //                 if (child.id === id) {
-  //                   child.name = tag;
+  const handleTag = async (id: any, tag: any) => {
+    console.log(id, tag);
 
-  //                   const myDoc = childDoc;
-  //                   await updateDoc(myDoc.ref, { children: children });
-  //                 }
-  //               });
-  //             })
-  //           );
-  //         })
-  //       );
-  //     })
-  //   );
-  // };
+    const productsRef = doc(db, "products", "data");
+    const pagesRef = collection(productsRef, "pages");
+    const pagesSnapshot = await getDocs(pagesRef);
+
+    await Promise.all(
+      pagesSnapshot.docs.map(async (pageDoc) => {
+        const framesRef = collection(pageDoc.ref, "frames");
+        const framesSnapshot = await getDocs(framesRef);
+
+        await Promise.all(
+          framesSnapshot.docs.map(async (frameDoc) => {
+            const childrenRef = collection(frameDoc.ref, "children");
+            const childrenSnapshot = await getDocs(childrenRef);
+
+            await Promise.all(
+              childrenSnapshot.docs.map(async (childDoc) => {
+                const children = childDoc.data().children;
+
+                // children[1].children[0].name = tag;
+                // const myDoc = childDoc;
+                // await updateDoc(myDoc.ref, { children: children });
+                children.forEach(async (child: any) => {
+                  if (child.children.id === id) {
+                    child.name = tag;
+
+                    const myDoc = childDoc;
+                    await updateDoc(myDoc.ref, { children: children });
+                  }
+                });
+              })
+            );
+          })
+        );
+      })
+    );
+  };
 
   const copydiv = (ref: any) => {
     if (ref === "taiRef" && taiRef.current) {
@@ -280,6 +307,7 @@ export default function divBlock() {
                     dispatch(
                       setTag({ [child.id]: event.currentTarget.textContent })
                     );
+                    handleTag(child.id, event.currentTarget.textContent);
                   }}
                 >
                   {tags[child.id] ? tags[child.id] : child.name.slice(0, 4)}
@@ -295,6 +323,7 @@ export default function divBlock() {
                     dispatch(
                       setTag({ [child.id]: event.currentTarget.textContent })
                     );
+                    handleTag(child.id, event.currentTarget.textContent);
                   }}
                 >
                   {tags[child.id] ? tags[child.id] : child.name.slice(0, 4)}
@@ -438,14 +467,7 @@ export default function divBlock() {
   });
 
   return (
-    <div
-      className="w-1/2 h-full  flex flex-col justify-center items-center pr-12"
-      onClick={() => {
-        console.log(pages);
-        console.log(currentPage);
-        console.log(currentFrame);
-      }}
-    >
+    <div className="w-1/2 h-full  flex flex-col justify-center items-center pr-12">
       {/* Tab */}
       <div className="w-full h-full">
         <Tab.Group>
@@ -499,8 +521,6 @@ export default function divBlock() {
                         .filter((page: any) => page.name === currentPage)[0]
                         .frames.map((frame: any) => {
                           if (frame.id === currentFrame) {
-                            console.log(renderTai(frame.children));
-
                             return renderTai(frame.children);
                           }
                         })
@@ -539,8 +559,6 @@ export default function divBlock() {
                           .filter((page: any) => page.name === currentPage)[0]
                           .frames.map((frame: any) => {
                             if (frame.id === currentFrame) {
-                              console.log(renderTai(frame.children));
-
                               return renderTagSC(frame.children);
                             }
                           })
@@ -577,8 +595,6 @@ export default function divBlock() {
                           .filter((page: any) => page.name === currentPage)[0]
                           .frames.map((frame: any) => {
                             if (frame.id === currentFrame) {
-                              console.log(renderTai(frame.children));
-
                               return renderStyleSC(frame.children);
                             }
                           })

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import {
   getStorage,
@@ -35,6 +35,8 @@ export default function Grid() {
   const [frameImages, setFrameImages] = useState<any>([]);
   const storage = getStorage();
 
+  const codeRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     const showDocument = async () => {
       const frameElements = await getDocument();
@@ -46,6 +48,12 @@ export default function Grid() {
     // console.log(userCollection);
     // console.log(collectionGrid);
   }, [db]);
+
+  useEffect(() => {
+    if (codeRef.current) {
+      hljs.highlightElement(codeRef.current);
+    }
+  }, [codeRef, collectionGrid]);
 
   // console.log(userCollection);
 
@@ -76,8 +84,7 @@ export default function Grid() {
 
               childrenSnapshot.docs.forEach((childDoc) => {
                 const childData = childDoc.data();
-                frameElements.push(childData.children);
-                // setCollectionGrid((prev: any) => [...prev, childData]);
+                frameElements.push(childData);
               });
             }
           }
@@ -91,7 +98,7 @@ export default function Grid() {
     const storageRef = ref(storage, storagePath);
 
     const downloadURL = await getDownloadURL(storageRef);
-    console.log(downloadURL);
+    // console.log(downloadURL);
     setFrameImages((prev: any) => [...prev, downloadURL]);
   }
   // while (downloadURL === null) {
@@ -122,12 +129,22 @@ export default function Grid() {
 
   const handleConvertCode = async (frameElements: any) => {
     const taiCode = await convertToTai(frameElements);
-    console.log(taiCode);
-    // const SCCode = await convertToSCTag(frameElements);
+    // console.log(taiCode);
+    const SCCode = await convertToSCTag(frameElements);
     // sc: SCCode
-    if (taiCode) {
-      setCollectionGrid((prev: any) => [...prev, { tai: taiCode }]);
-    }
+    setCollectionGrid((prev: any) => {
+      // Check if taiCode already exists in collectionGrid
+      const taiCodeExists = prev.some((item: any) => item.tai === taiCode);
+
+      // If taiCode exists, return the previous state without any changes
+      if (taiCodeExists) {
+        return prev;
+      }
+
+      // Add taiCode to the collectionGrid
+      const updatedGrid = [...prev, { tai: taiCode, sc: SCCode }];
+      return updatedGrid;
+    });
   };
 
   return (
@@ -136,28 +153,39 @@ export default function Grid() {
       // onClick={() => console.log(collectionGrid)}
     >
       <div className="w-full h-full bg-color-ball-2  py-48  px-24">
-        <div className="relative w-full h-full bg-white/30 bg-opacity-20 rounded-3xl backdrop-blur backdrop-brightness-110 p-4">
-          <div className="w-full h-40  flex justify-between items-center  bg-slate-900/20 bg-opacity-50 rounded-3xl  px-2 py-2 ">
+        <div className="relative w-full h-84 bg-white/30 bg-opacity-20 rounded-3xl backdrop-blur backdrop-brightness-110 p-4">
+          <div className="w-full h-80  flex justify-between   bg-slate-900/20 bg-opacity-50 rounded-3xl  px-2 py-2 ">
             <img
               src={frameImages[0]}
-              className="w-36 h-36 bg-white/50 object-cover overflow-scroll rounded-3xl  "
+              className="w-64 h-full bg-white/50 object-cover overflow-scroll rounded-3xl  "
             ></img>
-
-            <pre className="w-[calc(100%-152px)]  h-36  bg-white/30 no-scrollbar overflow-scroll rounded-3xl  px-4  ">
-              {collectionGrid.map((item: any, index: any) => (
-                <code
-                  key={index}
-                  className="language-html no-scrollbar overflow-auto whitespace-nowrap rounded-3xl  px-4"
-                >
-                  {item.tai}
-                </code>
-              ))}{" "}
-            </pre>
+            <div className="w-[calc(100%-280px)]  h-full  bg-white/30 no-scrollbar overflow-scroll rounded-3xl    ">
+              <pre className="w-full h-1/2 overflow-scroll no-scrollbar whitespace-nowrap bg-slate-900 text-white rounded-xl p-4">
+                {collectionGrid.map((item: any, index: any) => (
+                  <code className="">{item.sc}</code>
+                ))}
+              </pre>
+              {/* <pre className="w-[calc(100%-152px)]  h-36  bg-white/30 no-scrollbar overflow-scroll rounded-3xl  px-4  ">
+                {collectionGrid.map((item: any, index: any) => (
+                  <code
+                    key={index}
+                    ref={codeRef}
+                    className="language-html no-scrollbar overflow-auto whitespace-nowrap rounded-xl  px-4"
+                  >
+                    {item.tai
+                    .split(">")
+                    .map((line: string, lineIndex: number, lines: string[]) => (
+                      <div key={lineIndex}>
+                        {lineIndex !== lines.length - 1 ? line + ">" : line}
+                      </div>
+                    ))}
+                    <div></div>
+                  </code>
+                ))}
+              </pre> */}
+            </div>
           </div>
 
-          {/* <div className="w-2/4  h-40  bg-white overflow-scroll mr-10 px-4 border-2 border-black rounded-xl">
-          {collectionGrid[0]?.sc}
-        </div> */}
           {/* </div> */}
         </div>
       </div>

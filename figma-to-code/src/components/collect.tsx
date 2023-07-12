@@ -40,7 +40,7 @@ export default function Collect() {
       );
     await handleCollectionState();
     await addDocument();
-    // await handleTag(tags);
+    await handleTag(tags);
   };
 
   const handleCollectionState = async () => {
@@ -69,7 +69,7 @@ export default function Collect() {
         const frameRef = doc(framesRef, frame.name);
         const childrenRef = collection(frameRef, "children");
         const childrenPromises = frame.children.map((child: any) => {
-          return setDoc(doc(childrenRef, child.name), { children: child });
+          return setDoc(doc(childrenRef, child.name), child);
         });
 
         return Promise.all(childrenPromises);

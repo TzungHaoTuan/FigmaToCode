@@ -40,12 +40,12 @@ export default function Header() {
           ref={elementRef}
           className="w-full h-full flex items-center text-slate-100 font-semibold  transition-all duration-500  ease-in-out px-24"
         >
-          {/* <Link
+          <Link
             href="/"
             className="text-3xl font-black    bg-gradient-to-r from-[#f24d18] via-[#a358ff] to-[#13bdfe] text-transparent bg-clip-text bg-300% animate-gradient"
           >
             Figma to Code
-          </Link> */}
+          </Link>
           <Link href="/collection" className="ml-auto ">
             Collection
           </Link>

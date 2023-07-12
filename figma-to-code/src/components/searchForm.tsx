@@ -7,6 +7,7 @@ import { setCurrentPage } from "@/store/currentPageSlice";
 import { setCurrentFrame } from "@/store/currentFrameSlice";
 import { setFrameImages } from "@/store/frameImagesSlice";
 import { setImages } from "@/store/imagesSlice";
+import { setCodeState } from "@/store/codeStateSlice";
 import { handleFetch } from "@/app/utils/fetchFigmaData";
 
 const SearchForm = () => {
@@ -29,6 +30,7 @@ const SearchForm = () => {
         dispatch(setCurrentFrame(currentFrame));
         dispatch(setFrameImages(frameImages));
         dispatch(setImages(images));
+        dispatch(setCodeState(true));
       }
     }
   };
@@ -52,11 +54,11 @@ const SearchForm = () => {
         <input
           type="text"
           ref={urlRef}
-          className="w-1/2 h-12 border-2 border-white   rounded-full drop-shadow-lg text-black px-4"
+          className="w-1/2 h-12 border-2 border-white    rounded-full drop-shadow-lg text-black px-4"
         ></input>
         <button
           type="submit"
-          className="h-12  border-2 border-white text-white rounded-full drop-shadow-lg ml-10 px-4 py-2"
+          className="h-12  border-4 border-white font-semibold text-white rounded-full drop-shadow-lg ml-10 px-4 py-2"
         >
           Convert
         </button>

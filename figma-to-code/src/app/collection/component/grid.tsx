@@ -20,6 +20,11 @@ import {
   where,
 } from "firebase/firestore";
 
+import hljs from "highlight.js/lib/core";
+import html from "highlight.js/lib/languages/xml";
+hljs.registerLanguage("html", html);
+import "highlight.js/styles/tokyo-night-dark.css";
+
 import { db } from "@/app/firebase/firebase";
 import convertToTai from "@/app/utils/convertToTai";
 import convertToSCTag from "@/app/utils/convertToSC";
@@ -33,10 +38,13 @@ export default function Grid() {
   useEffect(() => {
     const showDocument = async () => {
       const frameElements = await getDocument();
+      console.log(frameElements);
       handleConvertCode(frameElements);
     };
 
     showDocument();
+    // console.log(userCollection);
+    // console.log(collectionGrid);
   }, [db]);
 
   // console.log(userCollection);
@@ -60,15 +68,15 @@ export default function Grid() {
             // console.log(frameData);
 
             if (frameData.id === eachCollection.frame) {
-              console.log(frameData.storagePath);
-              // await getFrameImageUrl(frameData.storagePath);
+              // console.log(frameData.storagePath);
+              await getFrameImageUrl(frameData.storagePath);
               const childrenSnapshot = await getDocs(
                 collection(frameDoc.ref, "children")
               );
 
               childrenSnapshot.docs.forEach((childDoc) => {
                 const childData = childDoc.data();
-                frameElements.push(childData);
+                frameElements.push(childData.children);
                 // setCollectionGrid((prev: any) => [...prev, childData]);
               });
             }
@@ -83,6 +91,7 @@ export default function Grid() {
     const storageRef = ref(storage, storagePath);
 
     const downloadURL = await getDownloadURL(storageRef);
+    console.log(downloadURL);
     setFrameImages((prev: any) => [...prev, downloadURL]);
   }
   // while (downloadURL === null) {
@@ -113,24 +122,39 @@ export default function Grid() {
 
   const handleConvertCode = async (frameElements: any) => {
     const taiCode = await convertToTai(frameElements);
-    const SCCode = await convertToSCTag(frameElements);
-
-    setCollectionGrid((prev: any) => [...prev, { tai: taiCode, sc: SCCode }]);
+    console.log(taiCode);
+    // const SCCode = await convertToSCTag(frameElements);
+    // sc: SCCode
+    if (taiCode) {
+      setCollectionGrid((prev: any) => [...prev, { tai: taiCode }]);
+    }
   };
 
   return (
-    <div className="relative w-screen h-screen">
+    <div
+      className="relative w-screen h-screen"
+      // onClick={() => console.log(collectionGrid)}
+    >
       <div className="w-full h-full bg-color-ball-2  py-48  px-24">
-        <div className="relative w-full h-full bg-white bg-opacity-20 rounded-3xl backdrop-blur backdrop-brightness-110 p-4">
-          <div className="w-full h-40  flex justify-between items-center  bg-slate-900 bg-opacity-50 rounded-3xl  px-2 py-2 ">
+        <div className="relative w-full h-full bg-white/30 bg-opacity-20 rounded-3xl backdrop-blur backdrop-brightness-110 p-4">
+          <div className="w-full h-40  flex justify-between items-center  bg-slate-900/20 bg-opacity-50 rounded-3xl  px-2 py-2 ">
             <img
               src={frameImages[0]}
-              className="w-36 h-36 bg-white object-cover overflow-scroll rounded-3xl  "
+              className="w-36 h-36 bg-white/50 object-cover overflow-scroll rounded-3xl  "
             ></img>
-            <div className="w-[calc(100%-152px)]  h-36  bg-white no-scrollbar overflow-scroll rounded-3xl  px-4  ">
-              {collectionGrid[0]?.tai}
-            </div>
+
+            <pre className="w-[calc(100%-152px)]  h-36  bg-white/30 no-scrollbar overflow-scroll rounded-3xl  px-4  ">
+              {collectionGrid.map((item: any, index: any) => (
+                <code
+                  key={index}
+                  className="language-html no-scrollbar overflow-auto whitespace-nowrap rounded-3xl  px-4"
+                >
+                  {item.tai}
+                </code>
+              ))}{" "}
+            </pre>
           </div>
+
           {/* <div className="w-2/4  h-40  bg-white overflow-scroll mr-10 px-4 border-2 border-black rounded-xl">
           {collectionGrid[0]?.sc}
         </div> */}

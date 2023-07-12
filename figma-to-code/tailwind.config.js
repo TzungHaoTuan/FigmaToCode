@@ -7,6 +7,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      backgroundSize: {
+        "300%": "300%",
+      },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":
@@ -23,11 +26,17 @@ module.exports = {
       //   },
       // },
       animation: {
+        gradient: "animatedgradient 8s ease infinite alternate",
         "gradient-x": "gradient-x 15s ease infinite",
         "gradient-y": "gradient-y 15s ease infinite",
         "gradient-xy": "gradient-xy 15s ease infinite",
       },
       keyframes: {
+        animatedgradient: {
+          "0%": { backgroundPosition: "0% 50%" },
+          "50%": { backgroundPosition: "100% 50%" },
+          "100%": { backgroundPosition: "0% 50%" },
+        },
         "gradient-y": {
           "0%, 100%": {
             "background-size": "400% 400%",

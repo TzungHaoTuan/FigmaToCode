@@ -6,7 +6,10 @@ import { setLogin } from "@/store/userSlice";
 import { setLogout } from "@/store/userSlice";
 
 import Link from "next/link";
+
 import { Provider } from "react-redux";
+import store from "@/store/store";
+
 import {
   getAuth,
   signInWithPopup,
@@ -14,7 +17,6 @@ import {
   onAuthStateChanged,
   GoogleAuthProvider,
 } from "firebase/auth";
-import store from "@/store/store";
 
 import { auth } from "@/app/firebase/firebase";
 import NewMain from "./component/newMain";
@@ -63,7 +65,6 @@ function Profile() {
   //   });
   return (
     <Provider store={store}>
-      <Link href="/">Home</Link>
       <NewMain />
 
       {/* <Main />

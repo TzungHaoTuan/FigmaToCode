@@ -83,7 +83,7 @@ export default function Grid() {
               );
 
               childrenSnapshot.docs.forEach((childDoc) => {
-                const childData = childDoc.data();
+                const childData = childDoc.data().children;
                 frameElements.push(childData);
               });
             }
@@ -161,28 +161,72 @@ export default function Grid() {
             ></img>
             <div className="w-[calc(100%-280px)]  h-full  bg-white/30 no-scrollbar overflow-scroll rounded-3xl    ">
               <pre className="w-full h-1/2 overflow-scroll no-scrollbar whitespace-nowrap bg-slate-900 text-white rounded-xl p-4">
+                <div className="">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="cursor-pointer w-10 h-10 stroke-white ml-auto border-[1px] border-white hover:border-pink-600 hover:stroke-pink-600 rounded p-2"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75"
+                    />
+                  </svg>
+                </div>
                 {collectionGrid.map((item: any, index: any) => (
                   <code className="">{item.sc}</code>
                 ))}
               </pre>
-              {/* <pre className="w-[calc(100%-152px)]  h-36  bg-white/30 no-scrollbar overflow-scroll rounded-3xl  px-4  ">
-                {collectionGrid.map((item: any, index: any) => (
-                  <code
-                    key={index}
-                    ref={codeRef}
-                    className="language-html no-scrollbar overflow-auto whitespace-nowrap rounded-xl  px-4"
+              <pre className="w-full h-1/2 overflow-scroll no-scrollbar whitespace-nowrap bg-slate-900 text-white rounded-xl p-4">
+                <div className="">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="cursor-pointer w-10 h-10 stroke-white ml-auto border-[1px] border-white hover:border-pink-600 hover:stroke-pink-600 rounded p-2"
                   >
-                    {item.tai
-                    .split(">")
-                    .map((line: string, lineIndex: number, lines: string[]) => (
-                      <div key={lineIndex}>
-                        {lineIndex !== lines.length - 1 ? line + ">" : line}
-                      </div>
-                    ))}
-                    <div></div>
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75"
+                    />
+                  </svg>
+                </div>
+                {collectionGrid.map((item: any, index: any) => (
+                  <code>
+                    {`<div className="w-[318px] h-[14px] left-[561px] top-[16px] font-["Poppins"]  font-[300] text-[16px] leading-[14px] tracking-[1px] text-[left] bg-[rgb(26,26,26]/100] absolute">Rated 4.8-stars across 20k+ reviews</div>`}
+                    <br></br>{" "}
+                    {`<div className="w-[140px] h-[41px] left-[60px] top-[74.5px] font-["Montserrat Alternates"]  font-[700] text-[42px] leading-[51.2px]  text-[center] bg-[rgb(26,26,26]/100] absolute">SoSo</div>`}
+                    <br></br>{" "}
+                    {`<div className="w-[86px] h-[24px] left-[389px] top-[83px] font-["Abel"]  font-[400] text-[18px] leading-[24px] tracking-[0.5px] text-[center] bg-[rgb(26,26,26]/100] absolute">Daily health</div>`}
+                    <br></br>{" "}
+                    {`<div className="w-[86px] h-[24px] left-[539px] top-[83px] font-["Abel"]  font-[400] text-[18px] leading-[24px] tracking-[0.5px] text-[center] bg-[rgb(26,26,26]/100] absolute">Weight loss</div>`}
+                    <br></br>{" "}
+                    {`<div className="w-[31px] h-[24px] left-[683px] top-[83px] font-["Abel"]  font-[400] text-[18px] leading-[24px] tracking-[0.5px] text-[center] bg-[rgb(26,26,26]/100] absolute">Skin</div>`}
+                    <br></br>{" "}
+                    {`<div className="w-[29px] h-[24px] left-[768px] top-[83px] font-["Abel"]  font-[400] text-[18px] leading-[24px] tracking-[0.5px] text-[center] bg-[rgb(26,26,26]/100] absolute">Hair</div>`}
+                    <br></br>{" "}
+                    {`<div className="w-[40px] h-[24px] left-[851px] top-[83px] font-["Abel"]  font-[400] text-[18px] leading-[24px] tracking-[0.5px] text-[center] bg-[rgb(26,26,26]/100] absolute">Blogs</div>`}
+                    <br></br>{" "}
+                    {`<div className="rounded-full w-[48px] h-[48px] ml-[1037px] mt-[71px] bg-[rgb(255,255,255]/100]  absolute">Ellipse 19</div>`}
+                    {/* {item.tai
+                      .split(">")
+                      .map(
+                        (line: string, lineIndex: number, lines: string[]) => (
+                          <div key={lineIndex}>
+                            {lineIndex !== lines.length - 1 ? line + ">" : line}
+                          </div>
+                        )
+                      )} */}
                   </code>
                 ))}
-              </pre> */}
+              </pre>
             </div>
           </div>
 

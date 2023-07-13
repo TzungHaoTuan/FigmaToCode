@@ -307,7 +307,7 @@ export default function divBlock() {
                     dispatch(
                       setTag({ [child.id]: event.currentTarget.textContent })
                     );
-                    handleTag(child.id, event.currentTarget.textContent);
+                    // handleTag(child.id, event.currentTarget.textContent);
                   }}
                 >
                   {tags[child.id] ? tags[child.id] : child.name.slice(0, 4)}
@@ -323,7 +323,7 @@ export default function divBlock() {
                     dispatch(
                       setTag({ [child.id]: event.currentTarget.textContent })
                     );
-                    handleTag(child.id, event.currentTarget.textContent);
+                    // handleTag(child.id, event.currentTarget.textContent);
                   }}
                 >
                   {tags[child.id] ? tags[child.id] : child.name.slice(0, 4)}
@@ -690,7 +690,7 @@ export default function divBlock() {
                     />
                   </svg>
                 </div>
-                <pre className="w-[calc(100%-32px)] h-[120px] overflow-auto no-scrollbar whitespace-nowrap mt-4 ml-4 rounded">
+                <pre className="w-[calc(100%-32px)] h-[80px] overflow-auto no-scrollbar whitespace-nowrap mt-4 ml-4 rounded">
                   <code
                     ref={SCStyleRef}
                     className="language-html text-slate-100"

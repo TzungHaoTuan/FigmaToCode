@@ -40,7 +40,7 @@ export default function Collect() {
       );
     await handleCollectionState();
     await addDocument();
-    await handleTag(tags);
+    await newhandleTag(tags);
   };
 
   const handleCollectionState = async () => {
@@ -69,7 +69,7 @@ export default function Collect() {
         const frameRef = doc(framesRef, frame.name);
         const childrenRef = collection(frameRef, "children");
         const childrenPromises = frame.children.map((child: any) => {
-          return setDoc(doc(childrenRef, child.name), child);
+          return setDoc(doc(childrenRef, child.name), { children: child });
         });
 
         return Promise.all(childrenPromises);
@@ -99,6 +99,33 @@ export default function Collect() {
     //     });
     //   });
     // });
+  };
+
+  const newhandleTag = async (tag: any) => {
+    console.log(tag);
+    const productsRef = doc(db, "products", "data");
+    const pagesRef = collection(productsRef, "pages");
+    const pagesSnapshot = await getDocs(pagesRef);
+
+    const firstPageDoc = pagesSnapshot.docs[2];
+    const framesRef = collection(firstPageDoc.ref, "frames");
+    const framesSnapshot = await getDocs(framesRef);
+
+    const firstFrameDoc = framesSnapshot.docs[1];
+    const childrenRef = collection(firstFrameDoc.ref, "children");
+    const childrenSnapshot = await getDocs(childrenRef);
+
+    const firstChildDoc = childrenSnapshot.docs[2];
+    const childrenData = firstChildDoc.data();
+    console.log(childrenData);
+    const children = childrenData.children;
+    children.children[1].children[0].name = "MeMe";
+    await updateDoc(firstChildDoc.ref, { children: children });
+    // if (childrenData && childrenData.children) {
+    //   const children = childrenData.children;
+    //   children[1].children[0].name = tag["103:157"];
+    //   await updateDoc(firstChildDoc.ref, { children: children });
+    // }
   };
 
   const handleTag = async (tags: any) => {

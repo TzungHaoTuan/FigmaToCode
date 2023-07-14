@@ -57,9 +57,9 @@ const ImageSlider = ({ toggleScaled }: any) => {
   const [isAnimating, setIsAnimating] = React.useState(false);
   const [animationDirection, setAnimationDirection] = React.useState("next");
 
-  useEffect(() => {
-    console.log(pages);
-  }, [pages]);
+  // useEffect(() => {
+  //   console.log(pages);
+  // }, [pages]);
 
   useEffect(() => {
     const selectedPage = pages.find((page) => page.name === currentPageState);
@@ -73,11 +73,9 @@ const ImageSlider = ({ toggleScaled }: any) => {
 
   const handlePage = (name: string): void => {
     dispatch(setCurrentPage(name));
-    // setCurrentPageState(name);
   };
-  const handleFrame = (value: any): void => {
-    dispatch(setCurrentFrame(value.id));
-    // setCurrentFrameState(value.name);
+  const handleFrame = (id: any): void => {
+    dispatch(setCurrentFrame(id));
   };
 
   // images
@@ -109,6 +107,7 @@ const ImageSlider = ({ toggleScaled }: any) => {
     <div className="w-full h-2/3 flex flex-col">
       <div className="flex justify-between px-16">
         <div className="w-[calc((100%-32px)/2)]">
+          {/* page 選單*/}
           <Listbox
             value={currentPageState}
             onChange={setCurrentPageState}
@@ -120,19 +119,18 @@ const ImageSlider = ({ toggleScaled }: any) => {
                 {/* <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2"></span> */}
               </Listbox.Button>
               <Transition
-                as={Fragment}
+                // as={Fragment}
                 leave="transition ease-in duration-100"
                 leaveFrom="opacity-100"
                 leaveTo="opacity-0"
               >
-                <Listbox.Options className="absolute w-full mt-1 max-h-60 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                  {pages &&
-                    pages.length !== 0 &&
-                    pages.map((page) => (
+                {pages && pages.length !== 0 && (
+                  <Listbox.Options className="absolute w-full mt-1 max-h-60  overflow-auto rounded-md bg-white  text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                    {pages.map((page) => (
                       <Listbox.Option
                         key={page.id}
                         className={({ active }) =>
-                          `relative cursor-default select-none py-2  text-center ${
+                          `relative w-full h-10 flex  justify-center items-center cursor-default select-none ${
                             active
                               ? "bg-amber-100 text-amber-900"
                               : "text-gray-900"
@@ -144,14 +142,22 @@ const ImageSlider = ({ toggleScaled }: any) => {
                         }
                         value={page.name}
                       >
-                        {page.name}
+                        <div
+                          className="w-full h-full flex justify-center items-center"
+                          onClick={() => handlePage(page.name)}
+                        >
+                          {page.name}
+                        </div>
                       </Listbox.Option>
                     ))}
-                </Listbox.Options>
+                  </Listbox.Options>
+                )}
               </Transition>
             </div>
           </Listbox>
         </div>
+
+        {/* frame 選單 */}
 
         <div className="w-[calc((100%-32px)/2)]">
           <Listbox
@@ -166,20 +172,19 @@ const ImageSlider = ({ toggleScaled }: any) => {
                 {/* <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2"></span> */}
               </Listbox.Button>
               <Transition
-                as={Fragment}
+                // as={Fragment}
                 leave="transition ease-in duration-100"
                 leaveFrom="opacity-100"
                 leaveTo="opacity-0"
               >
-                <Listbox.Options className="absolute w-full mt-1 max-h-60  overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                  {pages &&
-                    pages.length !== 0 &&
-                    (currentPageState === "Pages"
+                {pages && pages.length !== 0 && (
+                  <Listbox.Options className="absolute w-full mt-1 max-h-60  overflow-auto rounded-md bg-white  text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                    {currentPageState === "Pages"
                       ? pages[0]?.frames.map((frame) => (
                           <Listbox.Option
                             key={frame.id}
                             className={({ active }) =>
-                              `relative cursor-default select-none px-4 py-2 text-center ${
+                              `relative w-full h-10 flex  justify-center items-center cursor-default select-none ${
                                 active
                                   ? "bg-amber-100 text-amber-900"
                                   : "text-gray-900"
@@ -192,7 +197,12 @@ const ImageSlider = ({ toggleScaled }: any) => {
                             value={frame.name}
                             // onClick={() => handleFrame(frame.id)}
                           >
-                            {frame.name}
+                            <div
+                              className="w-full h-full flex justify-center items-center"
+                              onClick={() => handleFrame(frame.id)}
+                            >
+                              {frame.name}
+                            </div>
                           </Listbox.Option>
                         ))
                       : pages
@@ -202,7 +212,7 @@ const ImageSlider = ({ toggleScaled }: any) => {
                               <Listbox.Option
                                 key={frame.id}
                                 className={({ active }) =>
-                                  `relative cursor-default select-none py-2 pl-10 pr-4 ${
+                                  `relative w-full h-10 flex  justify-center items-center cursor-default select-none ${
                                     active
                                       ? "bg-amber-100 text-amber-900"
                                       : "text-gray-900"
@@ -215,11 +225,20 @@ const ImageSlider = ({ toggleScaled }: any) => {
                                 value={frame.name}
                                 // onClick={() => handleFrame(frame.id)}
                               >
-                                {frame.name}
+                                <div
+                                  className="w-full h-full flex justify-center items-center"
+                                  onClick={() => {
+                                    console.log(frame.id);
+                                    handleFrame(frame.id);
+                                  }}
+                                >
+                                  {frame.name}
+                                </div>
                               </Listbox.Option>
                             ))
-                          ))}
-                </Listbox.Options>
+                          )}
+                  </Listbox.Options>
+                )}
               </Transition>
             </div>
           </Listbox>
@@ -235,8 +254,7 @@ const ImageSlider = ({ toggleScaled }: any) => {
         }}
       >
         {images.length !== 0
-          ? currentPage !== currentPageState &&
-            currentFrame !== currentFrameState
+          ? currentPageState === "Pages" || currentFrameState === "Frames"
             ? images.map(
                 (image) =>
                   image.page === pages[0].name &&
@@ -250,6 +268,7 @@ const ImageSlider = ({ toggleScaled }: any) => {
                         src={image.url}
                         alt="ImageImage"
                         className="max-h-full object-auto"
+                        // onClick={() => console.log(image.id)}
                       />
                     </div>
                   )
@@ -261,12 +280,16 @@ const ImageSlider = ({ toggleScaled }: any) => {
                     <div
                       key={image.id}
                       className="h-full flex justify-center items-center"
+                      onClick={() => console.log(images)}
                     >
                       <img
                         key={image.id}
                         src={image.url}
                         alt="ImageImage"
                         className="max-h-full object-auto"
+                        onClick={() => {
+                          console.log(image.id);
+                        }}
                       />
                     </div>
                   )

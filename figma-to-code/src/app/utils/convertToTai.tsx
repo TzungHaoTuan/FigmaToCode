@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function convertToTai(children: any) {
+export default function ConvertToTai(children: any) {
   if (!children) {
     return null;
   }
@@ -11,7 +11,7 @@ export default function convertToTai(children: any) {
       child.type === "INSTANCE" ||
       child.type === "FRAME"
     ) {
-      return convertToTai(child.children);
+      return ConvertToTai(child.children);
     } else {
       if (child.type === "RECTANGLE") {
         if (child.fills[0]?.type === "IMAGE") {

@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 // Initial state
 const initialState = {
-  page: "haven't choose page",
+  page: "",
 };
 
 // Redux slice

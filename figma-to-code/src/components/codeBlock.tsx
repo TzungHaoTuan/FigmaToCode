@@ -26,32 +26,61 @@ import { db } from "../app/firebase/firebase";
 import React, { useState, useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { setTag } from "@/store/tagsSlice";
+import ConvertToTai from "@/app/utils/convertToTai";
+import { setCodeStyle } from "@/store/codeStateSlice";
 
 export default function divBlock() {
-  const [currentStyle, setCurrentStyle] = useState(true);
+  // const [currentStyle, setCurrentStyle] = useState(true);
+  const [code, setCode] = useState<any>();
 
   const taiRef = useRef<HTMLDivElement>(null);
   const SCTagRef = useRef<HTMLDivElement>(null);
   const SCStyleRef = useRef<HTMLDivElement>(null);
-
-  const taiCodeRef = useRef<HTMLDivElement>(null);
 
   const pages = useSelector((state: any) => state.pages.pages);
   const currentPage = useSelector((state: any) => state.currentPage.page);
   const currentFrame = useSelector((state: any) => state.currentFrame.frame);
   const tags = useSelector((state: any) => state.tag.tags);
   const codeState = useSelector((state: any) => state.codeState.state);
+  const codeStyle = useSelector((state: any) => state.codeState.style);
 
-  console.log(pages);
+  pages && console.log(pages);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (taiRef.current && codeState) {
-      hljs.highlightElement(taiRef.current);
+    if (codeState) {
+      hljs.highlightAll();
+      // hljs.highlightElement(taiRef.current);
     }
-  }, [taiRef, codeState]);
+  }, [code, codeState, codeStyle, currentPage, currentFrame]);
 
+  const codeTailwind = useRef("");
+  useEffect(() => {
+    // console.log(pages);
+    // console.log(codeTailwind);
+    console.log(currentPage);
+    console.log(currentFrame);
+
+    // if (pages.length !== 0) {
+    //   const codeRaw = pages
+    //     .filter((page: any) => page.name === currentPage)[0]
+    //     .frames.filter((frame: any) => frame.id === currentFrame); // array of one frame object
+
+    //   codeTailwind = codeRaw[0]?.name;
+    // }
+    if (pages.length !== 0) {
+      let codeRaw;
+      if (currentPage && currentFrame) {
+        codeRaw = pages
+          .filter((page: any) => page.name === currentPage)[0]
+          .frames.filter(
+            (frame: any) => frame.id === currentFrame
+          )[0]?.children;
+        setCode(codeRaw); // array of elements object
+      }
+    }
+  }, [pages, currentPage, currentFrame]);
   // useEffect(() => {
   //   Prism.highlightAll();
   // }, [currentStyle]);
@@ -68,9 +97,12 @@ export default function divBlock() {
   //     hljs.highlightElement(divRef.current);
   //   }
   // }, []);
+  const handleCodeStyle = (style: any) => {
+    dispatch(setCodeStyle(style));
+  };
 
   const newhandleTag = async (id: any, tag: any) => {
-    console.log(id, tag);
+    // console.log(id, tag);
 
     const productsRef = doc(db, "products", "data");
     const pagesRef = collection(productsRef, "pages");
@@ -94,7 +126,7 @@ export default function divBlock() {
   };
 
   const handleTag = async (id: any, tag: any) => {
-    console.log(id, tag);
+    // console.log(id, tag);
 
     const productsRef = doc(db, "products", "data");
     const pagesRef = collection(productsRef, "pages");
@@ -141,6 +173,15 @@ export default function divBlock() {
     } else if (ref === "SCStyleRef" && SCStyleRef.current) {
       navigator.clipboard.writeText(SCStyleRef.current.innerText);
     }
+  };
+
+  //
+  const filterPagesToFrame = (pages: any) => {
+    const page = pages?.filter((page: any) => page.name === currentPage)[0];
+    const frame = page?.frames.filter(
+      (frame: any) => frame.id === currentFrame
+    );
+    // console.log(frame.name);
   };
 
   // Tailwind
@@ -572,7 +613,12 @@ export default function divBlock() {
   });
 
   return (
-    <div className="w-1/2 h-full  flex flex-col justify-center items-center pr-12">
+    <div
+      className="w-1/2 h-full  flex flex-col justify-center items-center pr-12"
+      onClick={() => {
+        console.log(code);
+      }}
+    >
       {/* Tab */}
       <div className="w-full h-full">
         <Tab.Group>
@@ -589,7 +635,7 @@ export default function divBlock() {
                       : "text-violet-600   hover:text-pink hover:shadow-[0_0px_20px_0px_rgba(0,0,0,1)] hover:shadow-violet-600"
                   )
                 }
-                onClick={(prev: any) => setCurrentStyle(!prev)}
+                onClick={() => handleCodeStyle(category)}
               >
                 {category}
               </Tab>
@@ -619,19 +665,21 @@ export default function divBlock() {
                 </svg>
               </div>
 
-              <pre className="w-full h-[calc(100%-64px)] overflow-auto no-scrollbar mt-4 rounded">
-                <code ref={taiRef} className="language-html">
-                  {codeState && pages.length !== 0
-                    ? pages
-                        .filter((page: any) => page.name === currentPage)[0]
-                        .frames.map((frame: any) => {
-                          if (frame.id === currentFrame) {
-                            return renderTai(frame.children);
-                          }
-                        })
-                    : ""}
-                </code>
-              </pre>
+              <div>
+                <pre className="w-full h-[calc(100%-64px)]  overflow-auto no-scrollbar mt-4 rounded">
+                  <code ref={taiRef} className="language-html bg-yellow-400">
+                    {/* &lt;div&gt; 123 &lt;/div&gt; */}
+                    {ConvertToTai(code)}
+                    {/* {code &&
+                      code.map((child: any) => (
+                        <span key={child.name}>
+                          {child.name}
+                          {"\n"}
+                        </span>
+                      ))} */}
+                  </code>
+                </pre>
+              </div>
             </Tab.Panel>
             <Tab.Panel
               className={classNames(
@@ -657,7 +705,7 @@ export default function divBlock() {
                   </svg>
                 </div>
 
-                <pre className="w-full h-[100px] overflow-auto no-scrollbar mt-4 rounded">
+                {/* <pre className="w-full h-[100px] overflow-auto no-scrollbar mt-4 rounded">
                   <code ref={SCTagRef} className="language-html text-slate-100">
                     {codeState && pages.length !== 0
                       ? pages
@@ -669,7 +717,7 @@ export default function divBlock() {
                           })
                       : ""}
                   </code>
-                </pre>
+                </pre> */}
               </div>
 
               <div className="h-full pt-4">
@@ -690,7 +738,7 @@ export default function divBlock() {
                     />
                   </svg>
                 </div>
-                <pre className="w-[calc(100%-32px)] h-[80px] overflow-auto no-scrollbar whitespace-nowrap mt-4 ml-4 rounded">
+                {/* <pre className="w-[calc(100%-32px)] h-[80px] overflow-auto no-scrollbar whitespace-nowrap mt-4 ml-4 rounded">
                   <code
                     ref={SCStyleRef}
                     className="language-html text-slate-100"
@@ -705,87 +753,12 @@ export default function divBlock() {
                           })
                       : ""}
                   </code>
-                </pre>
+                </pre> */}
               </div>
             </Tab.Panel>
           </Tab.Panels>
         </Tab.Group>
       </div>
-
-      {/* <div className="flex">
-        <button
-          onClick={(e) => {
-            setCurrentStyle("Tailwind");
-          }}
-          className=" px-10 border-2 border-black rounded-xl"
-        >
-          Tailwind
-        </button>
-        <button
-          onClick={() => setCurrentStyle("SC")}
-          className=" px-10 border-2 border-black rounded-xl"
-        >
-          Styled Component
-        </button>
-      </div> */}
-
-      {/* Tailwind */}
-      {/* {currentStyle === "Tailwind" && (
-        <div className="w-full border-2 border-black rounded-xl">
-          <button
-            onClick={() => copydiv("taiRef")}
-            className="w-4 h-4 ml-96 mt-4 border-2 border-black rounded-xl"
-          ></button>
-          <div ref={taiRef} className="w-full h-60 overflow-scroll ">
-            {pages.length !== 0 &&
-              pages
-                .filter((page: any) => page.name === currentPage)[0]
-                .frames.map((frame: any) => {
-                  if (frame.id === currentFrame) {
-                    return renderTai(frame.children);
-                  }
-                })}
-          </div>
-        </div>
-      )} */}
-      {/* SC */}
-
-      {/* {currentStyle === "SC" && pages.length !== 0 && (
-        <div className="flex">
-          <div className=" px-4 w-1/2 border-2 border-black rounded-xl">
-            <button
-              onClick={() => copydiv("SCTagRef")}
-              className="w-4 h-4  border-2 border-black rounded-xl"
-            ></button>
-            <div ref={SCTagRef} className=" h-60 overflow-scroll ">
-              <div>&lt;div&gt;</div>
-              {pages
-                .filter((page: any) => page.name === currentPage)[0]
-                .frames.map((frame: any) => {
-                  if (frame.id === currentFrame) {
-                    return renderTagSC(frame.children);
-                  }
-                })}
-              <div>&lt;/div&gt;</div>
-            </div>
-          </div>
-          <div className=" px-4 w-1/2 border-2 border-black rounded-xl">
-            <button
-              onClick={() => copydiv("SCStyleRef")}
-              className="w-4 h-4  mt-4 border-2 border-black rounded-xl"
-            ></button>
-            <div ref={SCStyleRef} className=" h-60 overflow-scroll ">
-              {pages
-                .filter((page: any) => page.name === currentPage)[0]
-                .frames.map((frame: any) => {
-                  if (frame.id === currentFrame) {
-                    return renderStyleSC(frame.children);
-                  }
-                })}
-            </div>
-          </div>
-        </div>
-      )} */}
     </div>
   );
 }

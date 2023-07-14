@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   state: false,
+  style: "Tailwind",
 };
 
 const codeStateSlice = createSlice({
@@ -11,9 +12,12 @@ const codeStateSlice = createSlice({
     setCodeState(state, action) {
       state.state = action.payload;
     },
+    setCodeStyle(state, action) {
+      state.style = action.payload;
+    },
   },
 });
 
-export const { setCodeState } = codeStateSlice.actions;
+export const { setCodeState, setCodeStyle } = codeStateSlice.actions;
 
 export default codeStateSlice.reducer;

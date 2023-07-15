@@ -52,6 +52,10 @@ export default function divBlock() {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    handleCodeStyle("Tailwind");
+  }, []);
+
+  useEffect(() => {
     if (codeState) {
       hljs.highlightAll();
       // hljs.highlightElement(taiRef.current);

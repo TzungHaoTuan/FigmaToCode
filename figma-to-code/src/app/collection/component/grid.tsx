@@ -37,7 +37,10 @@ export default function Grid() {
   const [collectionGrid, setCollectionGrid] = useState<any>([]);
   const [frameImages, setFrameImages] = useState<any>([]);
 
-  const codeRef = useRef<HTMLDivElement>(null);
+  const taiRef = useRef<HTMLDivElement>(null);
+  const scTagRef = useRef<HTMLDivElement>(null);
+  const scStyleRef = useRef<HTMLDivElement>(null);
+
   const dispatch = useDispatch();
   const storage = getStorage();
 
@@ -157,13 +160,23 @@ export default function Grid() {
     });
   };
 
+  const copydiv = (ref: any) => {
+    if (ref === "taiRef" && taiRef.current) {
+      navigator.clipboard.writeText(taiRef.current.innerText);
+    } else if (ref === "scTagRef" && scTagRef.current) {
+      navigator.clipboard.writeText(scTagRef.current.innerText);
+    } else if (ref === "scStyleRef" && scStyleRef.current) {
+      navigator.clipboard.writeText(scStyleRef.current.innerText);
+    }
+  };
+
   const handleCodeStyle = (style: any) => {
     dispatch(setCodeStyle(style));
   };
 
-  function classNames(...classes: any) {
+  const classNames = (...classes: any) => {
     return classes.filter(Boolean).join(" ");
-  }
+  };
   let [categories] = useState({
     Tailwind: [{}],
     ["Styled Component"]: [{}],
@@ -215,7 +228,7 @@ export default function Grid() {
                     strokeWidth={1.5}
                     stroke="currentColor"
                     className="absolute right-8 bg-slate-900 cursor-pointer w-10 h-10 stroke-white ml-auto border-[1px] border-white hover:border-pink-600 hover:stroke-pink-600 rounded p-2"
-                    // onClick={() => copydiv("SCTagRef")}
+                    onClick={() => copydiv("taiRef")}
                   >
                     <path
                       strokeLinecap="round"
@@ -225,7 +238,7 @@ export default function Grid() {
                   </svg>
 
                   <pre className="w-full h-full  overflow-auto no-scrollbar rounded">
-                    <code ref={codeRef} className="language-html no-scrollbar">
+                    <code ref={taiRef} className="language-html no-scrollbar">
                       {collectionGrid.map((collection: any) => collection.tai)}
                     </code>
                   </pre>
@@ -243,7 +256,7 @@ export default function Grid() {
                       strokeWidth={1.5}
                       stroke="currentColor"
                       className="absolute right-8 bg-slate-900 cursor-pointer w-10 h-10 stroke-white ml-auto border-[1px] border-white hover:border-pink-600 hover:stroke-pink-600 rounded p-2"
-                      // onClick={() => copydiv("SCTagRef")}
+                      onClick={() => copydiv("scTagRef")}
                     >
                       <path
                         strokeLinecap="round"
@@ -253,7 +266,7 @@ export default function Grid() {
                     </svg>
                     <pre className="w-full h-full  overflow-auto no-scrollbar rounded">
                       <code
-                        ref={codeRef}
+                        ref={scTagRef}
                         className="language-html no-scrollbar"
                       >
                         {collectionGrid.map(
@@ -271,7 +284,7 @@ export default function Grid() {
                       strokeWidth={1.5}
                       stroke="currentColor"
                       className="absolute right-8 bg-slate-900 cursor-pointer w-10 h-10 stroke-white ml-auto border-[1px] border-white hover:border-pink-600 hover:stroke-pink-600 rounded p-2"
-                      // onClick={() => copydiv("SCTagRef")}
+                      onClick={() => copydiv("scStyleRef")}
                     >
                       <path
                         strokeLinecap="round"
@@ -281,7 +294,7 @@ export default function Grid() {
                     </svg>
                     <pre className="w-full h-full	overflow-auto no-scrollbar rounded">
                       <code
-                        ref={codeRef}
+                        ref={scStyleRef}
                         className="language-html no-scrollbar"
                       >
                         {collectionGrid.map(

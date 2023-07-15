@@ -37,8 +37,8 @@ export default function divBlock() {
   const [code, setCode] = useState<any>();
 
   const taiRef = useRef<HTMLDivElement>(null);
-  const SCTagRef = useRef<HTMLDivElement>(null);
-  const SCStyleRef = useRef<HTMLDivElement>(null);
+  const scTagRef = useRef<HTMLDivElement>(null);
+  const scStyleRef = useRef<HTMLDivElement>(null);
 
   const pages = useSelector((state: any) => state.pages.pages);
   const currentPage = useSelector((state: any) => state.currentPage.page);
@@ -175,10 +175,10 @@ export default function divBlock() {
   const copydiv = (ref: any) => {
     if (ref === "taiRef" && taiRef.current) {
       navigator.clipboard.writeText(taiRef.current.innerText);
-    } else if (ref === "SCTagRef" && SCTagRef.current) {
-      navigator.clipboard.writeText(SCTagRef.current.innerText);
-    } else if (ref === "SCStyleRef" && SCStyleRef.current) {
-      navigator.clipboard.writeText(SCStyleRef.current.innerText);
+    } else if (ref === "scTagRef" && scTagRef.current) {
+      navigator.clipboard.writeText(scTagRef.current.innerText);
+    } else if (ref === "scStyleRef" && scStyleRef.current) {
+      navigator.clipboard.writeText(scStyleRef.current.innerText);
     }
   };
 
@@ -556,7 +556,7 @@ export default function divBlock() {
                 strokeWidth={1.5}
                 stroke="currentColor"
                 className="absolute right-16 bg-slate-900 cursor-pointer w-10 h-10 stroke-white ml-auto border-[1px] border-white hover:border-pink-600 hover:stroke-pink-600 rounded p-2"
-                onClick={() => copydiv("SCTagRef")}
+                onClick={() => copydiv("taiRef")}
               >
                 <path
                   strokeLinecap="round"
@@ -584,7 +584,7 @@ export default function divBlock() {
                   strokeWidth={1.5}
                   stroke="currentColor"
                   className="absolute right-16 bg-slate-900 cursor-pointer w-10 h-10 stroke-white ml-auto border-[1px] border-white hover:border-pink-600 hover:stroke-pink-600 rounded p-2"
-                  onClick={() => copydiv("SCTagRef")}
+                  onClick={() => copydiv("scTagRef")}
                 >
                   <path
                     strokeLinecap="round"
@@ -607,7 +607,7 @@ export default function divBlock() {
                   strokeWidth={1.5}
                   stroke="currentColor"
                   className="absolute right-16 bg-slate-900 cursor-pointer w-10 h-10 stroke-white ml-auto border-[1px] border-white hover:border-pink-600 hover:stroke-pink-600 rounded p-2"
-                  onClick={() => copydiv("SCTagRef")}
+                  onClick={() => copydiv("scStyleRef")}
                 >
                   <path
                     strokeLinecap="round"

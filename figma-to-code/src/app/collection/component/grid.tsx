@@ -26,8 +26,8 @@ hljs.registerLanguage("html", html);
 import "highlight.js/styles/tokyo-night-dark.css";
 
 import { db } from "@/app/firebase/firebase";
-import convertToTai from "@/app/utils/convertToTai";
-import convertToSCTag from "@/app/utils/convertToSC";
+import ConvertToTai from "@/app/utils/convertToTai";
+import ConvertToSCTag from "@/app/utils/convertToSCTag";
 
 export default function Grid() {
   const userCollection = useSelector((state: any) => state.collection.frames);
@@ -128,9 +128,9 @@ export default function Grid() {
   // }
 
   const handleConvertCode = async (frameElements: any) => {
-    const taiCode = await convertToTai(frameElements);
+    const taiCode = await ConvertToTai(frameElements);
     // console.log(taiCode);
-    const SCCode = await convertToSCTag(frameElements);
+    const SCCode = await ConvertToSCTag(frameElements);
     // sc: SCCode
     setCollectionGrid((prev: any) => {
       // Check if taiCode already exists in collectionGrid

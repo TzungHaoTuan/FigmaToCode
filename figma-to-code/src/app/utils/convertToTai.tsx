@@ -94,8 +94,10 @@ export default function ConvertToTai(children: any) {
             : ""
         }absolute">${child.name}</div>`;
       } else if (child.type === "LINE" || child.type === "VECTOR") {
-        return `<div className="w-[${child.absoluteBoundingBox.width}px] h-[${
-          child.absoluteBoundingBox.height
+        return `<div className="w-[${
+          Math.round(child.absoluteBoundingBox.width * 10) / 10
+        }px] h-[${
+          Math.round(child.absoluteBoundingBox.height * 10) / 10
         }px] ml-[${child.absoluteBoundingBox.x}px] mt-[${
           child.absoluteBoundingBox.y
         }px] bg-[rgb(${Math.round(
@@ -112,7 +114,7 @@ export default function ConvertToTai(children: any) {
           child.absoluteBoundingBox.height
         }px] left-[${child.absoluteBoundingBox.x}px] top-[${
           child.absoluteBoundingBox.y
-        }px] font-["${child.style.fontFamily}"] ${
+        }px] font-['${child.style.fontFamily}'] ${
           child.style.italic ? "italic" : ""
         } font-[${child.style.fontWeight}] text-[${
           child.style.fontSize

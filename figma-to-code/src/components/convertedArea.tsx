@@ -7,7 +7,7 @@ import Collect from "./collect";
 export default function ConvertedArea() {
   return (
     <div className="w-full h-screen min-h-screen">
-      <div className="w-full h-full bg-slate-900 flex justify-between items-center pt-28">
+      <div className="w-full h-full bg-slate-900 flex justify-between items-center pt-16">
         <div className="w-1/2 h-full flex flex-col items-center">
           <ImageSlider />
           <Collect />

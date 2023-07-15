@@ -26,8 +26,11 @@ import { db } from "../app/firebase/firebase";
 import React, { useState, useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { setTag } from "@/store/tagsSlice";
-import ConvertToTai from "@/app/utils/convertToTai";
 import { setCodeStyle } from "@/store/codeStateSlice";
+
+import ConvertToTai from "@/app/utils/convertToTai";
+import ConvertToSCTag from "@/app/utils/convertToSCTag";
+import ConvertToSCStyle from "@/app/utils/convertToSCStyle";
 
 export default function divBlock() {
   // const [currentStyle, setCurrentStyle] = useState(true);
@@ -539,18 +542,45 @@ export default function divBlock() {
           <Tab.Panels className="w-full max-h-screen h-[calc(100%-90px)] mt-2">
             <Tab.Panel
               className={classNames(
-                " h-4/5  rounded-xl bg-[#1a1b26] shadow-[inset_0_0px_10px_0px_rgba(15,23,42,1)] ring-1 ring-violet-100 my-8 p-3"
+                " h-5/6   rounded-xl bg-[#1a1b26] shadow-[inset_0_0px_10px_0px_rgba(15,23,42,1)] ring-1 ring-violet-100 my-8  pt-4"
               )}
             >
-              <div className="">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="absolute right-16 bg-slate-900 cursor-pointer w-10 h-10 stroke-white ml-auto border-[1px] border-white hover:border-pink-600 hover:stroke-pink-600 rounded p-2"
+                onClick={() => copydiv("SCTagRef")}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75"
+                />
+              </svg>
+
+              <pre className="w-full h-[calc(100%-16px)]  overflow-auto no-scrollbar rounded">
+                <code ref={taiRef} className="language-html no-scrollbar">
+                  {ConvertToTai(code)}
+                </code>
+              </pre>
+            </Tab.Panel>
+            <Tab.Panel
+              className={classNames(
+                " h-5/6  divide-y rounded-xl bg-[#1a1b26] shadow-[inset_0_0px_10px_0px_rgba(15,23,42,1)] ring-1 ring-violet-100 my-8  py-4"
+              )}
+            >
+              <div className="w-full h-1/2">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
                   strokeWidth={1.5}
                   stroke="currentColor"
-                  className="cursor-pointer w-10 h-10 stroke-white ml-auto border-[1px] border-white hover:border-pink-600 hover:stroke-pink-600 rounded p-2"
-                  onClick={() => copydiv("taiRef")}
+                  className="absolute right-16 bg-slate-900 cursor-pointer w-10 h-10 stroke-white ml-auto border-[1px] border-white hover:border-pink-600 hover:stroke-pink-600 rounded p-2"
+                  onClick={() => copydiv("SCTagRef")}
                 >
                   <path
                     strokeLinecap="round"
@@ -558,97 +588,34 @@ export default function divBlock() {
                     d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75"
                   />
                 </svg>
-              </div>
-
-              <div>
-                <pre className="w-full h-[calc(100%-64px)]  overflow-auto no-scrollbar mt-4 rounded">
-                  <code ref={taiRef} className="language-html bg-yellow-400">
-                    {/* &lt;div&gt; 123 &lt;/div&gt; */}
-                    {ConvertToTai(code)}
-                    {/* {code &&
-                      code.map((child: any) => (
-                        <span key={child.name}>
-                          {child.name}
-                          {"\n"}
-                        </span>
-                      ))} */}
+                <pre className="w-full h-[calc(100%-16px)]  overflow-auto no-scrollbar rounded">
+                  <code ref={taiRef} className="language-html no-scrollbar">
+                    {ConvertToSCTag(code)}
                   </code>
                 </pre>
               </div>
-            </Tab.Panel>
-            <Tab.Panel
-              className={classNames(
-                " h-4/5 grid grid-cols-1 divide-y rounded-xl bg-[#1a1b26] shadow-[inset_0_0px_10px_0px_rgba(15,23,42,1)] ring-1 ring-violet-100 my-8 p-3"
-              )}
-            >
-              <div className="">
-                <div className="w-10 h-10 ml-auto flex">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="cursor-pointer w-10 h-10 stroke-white ml-auto border-[1px] border-white hover:border-pink-600 hover:stroke-pink-600 rounded p-2"
-                    onClick={() => copydiv("SCTagRef")}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75"
-                    />
-                  </svg>
-                </div>
 
-                {/* <pre className="w-full h-[100px] overflow-auto no-scrollbar mt-4 rounded">
-                  <code ref={SCTagRef} className="language-html text-slate-100">
-                    {codeState && pages.length !== 0
-                      ? pages
-                          .filter((page: any) => page.name === currentPage)[0]
-                          .frames.map((frame: any) => {
-                            if (frame.id === currentFrame) {
-                              return renderTagSC(frame.children);
-                            }
-                          })
-                      : ""}
+              <div className="w-full h-1/2 pt-4">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="absolute right-16 bg-slate-900 cursor-pointer w-10 h-10 stroke-white ml-auto border-[1px] border-white hover:border-pink-600 hover:stroke-pink-600 rounded p-2"
+                  onClick={() => copydiv("SCTagRef")}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75"
+                  />
+                </svg>
+                <pre className="w-full h-full	overflow-auto no-scrollbar rounded">
+                  <code ref={taiRef} className="language-html no-scrollbar">
+                    {ConvertToSCStyle(code)}
                   </code>
-                </pre> */}
-              </div>
-
-              <div className="h-full pt-4">
-                <div className="">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="cursor-pointer w-10 h-10 stroke-white ml-auto border-[1px] border-white hover:border-pink-600 hover:stroke-pink-600 rounded p-2"
-                    onClick={() => copydiv("SCStyleRef")}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75"
-                    />
-                  </svg>
-                </div>
-                {/* <pre className="w-[calc(100%-32px)] h-[80px] overflow-auto no-scrollbar whitespace-nowrap mt-4 ml-4 rounded">
-                  <code
-                    ref={SCStyleRef}
-                    className="language-html text-slate-100"
-                  >
-                    {codeState && pages.length !== 0
-                      ? pages
-                          .filter((page: any) => page.name === currentPage)[0]
-                          .frames.map((frame: any) => {
-                            if (frame.id === currentFrame) {
-                              return renderStyleSC(frame.children);
-                            }
-                          })
-                      : ""}
-                  </code>
-                </pre> */}
+                </pre>
               </div>
             </Tab.Panel>
           </Tab.Panels>

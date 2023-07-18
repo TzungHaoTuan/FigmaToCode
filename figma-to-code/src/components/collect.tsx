@@ -63,7 +63,6 @@ export default function Collect() {
           )
         );
       await handleCollectionState();
-      // await newhandleTag(tags);
     }
   };
 
@@ -107,12 +106,14 @@ export default function Collect() {
         if (frame.id === currentFrame) {
           await setDoc(frameDocRef, {
             ...frameData,
+            id: frame.id,
             collected: true,
             storagePath: storagePath,
           });
         } else {
           await setDoc(frameDocRef, {
             ...frameData,
+            id: frame.id,
           });
         }
 
@@ -128,10 +129,11 @@ export default function Collect() {
       return Promise.all(framesPromises);
     });
     await Promise.all(pagesPromises);
+    await handleTag();
     console.log("Finish writing data");
   };
 
-  const handleTag = async (tags: any) => {
+  const handleTag = async () => {
     const usersRef = doc(db, "users", uid);
     const collectionRef = collection(usersRef, "collection");
     const collectionSnapshot = await getDocs(collectionRef);
@@ -151,15 +153,20 @@ export default function Collect() {
 
             const childrenPromises = childrenSnapshot.docs.map(
               async (childDoc) => {
-                const children = childDoc.data().children.children;
+                const childDocObj = childDoc.data().children;
+                const childrenArray = childDocObj.children;
 
-                for (const child of children) {
-                  if (tags[child.id]) {
-                    child.name = tags[child.id];
+                if (childrenArray) {
+                  const childrenArrayInside = childrenArray[1]?.children;
+                  if (childrenArrayInside) {
+                    for (const child of childrenArrayInside) {
+                      if (tags[child.id]) {
+                        child.name = tags[child.id];
+                      }
+                      await updateDoc(childDoc.ref, { children: childDocObj });
+                    }
                   }
                 }
-
-                await updateDoc(childDoc.ref, { children });
               }
             );
 

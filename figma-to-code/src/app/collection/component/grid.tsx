@@ -124,6 +124,7 @@ export default function Grid() {
         }
       }
     }
+    console.log(collectionFrames);
     return collectionFrames;
   }
 

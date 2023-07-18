@@ -373,7 +373,10 @@ export default function CodeBlock() {
                   suppressContentEditableWarning={true}
                   onBlur={(event) => {
                     dispatch(
-                      setTag({ [child.id]: event.currentTarget.textContent })
+                      setTag({
+                        id: child.id,
+                        tag: event.currentTarget.textContent,
+                      })
                     );
 
                     // handleTag(child.id, event.currentTarget.textContent);
@@ -620,7 +623,10 @@ export default function CodeBlock() {
   });
 
   return (
-    <div className="w-1/2 h-full  flex flex-col justify-center items-center pr-12">
+    <div
+      className="w-1/2 h-full  flex flex-col justify-center items-center pr-12"
+      onClick={() => console.log(tags)}
+    >
       {/* Tab */}
       <div className="w-full h-full">
         <Tab.Group>

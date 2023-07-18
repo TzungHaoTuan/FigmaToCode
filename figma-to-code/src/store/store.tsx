@@ -10,6 +10,7 @@ import figmaDataSliceReducer from "./figmaDataSlice";
 import collectionSliceReducer from "./collectionSlice";
 import tagNameSliceReducer from "./tagsSlice";
 import codeStateSliceReducer from "./codeStateSlice";
+import collectSliceReducer from "./collectSlice";
 
 const store = configureStore({
   reducer: {
@@ -23,6 +24,7 @@ const store = configureStore({
     collection: collectionSliceReducer,
     tag: tagNameSliceReducer,
     codeState: codeStateSliceReducer,
+    collect: collectSliceReducer,
   },
 });
 

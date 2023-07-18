@@ -20,6 +20,9 @@ import {
 import { db } from "../app/firebase/firebase";
 import { app } from "@/app/firebase/firebase";
 
+import { setCollect } from "@/store/collectSlice";
+import { setCollected } from "@/store/collectSlice";
+
 export default function Collect() {
   const data = useSelector((state: any) => state.figmaData.data);
   const currentPage = useSelector((state: any) => state.currentPage.page);
@@ -27,6 +30,7 @@ export default function Collect() {
   const userCollection = useSelector((state: any) => state.collection.frames);
   const frameImages = useSelector((state: any) => state.frameImages.images);
   const tags = useSelector((state: any) => state.tag.tags);
+  const isCollecting = useSelector((state: any) => state.collect.isCollecting);
 
   const dispatch = useDispatch();
   const storage = getStorage();
@@ -54,6 +58,8 @@ export default function Collect() {
 
   const handleCollection = async () => {
     if (isLogin && data) {
+      dispatch(setCollect());
+
       await frameImages
         .filter((image: any) => image.id === currentFrame)
         .map((image: any) =>
@@ -129,7 +135,11 @@ export default function Collect() {
       return Promise.all(framesPromises);
     });
     await Promise.all(pagesPromises);
-    await handleTag();
+    if (Object.keys(tags).length !== 0) {
+      await handleTag();
+    }
+    dispatch(setCollect());
+    dispatch(setCollected(true));
     console.log("Finish writing data");
   };
 
@@ -331,9 +341,22 @@ export default function Collect() {
     <div className="w-full flex justify-center items-center mt-8">
       <button
         onClick={handleCollection}
-        className="w-2/3 h-12 bg-slate-100  text-indigo-900 text-2xl font-extrabold  rounded-xl px-4"
+        className="w-2/3 h-12 flex justify-center items-center bg-slate-100  text-2xl font-bold  rounded-xl px-4"
       >
-        Add to collection
+        {isCollecting ? (
+          <div className="relative w-6 h-6 animate-spin rounded-full bg-gradient-to-r from-indigo-600  to-pink-600 ">
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-4 h-4 bg-slate-100 rounded-full border-2 border-white"></div>
+          </div>
+        ) : (
+          ""
+        )}
+        <div
+          className={`${
+            isCollecting ? " text-pink-600" : " text-indigo-600"
+          } ml-4`}
+        >
+          {isCollecting ? "Collecting..." : "Add to collection"}
+        </div>
       </button>
     </div>
   );

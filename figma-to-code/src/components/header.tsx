@@ -1,9 +1,12 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import { Provider } from "react-redux";
+import { useSelector } from "react-redux";
+
 import store from "@/store/store";
 import Link from "next/link";
 import HeadShot from "./headShot";
+import CollectCategory from "./collectCategory";
 
 export default function Header() {
   const [isScrolling, setIsScrolling] = useState(false);
@@ -46,9 +49,7 @@ export default function Header() {
           >
             Figma to Code
           </Link>
-          <Link href="/collection" className="ml-auto ">
-            Collection
-          </Link>
+          <CollectCategory />
           <HeadShot />
         </div>
         {/* <div className="absolute top-[64px] w-full h-12 blur bg-slate-900"></div> */}

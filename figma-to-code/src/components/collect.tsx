@@ -1,8 +1,9 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { setCollection } from "@/store/collectionSlice";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 import { getStorage, ref, uploadBytes } from "firebase/storage";
 import {
@@ -17,6 +18,7 @@ import {
 } from "firebase/firestore";
 
 import { db } from "../app/firebase/firebase";
+import { app } from "@/app/firebase/firebase";
 
 export default function Collect() {
   const data = useSelector((state: any) => state.figmaData.data);
@@ -25,46 +27,94 @@ export default function Collect() {
   const userCollection = useSelector((state: any) => state.collection.frames);
   const frameImages = useSelector((state: any) => state.frameImages.images);
   const tags = useSelector((state: any) => state.tag.tags);
+
   const dispatch = useDispatch();
   const storage = getStorage();
 
+  const auth = getAuth(app);
+  const user = useSelector((state: any) => state.user);
+  const isLogin = user?.profile.login;
+  const uid = user?.profile.uid;
+  const userName = user?.profile.name;
+
+  useEffect(() => {
+    user.profile.uid ? console.log(user.profile.uid) : console.log("Not login");
+    // onAuthStateChanged(auth, (user: any) => {
+    //   if (user) {
+    //     // 已登入
+    //     console.log(user);
+    //     const uid = user.uid;
+    //     console.log(uid);
+    //   } else {
+    //     console.log("未登入");
+    //   }
+    // });
+  }, [isLogin]);
+  // const uid = onAuthStateChanged(auth, (user: any) => user.id);
+
   const handleCollection = async () => {
-    console.log(data);
-    await frameImages
-      .filter((image: any) => image.id === currentFrame)
-      .map((image: any) =>
-        uploadImage(
-          image.id,
-          "https://corsproxy.io/?" + encodeURIComponent(image.url)
-        )
-      );
-    await handleCollectionState();
-    await addDocument();
-    await newhandleTag(tags);
+    if (isLogin && data) {
+      await frameImages
+        .filter((image: any) => image.id === currentFrame)
+        .map((image: any) =>
+          uploadImage(
+            image.id,
+            "https://corsproxy.io/?" + encodeURIComponent(image.url)
+          )
+        );
+      await handleCollectionState();
+      // await newhandleTag(tags);
+    }
   };
 
   const handleCollectionState = async () => {
-    dispatch(setCollection([{ page: currentPage, frame: currentFrame }]));
+    dispatch(
+      setCollection([
+        { name: data.name, page: currentPage, frame: currentFrame },
+      ])
+    );
   };
 
-  const addDocument = async () => {
-    const productsRef = doc(db, "products", "data");
+  const addDocument = async (imageId: any, snapshot: any) => {
+    console.log("start writing data");
+    const storagePath = snapshot.ref.fullPath;
 
-    // Create the main document
-    await setDoc(productsRef, {
-      name: data.name,
+    const usersRef = doc(db, "users", uid);
+    await setDoc(usersRef, {
+      name: userName,
+    });
+
+    const collectionRef = collection(usersRef, "collection");
+    const collectionDocRef = doc(collectionRef, data.name);
+    await setDoc(doc(collectionRef, data.name), {
+      project: data.name,
     });
 
     // Create the "pages" subcollection and inside
-    console.log("start writing data");
-    const pagesRef = collection(productsRef, "pages");
+    const pagesRef = collection(collectionDocRef, "pages");
     const pagesPromises = data.document.children.map(async (page: any) => {
       await setDoc(doc(pagesRef, page.name), { pageName: page.name });
 
       const pageRef = doc(pagesRef, page.name);
       const framesRef = collection(pageRef, "frames");
       const framesPromises = page.children.map(async (frame: any) => {
-        await setDoc(doc(framesRef, frame.name), { id: frame.id });
+        // await setDoc(doc(framesRef, frame.name), { id: frame.id });
+
+        const frameDocRef = doc(framesRef, frame.name);
+        const frameDocSnapshot = await getDoc(frameDocRef);
+        const frameData = frameDocSnapshot.data();
+
+        if (frame.id === currentFrame) {
+          await setDoc(frameDocRef, {
+            ...frameData,
+            collected: true,
+            storagePath: storagePath,
+          });
+        } else {
+          await setDoc(frameDocRef, {
+            ...frameData,
+          });
+        }
 
         const frameRef = doc(framesRef, frame.name);
         const childrenRef = collection(frameRef, "children");
@@ -79,35 +129,64 @@ export default function Collect() {
     });
     await Promise.all(pagesPromises);
     console.log("Finish writing data");
+  };
 
-    // await data.document.children.map(async (page: any) => {
-    //   setDoc(doc(pagesRef, page.name), { pageName: page.name });
+  const handleTag = async (tags: any) => {
+    const usersRef = doc(db, "users", uid);
+    const collectionRef = collection(usersRef, "collection");
+    const collectionSnapshot = await getDocs(collectionRef);
 
-    //   const pagesSnapshot = await getDocs(pagesRef);
-    //   pagesSnapshot.forEach(async (pageDoc) => {
-    //     const framesRef = collection(pageDoc.ref, "frames");
-    //     await page.children.map(async (frame: any) => {
-    //       setDoc(doc(framesRef, frame.name), { id: frame.id });
+    const collectionPromises = collectionSnapshot.docs.map(
+      async (collectionDoc) => {
+        const pagesRef = collection(collectionDoc.ref, "pages");
+        const pagesSnapshot = await getDocs(pagesRef);
 
-    //       const framesSnapshot = await getDocs(framesRef);
-    //       framesSnapshot.forEach(async (frameDoc) => {
-    //         const childrenRef = collection(frameDoc.ref, "children");
-    //         await frame.children.map((child: any) => {
-    //           setDoc(doc(childrenRef, child.name), child);
-    //         });
-    //       });
-    //     });
-    //   });
-    // });
+        const pagesPromises = pagesSnapshot.docs.map(async (pageDoc) => {
+          const framesRef = collection(pageDoc.ref, "frames");
+          const framesSnapshot = await getDocs(framesRef);
+
+          const framesPromises = framesSnapshot.docs.map(async (frameDoc) => {
+            const childrenRef = collection(frameDoc.ref, "children");
+            const childrenSnapshot = await getDocs(childrenRef);
+
+            const childrenPromises = childrenSnapshot.docs.map(
+              async (childDoc) => {
+                const children = childDoc.data().children.children;
+
+                for (const child of children) {
+                  if (tags[child.id]) {
+                    child.name = tags[child.id];
+                  }
+                }
+
+                await updateDoc(childDoc.ref, { children });
+              }
+            );
+
+            await Promise.all(childrenPromises);
+
+            await Promise.all(childrenPromises);
+          });
+
+          await Promise.all(framesPromises);
+        });
+
+        await Promise.all(pagesPromises);
+      }
+    );
+
+    await Promise.all(collectionPromises);
   };
 
   const newhandleTag = async (tag: any) => {
     console.log(tag);
-    const productsRef = doc(db, "products", "data");
-    const pagesRef = collection(productsRef, "pages");
+    const usersRef = doc(db, "users", uid);
+    const collectionRef = collection(usersRef, "collection");
+    const collectionSnapshot = await getDocs(collectionRef);
+    const pagesRef = collection(collectionRef, "pages");
     const pagesSnapshot = await getDocs(pagesRef);
 
-    const firstPageDoc = pagesSnapshot.docs[2];
+    const firstPageDoc = pagesSnapshot.docs[0];
     const framesRef = collection(firstPageDoc.ref, "frames");
     const framesSnapshot = await getDocs(framesRef);
 
@@ -119,7 +198,7 @@ export default function Collect() {
     const childrenData = firstChildDoc.data();
     console.log(childrenData);
     const children = childrenData.children;
-    children.children[1].children[0].name = "MeMe";
+    children.children[0].name = "Image";
     await updateDoc(firstChildDoc.ref, { children: children });
     // if (childrenData && childrenData.children) {
     //   const children = childrenData.children;
@@ -128,40 +207,57 @@ export default function Collect() {
     // }
   };
 
-  const handleTag = async (tags: any) => {
-    const productsRef = doc(db, "products", "data");
-    const pagesRef = collection(productsRef, "pages");
-    const pagesSnapshot = await getDocs(pagesRef);
+  // const handleTag = async (tags: any) => {
+  //   const productsRef = doc(db, "products", "data");
+  //   const pagesRef = collection(productsRef, "pages");
+  //   const pagesSnapshot = await getDocs(pagesRef);
 
-    await Promise.all(
-      pagesSnapshot.docs.map(async (pageDoc) => {
-        const framesRef = collection(pageDoc.ref, "frames");
-        const framesSnapshot = await getDocs(framesRef);
+  //   await Promise.all(
+  //     pagesSnapshot.docs.map(async (pageDoc) => {
+  //       const framesRef = collection(pageDoc.ref, "frames");
+  //       const framesSnapshot = await getDocs(framesRef);
 
-        await Promise.all(
-          framesSnapshot.docs.map(async (frameDoc) => {
-            const childrenRef = collection(frameDoc.ref, "children");
-            const childrenSnapshot = await getDocs(childrenRef);
+  //       await Promise.all(
+  //         framesSnapshot.docs.map(async (frameDoc) => {
+  //           const childrenRef = collection(frameDoc.ref, "children");
+  //           const childrenSnapshot = await getDocs(childrenRef);
 
-            await Promise.all(
-              childrenSnapshot.docs.map(async (childDoc) => {
-                const children = childDoc.data().children;
+  //           await Promise.all(
+  //             childrenSnapshot.docs.map(async (childDoc) => {
+  //               const children = childDoc.data().children;
 
-                children.forEach(async (child: any) => {
-                  if (tags[child.id]) {
-                    child.name = tags[child.id];
+  //               children.forEach(async (child: any) => {
+  //                 if (tags[child.id]) {
+  //                   child.name = tags[child.id];
 
-                    const myDoc = childDoc;
-                    await updateDoc(myDoc.ref, { children: children });
-                  }
-                });
-              })
-            );
-          })
-        );
-      })
-    );
-  };
+  //                   const myDoc = childDoc;
+  //                   await updateDoc(myDoc.ref, { children: children });
+  //                 }
+  //               });
+  //             })
+  //           );
+  //         })
+  //       );
+  //     })
+  //   );
+  // };
+
+  async function uploadImage(imageId: any, imageUrl: any) {
+    try {
+      const blob = await loadImageAsBlob(imageUrl);
+      const storageRef = ref(storage, `images/frames/${imageId}.jpg`);
+      await uploadBytes(storageRef, blob as Blob)
+        // Store the path in Firestore
+        .then(async (snapshot) => {
+          await addDocument(imageId, snapshot);
+          console.log("Successful upload the Blob!");
+          // await storeImagePath(imageId, snapshot);
+        });
+    } catch (error) {
+      console.error("Failed to compress image:", error);
+      throw error;
+    }
+  }
 
   function loadImageAsBlob(imageUrl: any) {
     return new Promise((resolve, reject) => {
@@ -190,22 +286,22 @@ export default function Collect() {
     });
   }
 
-  async function uploadImage(imageId: any, imageUrl: any) {
-    try {
-      const blob = await loadImageAsBlob(imageUrl);
-      const storageRef = ref(storage, `images/frames/${imageId}.jpg`);
-      await uploadBytes(storageRef, blob as Blob)
-        // Store the path in Firestore
-        .then(async (snapshot) => {
-          await storeImagePath(imageId, snapshot);
-          console.log("Successful upload the Blob!");
-          // await storeImagePath(imageId, snapshot);
-        });
-    } catch (error) {
-      console.error("Failed to compress image:", error);
-      throw error;
-    }
-  }
+  // async function storeImagePath(imageId: any, snapshot: any) {
+  //   const storagePath = snapshot.ref.fullPath;
+
+  //   const productsRef = doc(db, "products", "data");
+  //   const pagesRef = collection(productsRef, "pages");
+  //   const pagesSnapshot = await getDocs(pagesRef);
+  //   pagesSnapshot.forEach(async (pageDoc) => {
+  //     const framesRef = collection(pageDoc.ref, "frames");
+  //     const framesSnapshot = await getDocs(framesRef);
+  //     framesSnapshot.forEach(async (frameDoc) => {
+  //       if (frameDoc.data().id === imageId) {
+  //         await updateDoc(frameDoc.ref, { storagePath });
+  //       }
+  //     });
+  //   });
+  // }
 
   // async function compressImage(imageUrl: any) {
   //   const blob = await fetch(imageUrl).then((response) => response.blob());
@@ -224,28 +320,11 @@ export default function Collect() {
   //     });
   // }
 
-  async function storeImagePath(imageId: any, snapshot: any) {
-    const storagePath = snapshot.ref.fullPath;
-
-    const productsRef = doc(db, "products", "data");
-    const pagesRef = collection(productsRef, "pages");
-    const pagesSnapshot = await getDocs(pagesRef);
-    pagesSnapshot.forEach(async (pageDoc) => {
-      const framesRef = collection(pageDoc.ref, "frames");
-      const framesSnapshot = await getDocs(framesRef);
-      framesSnapshot.forEach(async (frameDoc) => {
-        if (frameDoc.data().id === imageId) {
-          await updateDoc(frameDoc.ref, { storagePath });
-        }
-      });
-    });
-  }
-
   return (
     <div className="w-full flex justify-center items-center mt-8">
       <button
         onClick={handleCollection}
-        className="w-2/3 h-12 bg-indigo-800  text-white font-semibold outline outline-2 outline-offset-4 outline-indigo-500 rounded-xl px-4"
+        className="w-2/3 h-12 bg-slate-100  text-indigo-900 text-2xl font-extrabold  rounded-xl px-4"
       >
         Add to collection
       </button>

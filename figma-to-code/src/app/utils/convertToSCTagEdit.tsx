@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function ConvertToSCTag(children: any) {
+export default function ConvertToSCTagEdit(children: any) {
   if (!children) {
     return null;
   }
@@ -11,7 +11,7 @@ export default function ConvertToSCTag(children: any) {
       child.type === "INSTANCE" ||
       child.type === "FRAME"
     ) {
-      return ConvertToSCTag(child.children);
+      return ConvertToSCTagEdit(child.children);
     } else {
       if (child.type === "TEXT") {
         return `<${child.name}>${child.characters}</${child.name}>`;

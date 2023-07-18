@@ -31,8 +31,10 @@ import { setCodeStyle } from "@/store/codeStateSlice";
 import ConvertToTai from "@/app/utils/convertToTai";
 import ConvertToSCTag from "@/app/utils/convertToSCTag";
 import ConvertToSCStyle from "@/app/utils/convertToSCStyle";
+import ConvertToSCTagEdit from "@/app/utils/convertToSCTagEdit";
+import { staticGenerationAsyncStorage } from "next/dist/client/components/static-generation-async-storage";
 
-export default function divBlock() {
+export default function CodeBlock() {
   // const [currentStyle, setCurrentStyle] = useState(true);
   const [code, setCode] = useState<any>();
 
@@ -46,8 +48,7 @@ export default function divBlock() {
   const tags = useSelector((state: any) => state.tag.tags);
   const codeState = useSelector((state: any) => state.codeState.state);
   const codeStyle = useSelector((state: any) => state.codeState.style);
-
-  pages && console.log(pages);
+  const codeIsToggle = useSelector((state: any) => state.codeState.isToggle);
 
   const dispatch = useDispatch();
 
@@ -56,18 +57,16 @@ export default function divBlock() {
   }, []);
 
   useEffect(() => {
-    if (codeState) {
-      hljs.highlightAll();
-      // hljs.highlightElement(taiRef.current);
-    }
-  }, [code, codeState, codeStyle, currentPage, currentFrame]);
+    hljs.highlightAll();
+    // hljs.highlightElement(taiRef.current);
+  }, [code, codeState, codeStyle, codeIsToggle, currentPage, currentFrame]);
 
   const codeTailwind = useRef("");
   useEffect(() => {
     // console.log(pages);
     // console.log(codeTailwind);
-    console.log(currentPage);
-    console.log(currentFrame);
+    // console.log(currentPage);
+    // console.log(currentFrame);
 
     // if (pages.length !== 0) {
     //   const codeRaw = pages
@@ -353,12 +352,17 @@ export default function divBlock() {
                   suppressContentEditableWarning={true}
                   onBlur={(event) => {
                     dispatch(
-                      setTag({ [child.id]: event.currentTarget.textContent })
+                      setTag({
+                        id: child.id,
+                        tag: event.currentTarget.textContent,
+                      })
                     );
+
+                    console.log(child.id, event.currentTarget.textContent);
                     // handleTag(child.id, event.currentTarget.textContent);
                   }}
                 >
-                  {tags[child.id] ? tags[child.id] : child.name.slice(0, 4)}
+                  {tags[child.id] ? tags[child.id] : child.name}
 
                   {/* {child.name} */}
                 </code>
@@ -371,10 +375,11 @@ export default function divBlock() {
                     dispatch(
                       setTag({ [child.id]: event.currentTarget.textContent })
                     );
+
                     // handleTag(child.id, event.currentTarget.textContent);
                   }}
                 >
-                  {tags[child.id] ? tags[child.id] : child.name.slice(0, 4)}
+                  {tags[child.id] ? tags[child.id] : child.name}
 
                   {/* {child.name} */}
                 </code>
@@ -610,6 +615,106 @@ export default function divBlock() {
     });
   };
 
+  const convertToSCTagEdit = (children: any) => {
+    if (!children) {
+      return null;
+    }
+
+    const renderedChildren = children.flatMap((child: any) => {
+      if (
+        child.type === "GROUP" ||
+        child.type === "INSTANCE" ||
+        child.type === "FRAME"
+      ) {
+        return convertToSCTagEdit(child.children);
+      } else {
+        if (child.type === "TEXT") {
+          return (
+            <div
+              key={child.id}
+              className="text-[#F7768E]"
+              onClick={() => console.log(child.id)}
+            >
+              &lt;
+              <code
+                className="nohighlight text-[#bb9af7]"
+                contentEditable
+                dir="RTL"
+                suppressContentEditableWarning={true}
+                onBlur={(event) => {
+                  dispatch(
+                    setTag({ [child.id]: event.currentTarget.textContent })
+                  );
+                }}
+              >
+                {tags[child.id] ? tags[child.id] : child.name}
+              </code>
+              &gt;
+              <span className="text-[#9AA5CE]">{child.characters}</span>
+              &lt;
+              <code
+                className="nohighlight text-[#bb9af7]"
+                contentEditable
+                dir="RTL"
+                suppressContentEditableWarning={true}
+                onBlur={(event) => {
+                  dispatch(
+                    setTag({ [child.id]: event.currentTarget.textContent })
+                  );
+                }}
+              >
+                {tags[child.id] ? tags[child.id] : child.name}
+              </code>
+              &gt;
+            </div>
+          );
+        } else {
+          return (
+            <div key={child.id} className="text-[#F7768E]">
+              &lt;
+              <code
+                className="nohighlight text-[#bb9af7]"
+                contentEditable
+                dir="RTL"
+                suppressContentEditableWarning={true}
+                onBlur={(event) => {
+                  dispatch(
+                    setTag({
+                      id: child.id,
+                      tag: event.currentTarget.textContent,
+                    })
+                  );
+                }}
+              >
+                {tags[child.id] ? tags[child.id] : child.name}
+              </code>
+              &gt;&lt;
+              <code
+                className="nohighlight text-[#bb9af7]"
+                contentEditable
+                dir="RTL"
+                suppressContentEditableWarning={true}
+                onBlur={(event) => {
+                  dispatch(
+                    setTag({
+                      id: child.id,
+                      tag: event.currentTarget.textContent,
+                    })
+                  );
+                }}
+              >
+                {tags[child.id] ? tags[child.id] : child.name}
+              </code>
+              &gt;
+            </div>
+          );
+        }
+      }
+    });
+
+    return renderedChildren;
+  };
+
   function classNames(...classes: any) {
     return classes.filter(Boolean).join(" ");
   }
@@ -620,12 +725,7 @@ export default function divBlock() {
   });
 
   return (
-    <div
-      className="w-1/2 h-full  flex flex-col justify-center items-center pr-12"
-      onClick={() => {
-        console.log(code);
-      }}
-    >
+    <div className="w-1/2 h-full  flex flex-col justify-center items-center pr-12">
       {/* Tab */}
       <div className="w-full h-full">
         <Tab.Group>
@@ -697,14 +797,19 @@ export default function divBlock() {
                     d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75"
                   />
                 </svg>
-                <pre className="w-full h-[calc(100%-16px)]  overflow-auto no-scrollbar rounded">
-                  <code ref={taiRef} className="language-html no-scrollbar">
-                    {ConvertToSCTag(code)}
+                <pre className="w-full h-[calc(100%-16px)]  overflow-auto no-scrollbar rounded whitespace-nowrap">
+                  <code className="nohighlight">
+                    {convertToSCTagEdit(code)}
                   </code>
                 </pre>
               </div>
-
-              <div className="w-full h-1/2 pt-4">
+              {/* <code contentEditable className="nohighlight text-[#bb9af7]">
+                    &lt;test&gt;
+                  </code> */}
+              <div
+                className="w-full h-1/2 pt-4"
+                onClick={() => console.log(tags)}
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -721,7 +826,7 @@ export default function divBlock() {
                   />
                 </svg>
                 <pre className="w-full h-full	overflow-auto no-scrollbar rounded">
-                  <code ref={taiRef} className="language-html no-scrollbar">
+                  <code ref={scStyleRef} className="language-html no-scrollbar">
                     {ConvertToSCStyle(code)}
                   </code>
                 </pre>

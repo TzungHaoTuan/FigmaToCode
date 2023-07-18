@@ -128,7 +128,6 @@ export default function ConvertToTai(children: any) {
           child.fills[0].color.b * 255
         )}]/${child.fills[0].color.a * 100}] absolute">${child.name}</div>`;
       }
-      // return <div key={child.id}>{child.name}</div>;
     }
   });
   return renderedChildren.join("\n");

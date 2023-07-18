@@ -3,7 +3,6 @@
 @tailwind utilities;
 
 @layer utilities {
-  @variants responsive {
     /* Hide scrollbar for Chrome, Safari and Opera */
     .no-scrollbar::-webkit-scrollbar {
         display: none;
@@ -14,7 +13,7 @@
         -ms-overflow-style: none;  /* IE and Edge */
         scrollbar-width: none;  /* Firefox */
     }
-  }
+  
 
   .footer {
     width: 100%;
@@ -22,7 +21,7 @@
     top: 100%;
     bottom: 0;
   }
-  
+
   /* .pre-wrap {
     white-space: pre-wrap
   } */

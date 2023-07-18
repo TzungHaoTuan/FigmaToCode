@@ -17,6 +17,7 @@ import store from "@/store/store";
 import { app } from "@/app/firebase/firebase";
 import Image from "next/image";
 import GoogleIcon from "../../icons/google.ico";
+import userAvatar from "../../images/user.png";
 
 function NewMain() {
   // const [userName, setUserName] = useState("");
@@ -46,6 +47,7 @@ function NewMain() {
             name: user.displayName,
             email: user.email,
             photo: user.photoURL,
+            uid: user.uid,
           })
         );
         const uid = user.uid;
@@ -93,9 +95,9 @@ function NewMain() {
   };
 
   return (
-    <div className="w-screen h-screen  ">
-      <div className="w-full h-full bg-color-ball flex justify-center items-center  pt-24  px-12 ">
-        <div className="w-96 h-96  bg-slate-700 shadow-[0_0px_100px_0px_rgba(255,255,255,0.3)] backdrop-blur-md backdrop-brightness-150  bg-opacity-10 rounded-3xl">
+    <div className="w-screen h-screen">
+      <div className="w-full h-full bg-color-ball flex justify-center">
+        <div className="w-[440px] h-[440px]  bg-slate-700 shadow-[0_0px_100px_0px_rgba(255,255,255,0.3)] backdrop-blur-md backdrop-brightness-150  bg-opacity-10 rounded-3xl mt-28">
           {isLogin ? (
             <div className="w-full h-full text-white font-medium flex flex-col justify-center items-center ">
               <img
@@ -114,17 +116,37 @@ function NewMain() {
               </button>
             </div>
           ) : (
-            <div className="w-full h-full flex justify-center items-center rounded-xl">
+            <div className="w-full h-full flex flex-col  items-center rounded-xl">
+              <Image
+                alt="user avatar"
+                src={userAvatar}
+                className="w-24 h-24 rounded-full border-2 grayscale opacity-30 shadow-[0_0px_30px_0px_rgba(255,255,255,1)] shadow-white mt-10"
+              />
+              <input
+                placeholder="Email"
+                className="w-2/3 h-12 border-2 border-white backdrop-brightness-0 bg-slate-50 rounded-xl focus:outline-none mt-8 px-8"
+              ></input>
+              <input
+                placeholder="Password"
+                className="w-2/3 h-12 border-2 border-white backdrop-brightness-0 bg-slate-50 rounded-xl focus:outline-none mt-2 px-8"
+              ></input>
+              <button
+                onClick={() => handleSignOut(auth)}
+                className="w-2/3 h-12 text-white bg-rose-900 font-bold text-md border-2 border-white   rounded-xl mt-4"
+              >
+                Sign in
+              </button>
               <button
                 onClick={() => handleGoogleSignIn(auth)}
-                className="w-3/4 h-16 flex justify-between items-center shadow-[0_0px_50px_-10px_rgba(255,255,255,0.1)] shadow-white drop-shadow-sm bg-rose-900 bg-opacity-50 	backdrop-brightness-0 border-2 border-white rounded-xl px-8"
+                className="relative w-2/3 h-12 flex justify-center items-center shadow-[0_0px_50px_-10px_rgba(255,255,255,0.1)] shadow-white drop-shadow-sm
+                 bg-slate-900  	backdrop-brightness-0 border-2 border-white rounded-xl mt-2 px-8"
               >
                 <Image
                   alt="google icon"
                   src={GoogleIcon}
-                  className="w-8 h-8 drop-shadow-sm	"
+                  className="absolute left-8 w-6 h-6 drop-shadow-sm	"
                 />
-                <div className="text-white font-bold text-lg">
+                <div className="text-white font-bold text-md">
                   Sign in with Google
                 </div>
               </button>

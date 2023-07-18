@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   state: false,
   style: "Tailwind",
+  isToggle: false,
 };
 
 const codeStateSlice = createSlice({
@@ -15,9 +16,13 @@ const codeStateSlice = createSlice({
     setCodeStyle(state, action) {
       state.style = action.payload;
     },
+    setCodeToggle(state) {
+      state.isToggle = !state.isToggle;
+    },
   },
 });
 
-export const { setCodeState, setCodeStyle } = codeStateSlice.actions;
+export const { setCodeState, setCodeStyle, setCodeToggle } =
+  codeStateSlice.actions;
 
 export default codeStateSlice.reducer;

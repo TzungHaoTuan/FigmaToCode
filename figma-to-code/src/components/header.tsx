@@ -38,7 +38,7 @@ export default function Header() {
       <div className="fixed w-screen h-24 z-20">
         <div
           ref={elementRef}
-          className="w-full h-full flex items-center text-slate-100 font-semibold  transition-all duration-500  ease-in-out px-24"
+          className=" w-full h-full backdrop-blur flex items-center text-slate-100 font-semibold  transition-all duration-500  ease-in-out px-24"
         >
           <Link
             href="/"
@@ -51,6 +51,7 @@ export default function Header() {
           </Link>
           <HeadShot />
         </div>
+        {/* <div className="absolute top-[64px] w-full h-12 blur bg-slate-900"></div> */}
       </div>
     </Provider>
   );

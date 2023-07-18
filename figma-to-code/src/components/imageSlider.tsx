@@ -114,7 +114,11 @@ const ImageSlider = ({ toggleScaled }: any) => {
             // onChange={(value) => handlePage(value)}
           >
             <div className="relative">
-              <Listbox.Button className="relative w-full h-[42px] text-center text-sm font-bold cursor-default rounded-lg border-2 border-pink-400 text-white my-1 py-2   shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
+              <Listbox.Button
+                className="relative flex justify-center items-center w-full h-12 text-center text-xl font-bold cursor-default rounded-lg
+               border-2 border-pink-300 text-white tracking-wider my-1 py-2   shadow-md 
+               focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 "
+              >
                 <span className="block truncate">{currentPageState}</span>
                 {/* <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2"></span> */}
               </Listbox.Button>
@@ -125,19 +129,22 @@ const ImageSlider = ({ toggleScaled }: any) => {
                 leaveTo="opacity-0"
               >
                 {pages && pages.length !== 0 && (
-                  <Listbox.Options className="absolute w-full mt-1 max-h-60  overflow-auto rounded-md bg-white  text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                  <Listbox.Options
+                    className="absolute w-full mt-1 max-h-60  overflow-auto rounded-md bg-white  text-lg
+                   shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                  >
                     {pages.map((page) => (
                       <Listbox.Option
                         key={page.id}
                         className={({ active }) =>
-                          `relative w-full h-10 flex  justify-center items-center cursor-default select-none ${
+                          `relative w-full h-12 flex  justify-center items-center cursor-default select-none ${
                             active
-                              ? "bg-amber-100 text-amber-900"
-                              : "text-gray-900"
+                              ? "bg-pink-300 text-pink-900"
+                              : "bg-pink-200  text-slate-900"
                           } ${
                             currentPageState === page.name
-                              ? "font-bold"
-                              : "font-normal"
+                              ? "font-extrabold"
+                              : "font-bold"
                           }`
                         }
                         value={page.name}
@@ -167,7 +174,11 @@ const ImageSlider = ({ toggleScaled }: any) => {
             // onChange={(value) => handleFrame(value)}
           >
             <div className=" relative">
-              <Listbox.Button className="relative w-full h-[42px] text-center text-sm font-bold cursor-default rounded-lg border-2 border-violet-400 text-white my-1 py-2   shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
+              <Listbox.Button
+                className="relative  flex justify-center items-center w-full h-12 text-center text-xl font-bold cursor-default rounded-lg
+               border-2 border-violet-300 text-white tracking-wider my-1 py-2   shadow-md
+                focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300"
+              >
                 <span className="block truncate">{currentFrameState}</span>
                 {/* <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2"></span> */}
               </Listbox.Button>
@@ -178,20 +189,23 @@ const ImageSlider = ({ toggleScaled }: any) => {
                 leaveTo="opacity-0"
               >
                 {pages && pages.length !== 0 && (
-                  <Listbox.Options className="absolute w-full mt-1 max-h-60  overflow-auto rounded-md bg-white  text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                  <Listbox.Options
+                    className="absolute w-full mt-1 max-h-60  overflow-auto rounded-md bg-white  text-lg
+                    shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                  >
                     {currentPageState === "Pages"
                       ? pages[0]?.frames.map((frame) => (
                           <Listbox.Option
                             key={frame.id}
                             className={({ active }) =>
-                              `relative w-full h-10 flex  justify-center items-center cursor-default select-none ${
+                              `relative w-full h-12 flex  justify-center items-center cursor-default select-none  ${
                                 active
-                                  ? "bg-amber-100 text-amber-900"
-                                  : "text-gray-900"
+                                  ? "bg-violet-300 text-violet-900 drop-shadow-xl"
+                                  : "bg-violet-200  text-slate-900"
                               } ${
                                 currentFrameState === frame.name
-                                  ? "font-bold"
-                                  : "font-normal"
+                                  ? "font-extrabold"
+                                  : "font-bold"
                               }`
                             }
                             value={frame.name}
@@ -212,14 +226,14 @@ const ImageSlider = ({ toggleScaled }: any) => {
                               <Listbox.Option
                                 key={frame.id}
                                 className={({ active }) =>
-                                  `relative w-full h-10 flex  justify-center items-center cursor-default select-none ${
+                                  `relative w-full h-12 flex  justify-center items-center cursor-default select-none  ${
                                     active
-                                      ? "bg-amber-100 text-amber-900"
-                                      : "text-gray-900"
+                                      ? "bg-violet-300 text-violet-900 drop-shadow-xl"
+                                      : "bg-violet-200  text-slate-900"
                                   } ${
                                     currentFrameState === frame.name
-                                      ? "font-bold"
-                                      : "font-normal"
+                                      ? "font-extrabold"
+                                      : "font-bold"
                                   }`
                                 }
                                 value={frame.name}
@@ -228,7 +242,6 @@ const ImageSlider = ({ toggleScaled }: any) => {
                                 <div
                                   className="w-full h-full flex justify-center items-center"
                                   onClick={() => {
-                                    console.log(frame.id);
                                     handleFrame(frame.id);
                                   }}
                                 >
@@ -244,15 +257,7 @@ const ImageSlider = ({ toggleScaled }: any) => {
           </Listbox>
         </div>
       </div>
-      <div
-        className="w-full h-[calc(100%-54px)] flex justify-center items-center px-16 py-8"
-        onClick={() => {
-          console.log(currentPage);
-          console.log(currentPageState);
-          console.log(currentFrame);
-          console.log(currentFrameState);
-        }}
-      >
+      <div className="w-full h-[calc(100%-54px)] flex justify-center items-center px-16 py-8">
         {images.length !== 0
           ? currentPageState === "Pages" || currentFrameState === "Frames"
             ? images.map(
@@ -287,9 +292,6 @@ const ImageSlider = ({ toggleScaled }: any) => {
                         src={image.url}
                         alt="ImageImage"
                         className="max-h-full object-auto"
-                        onClick={() => {
-                          console.log(image.id);
-                        }}
                       />
                     </div>
                   )

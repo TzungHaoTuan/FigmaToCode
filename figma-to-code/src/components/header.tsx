@@ -41,7 +41,7 @@ export default function Header() {
       <div className="fixed w-screen h-24 z-20">
         <div
           ref={elementRef}
-          className=" w-full h-full backdrop-blur flex items-center text-slate-100 font-semibold  transition-all duration-500  ease-in-out px-24"
+          className=" w-full h-full  flex items-center text-slate-100 font-semibold  transition-all duration-500  ease-in-out px-24"
         >
           <Link
             href="/"

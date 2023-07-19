@@ -338,10 +338,10 @@ export default function Collect() {
   // }
 
   return (
-    <div className="w-full flex justify-center items-center mt-8">
+    <div className="w-full flex justify-center items-center mt-[56px] px-16">
       <button
         onClick={handleCollection}
-        className="w-2/3 h-12 flex justify-center items-center bg-slate-100  text-2xl font-bold  rounded-xl px-4"
+        className="w-full h-12 flex justify-center items-center bg-slate-100  text-2xl font-bold  rounded-xl px-4"
       >
         {isCollecting ? (
           <div className="relative w-6 h-6 animate-spin rounded-full bg-gradient-to-r from-indigo-600  to-pink-600 ">

@@ -327,77 +327,46 @@ export default function Grid() {
   });
 
   return (
-    <div
-      className="relative w-screen h-screen bg-color-ball-2  py-48  px-24"
-      onClick={() => console.log(collectionGrid)}
-    >
-      <div className="relative w-full h-84 bg-white/30 bg-opacity-20 rounded-3xl backdrop-blur backdrop-brightness-110 p-4">
+    <div className="relative bg-color-ball-2  py-48  px-24">
+      <div className="relative w-full h-84 bg-slate-900 bg-opacity-20 rounded-3xl backdrop-blur backdrop-brightness-110 p-4">
         {/* each collection */}
-        {Object.entries(collectionGrid).map(([key, item]) => (
-          <div
-            key={key}
-            className="w-full h-64  flex justify-between   bg-slate-900 bg-opacity-50 rounded-3xl  px-2 py-2 "
-          >
-            <img
-              src={item?.imageUrl}
-              className="w-60 h-full bg-white/50 object-cover overflow-scroll rounded-3xl  "
-            ></img>
-            <div className="w-[calc(100%-256px)] h-full ml-4">
-              <Tab.Group>
-                <Tab.List className="flex space-x-1 rounded-xl bg-blue-900/20 p-1">
-                  {Object.keys(categories).map((category) => (
-                    <Tab
-                      key={category}
-                      className={({ selected }) =>
-                        classNames(
-                          "w-full rounded-lg py-2.5 text-sm font-bold tracking-wide leading-5  ",
-                          "ring-pink ring-opacity-60 ring-offset-2 ring-offset-purple-400 focus:outline-none focus:ring-1",
-                          selected
-                            ? "bg-gradient-to-r from-pink-400/80 to-violet-600  text-slate-900"
-                            : "text-violet-600   hover:text-pink hover:shadow-[0_0px_20px_0px_rgba(0,0,0,1)] hover:shadow-violet-600"
-                        )
-                      }
-                      onClick={() => handleCodeStyle(category)}
+        {Object.keys(collectionGrid).length !== 0 ? (
+          Object.entries(collectionGrid).map(([key, item]) => (
+            <div
+              key={key}
+              className="w-full h-64  flex justify-between   bg-slate-900 bg-opacity-50 rounded-3xl mb-2 px-2 py-2 "
+            >
+              <img
+                src={item?.imageUrl}
+                className="w-60 h-full bg-white/50 object-cover overflow-scroll rounded-3xl  "
+              ></img>
+              <div className="w-[calc(100%-256px)] h-full ml-4">
+                <Tab.Group>
+                  <Tab.List className="flex space-x-1 rounded-xl bg-blue-900/20 p-1">
+                    {Object.keys(categories).map((category) => (
+                      <Tab
+                        key={category}
+                        className={({ selected }) =>
+                          classNames(
+                            "w-full rounded-lg py-2.5 text-sm font-bold tracking-wide leading-5  ",
+                            "ring-pink ring-opacity-60 ring-offset-2 ring-offset-purple-400 focus:outline-none focus:ring-1",
+                            selected
+                              ? "bg-gradient-to-r from-pink-400/80 to-violet-600  text-slate-900"
+                              : "text-violet-600   hover:text-pink hover:shadow-[0_0px_20px_0px_rgba(0,0,0,1)] hover:shadow-violet-600"
+                          )
+                        }
+                        onClick={() => handleCodeStyle(category)}
+                      >
+                        {category}
+                      </Tab>
+                    ))}
+                  </Tab.List>
+                  <Tab.Panels className="w-full h-[calc(100%-20px)]">
+                    <Tab.Panel
+                      className={classNames(
+                        "h-5/6 rounded-xl bg-[#1a1b26] shadow-[inset_0_0px_10px_0px_rgba(15,23,42,1)] ring-1 ring-violet-100 my-2 p-4 relative"
+                      )}
                     >
-                      {category}
-                    </Tab>
-                  ))}
-                </Tab.List>
-                <Tab.Panels className="w-full h-[calc(100%-20px)]">
-                  <Tab.Panel
-                    className={classNames(
-                      "h-5/6 rounded-xl bg-[#1a1b26] shadow-[inset_0_0px_10px_0px_rgba(15,23,42,1)] ring-1 ring-violet-100 my-2 p-4 relative"
-                    )}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                      stroke="currentColor"
-                      className="absolute right-8 bg-slate-900 cursor-pointer w-10 h-10 stroke-white ml-auto border-[1px] border-white hover:border-pink-600 hover:stroke-pink-600 rounded p-2"
-                      onClick={() => copydiv("taiRef")}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75"
-                      />
-                    </svg>
-
-                    <pre className="w-full h-full  overflow-auto no-scrollbar rounded">
-                      <code ref={taiRef} className="language-html no-scrollbar">
-                        {item?.tai}
-                        {/* {collectionGrid.map((collection: any) => collection.tai)} */}
-                      </code>
-                    </pre>
-                  </Tab.Panel>
-                  <Tab.Panel
-                    className={classNames(
-                      "h-5/6 divide-x flex rounded-xl bg-[#1a1b26] shadow-[inset_0_0px_10px_0px_rgba(15,23,42,1)] ring-1 ring-violet-100 my-2"
-                    )}
-                  >
-                    <div className="w-1/2 h-full p-4 relative">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
@@ -405,7 +374,7 @@ export default function Grid() {
                         strokeWidth={1.5}
                         stroke="currentColor"
                         className="absolute right-8 bg-slate-900 cursor-pointer w-10 h-10 stroke-white ml-auto border-[1px] border-white hover:border-pink-600 hover:stroke-pink-600 rounded p-2"
-                        onClick={() => copydiv("scTagRef")}
+                        onClick={() => copydiv("taiRef")}
                       >
                         <path
                           strokeLinecap="round"
@@ -413,55 +382,123 @@ export default function Grid() {
                           d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75"
                         />
                       </svg>
+
                       <pre className="w-full h-full  overflow-auto no-scrollbar rounded">
                         <code
-                          ref={scTagRef}
+                          ref={taiRef}
                           className="language-html no-scrollbar"
                         >
-                          {item?.scTag}
+                          {item?.tai}
+                          {/* {collectionGrid.map((collection: any) => collection.tai)} */}
+                        </code>
+                      </pre>
+                    </Tab.Panel>
+                    <Tab.Panel
+                      className={classNames(
+                        "h-5/6 divide-x flex rounded-xl bg-[#1a1b26] shadow-[inset_0_0px_10px_0px_rgba(15,23,42,1)] ring-1 ring-violet-100 my-2"
+                      )}
+                    >
+                      <div className="w-1/2 h-full p-4 relative">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth={1.5}
+                          stroke="currentColor"
+                          className="absolute right-8 bg-slate-900 cursor-pointer w-10 h-10 stroke-white ml-auto border-[1px] border-white hover:border-pink-600 hover:stroke-pink-600 rounded p-2"
+                          onClick={() => copydiv("scTagRef")}
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75"
+                          />
+                        </svg>
+                        <pre className="w-full h-full  overflow-auto no-scrollbar rounded">
+                          <code
+                            ref={scTagRef}
+                            className="language-html no-scrollbar"
+                          >
+                            {item?.scTag}
 
-                          {/* {collectionGrid.map(
+                            {/* {collectionGrid.map(
                           (collection: any) => collection.scTag
                         )} */}
-                        </code>
-                      </pre>
-                    </div>
+                          </code>
+                        </pre>
+                      </div>
 
-                    <div className="w-1/2 h-full relative p-4">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="absolute right-8 bg-slate-900 cursor-pointer w-10 h-10 stroke-white ml-auto border-[1px] border-white hover:border-pink-600 hover:stroke-pink-600 rounded p-2"
-                        onClick={() => copydiv("scStyleRef")}
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75"
-                        />
-                      </svg>
-                      <pre className="w-full h-full	overflow-auto no-scrollbar rounded">
-                        <code
-                          ref={scStyleRef}
-                          className="language-html no-scrollbar"
+                      <div className="w-1/2 h-full relative p-4">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth={1.5}
+                          stroke="currentColor"
+                          className="absolute right-8 bg-slate-900 cursor-pointer w-10 h-10 stroke-white ml-auto border-[1px] border-white hover:border-pink-600 hover:stroke-pink-600 rounded p-2"
+                          onClick={() => copydiv("scStyleRef")}
                         >
-                          {item?.scStyle}
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75"
+                          />
+                        </svg>
+                        <pre className="w-full h-full	overflow-auto no-scrollbar rounded">
+                          <code
+                            ref={scStyleRef}
+                            className="language-html no-scrollbar"
+                          >
+                            {item?.scStyle}
 
-                          {/* {collectionGrid.map(
+                            {/* {collectionGrid.map(
                           (collection: any) => collection.scStyle
                         )} */}
-                        </code>
-                      </pre>
-                    </div>
-                  </Tab.Panel>
-                </Tab.Panels>
-              </Tab.Group>
+                          </code>
+                        </pre>
+                      </div>
+                    </Tab.Panel>
+                  </Tab.Panels>
+                </Tab.Group>
+              </div>
+            </div>
+          ))
+        ) : (
+          <div>
+            <div className="w-full h-64  flex justify-between   bg-slate-900 bg-opacity-10 rounded-3xl mb-2 px-2 py-2">
+              <div className="w-60 h-full flex justify-center items-center bg-white/20 rounded-3xl  ">
+                <div className="opacity-20">
+                  <div className="relative w-16 h-16 animate-spin rounded-full bg-gradient-to-r from-slate-100  to-slate-900 ">
+                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-slate-100 rounded-full"></div>
+                  </div>
+                </div>
+              </div>
+              <div className="w-[calc(100%-256px)] h-full flex justify-center items-center bg-white/20 rounded-3xl  ml-4 ">
+                <div className="opacity-20">
+                  <div className="relative w-16 h-16 animate-spin rounded-full bg-gradient-to-r from-slate-100  to-slate-900 ">
+                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-slate-100 rounded-full"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="w-full h-64  flex justify-between   bg-slate-900 bg-opacity-10 rounded-3xl mb-2 px-2 py-2">
+              <div className="w-60 h-full flex justify-center items-center bg-white/20 rounded-3xl  ">
+                <div className="opacity-20">
+                  <div className="relative w-16 h-16 animate-spin rounded-full bg-gradient-to-r from-slate-100  to-slate-900 ">
+                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-slate-100 rounded-full"></div>
+                  </div>
+                </div>
+              </div>
+              <div className="w-[calc(100%-256px)] h-full flex justify-center items-center bg-white/20 rounded-3xl  ml-4 ">
+                <div className="opacity-20">
+                  <div className="relative w-16 h-16 animate-spin rounded-full bg-gradient-to-r from-slate-100  to-slate-900 ">
+                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-slate-100 rounded-full"></div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-        ))}
+        )}
       </div>
     </div>
   );

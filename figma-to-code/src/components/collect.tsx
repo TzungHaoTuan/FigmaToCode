@@ -180,7 +180,7 @@ export default function Collect() {
               }
             );
 
-            await Promise.all(childrenPromises);
+            await Promise.all(childrenPromises); //
 
             await Promise.all(childrenPromises);
           });

@@ -135,11 +135,12 @@ export default function Collect() {
       return Promise.all(framesPromises);
     });
     await Promise.all(pagesPromises);
+    dispatch(setCollect());
+    dispatch(setCollected(true));
     if (Object.keys(tags).length !== 0) {
       await handleTag();
     }
-    dispatch(setCollect());
-    dispatch(setCollected(true));
+
     console.log("Finish writing data");
   };
 
@@ -341,20 +342,24 @@ export default function Collect() {
     <div className="w-full flex justify-center items-center mt-[56px] px-16">
       <button
         onClick={handleCollection}
-        className="w-full h-12 flex justify-center items-center bg-slate-100  text-2xl font-bold  rounded-xl px-4"
+        className={`w-full h-12 flex justify-center items-center
+        ${
+          isCollecting
+            ? " text-pink-500 bg-slate-100"
+            : " text-indigo-600 bg-indigo-600 hover:text-indigo-600  hover:bg-slate-100"
+        }
+          text-slate-100  
+          
+          text-xl font-bold  rounded-xl px-4`}
       >
         {isCollecting ? (
-          <div className="relative w-6 h-6 animate-spin rounded-full bg-gradient-to-r from-indigo-600  to-pink-600 ">
+          <div className="relative w-6 h-6 animate-spin rounded-full bg-gradient-to-r from-indigo-600  to-pink-500 ">
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-4 h-4 bg-slate-100 rounded-full border-2 border-white"></div>
           </div>
         ) : (
           ""
         )}
-        <div
-          className={`${
-            isCollecting ? " text-pink-600" : " text-indigo-600"
-          } ml-4`}
-        >
+        <div className={` ml-4 `}>
           {isCollecting ? "Collecting..." : "Add to collection"}
         </div>
       </button>

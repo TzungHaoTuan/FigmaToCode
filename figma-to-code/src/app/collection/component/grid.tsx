@@ -327,14 +327,19 @@ export default function Grid() {
   });
 
   return (
-    <div className="relative bg-color-ball-2  py-48  px-24">
+    <div
+      className="relative bg-color-ball-2  py-48  px-24"
+      onClick={() => {
+        console.log(collectionGrid);
+      }}
+    >
       <div className="relative w-full h-84 bg-slate-900 bg-opacity-20 rounded-3xl backdrop-blur backdrop-brightness-110 p-4">
         {/* each collection */}
         {Object.keys(collectionGrid).length !== 0 ? (
           Object.entries(collectionGrid).map(([key, item]) => (
             <div
               key={key}
-              className="w-full h-64  flex justify-between   bg-slate-900 bg-opacity-50 rounded-3xl mb-2 px-2 py-2 "
+              className="w-full h-64  flex justify-between   bg-slate-900 bg-opacity-30 rounded-3xl mb-2 px-2 py-2 "
             >
               <img
                 src={item?.imageUrl}
@@ -342,17 +347,17 @@ export default function Grid() {
               ></img>
               <div className="w-[calc(100%-256px)] h-full ml-4">
                 <Tab.Group>
-                  <Tab.List className="flex space-x-1 rounded-xl bg-blue-900/20 p-1">
+                  <Tab.List className="flex space-x-1 rounded-xl bg-indigo-900/60 p-1">
                     {Object.keys(categories).map((category) => (
                       <Tab
                         key={category}
                         className={({ selected }) =>
                           classNames(
-                            "w-full rounded-lg py-2.5 text-sm font-bold tracking-wide leading-5  ",
+                            "w-full rounded-lg py-2.5 text-md font-bold tracking-wide leading-5  ",
                             "ring-pink ring-opacity-60 ring-offset-2 ring-offset-purple-400 focus:outline-none focus:ring-1",
                             selected
                               ? "bg-gradient-to-r from-pink-400/80 to-violet-600  text-slate-900"
-                              : "text-violet-600   hover:text-pink hover:shadow-[0_0px_20px_0px_rgba(0,0,0,1)] hover:shadow-violet-600"
+                              : "text-slate-100/80   hover:text-pink hover:shadow-[0_0px_20px_0px_rgba(0,0,0,1)] hover:shadow-slate-100"
                           )
                         }
                         onClick={() => handleCodeStyle(category)}

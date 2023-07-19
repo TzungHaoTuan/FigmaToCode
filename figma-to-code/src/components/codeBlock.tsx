@@ -638,7 +638,7 @@ export default function CodeBlock() {
                 key={category}
                 className={({ selected }) =>
                   classNames(
-                    "w-full rounded-lg py-2.5 text-sm font-bold tracking-wide leading-5  ",
+                    "w-full  h-12 rounded-lg py-2.5 text-lg font-extrabold tracking-wide leading-5  ",
                     "ring-pink ring-opacity-60 ring-offset-2 ring-offset-purple-400 focus:outline-none focus:ring-1",
                     selected
                       ? "bg-gradient-to-r from-pink-400/80 to-violet-600  text-slate-900"
@@ -651,10 +651,10 @@ export default function CodeBlock() {
               </Tab>
             ))}
           </Tab.List>
-          <Tab.Panels className="w-full max-h-screen h-[calc(100%-90px)] mt-2">
+          <Tab.Panels className="w-full max-h-screen h-[calc(100%-90px)] mt-3">
             <Tab.Panel
               className={classNames(
-                " h-5/6   rounded-xl bg-[#1a1b26] shadow-[inset_0_0px_10px_0px_rgba(15,23,42,1)] ring-1 ring-violet-100 my-8  pt-4"
+                " h-5/6   rounded-xl bg-[#1a1b26] shadow-[inset_0_0px_10px_0px_rgba(15,23,42,1)] ring-1 ring-violet-100 my-8  p-4 pt-8"
               )}
             >
               {isCopied ? (

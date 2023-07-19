@@ -115,12 +115,12 @@ const SearchForm = () => {
             type="submit"
             className={`${
               isConverting ? "w-56" : "w-44"
-            } h-12 flex justify-center items-center bg-indigo-700  text-lg font-semibold tracking-wider text-white 
-             hover:text-indigo-600  hover:bg-slate-300  ${
-               isConverting
-                 ? "text-indigo-600 bg-slate-300"
-                 : "text-white bg-indigo-700"
-             }   rounded-full  px-4 py-2 ${
+            } h-12 flex justify-center items-center  text-lg font-semibold tracking-wider  
+                 ${
+                   isConverting
+                     ? "text-indigo-600 bg-slate-300"
+                     : "text-white bg-indigo-700 hover:text-indigo-600 hover:bg-slate-300"
+                 }   rounded-full  px-4 py-2 ${
               isConverting ? "transition-all duration-300 ease-in-out" : ""
             }`}
           >

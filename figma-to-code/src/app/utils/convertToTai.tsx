@@ -35,11 +35,15 @@ export default function ConvertToTai(children: any) {
         } else if (child.fills[0]?.type === "SOLID") {
           return `<div className="w-[${child.absoluteBoundingBox.width}px] h-[${
             child.absoluteBoundingBox.height
-          }px] ml-[${child.absoluteBoundingBox.x}px] mt-[${
+          }px] left-[${Math.round(
+            child.absoluteBoundingBox.x
+          )}px] top-[${Math.round(
             child.absoluteBoundingBox.y
-          }px] bg-[rgb(${Math.round(child.fills[0].color.r * 255)},${Math.round(
-            child.fills[0].color.g * 255
-          )},${Math.round(child.fills[0].color.b * 255)})] ${
+          )}px] bg-[rgb(${Math.round(
+            child.fills[0].color.r * 255
+          )},${Math.round(child.fills[0].color.g * 255)},${Math.round(
+            child.fills[0].color.b * 255
+          )})] ${
             child.cornerRadius ? `rounded-[${child.cornerRadius}px]` : ""
           } ${
             child.strokes.length !== 0

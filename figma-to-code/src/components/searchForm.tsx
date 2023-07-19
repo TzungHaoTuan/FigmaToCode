@@ -19,12 +19,12 @@ const SearchForm = () => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsConverting(true);
-    setTimeout(() => {
-      handleScroll();
-    }, 3000);
-    setTimeout(() => {
-      setIsConverting(false);
-    }, 4000);
+    // setTimeout(() => {
+    //   handleScroll();
+    // }, 7000);
+    // setTimeout(() => {
+    //   setIsConverting(false);
+    // }, 8000);
 
     const url = urlRef.current?.value;
     if (url) {
@@ -43,6 +43,10 @@ const SearchForm = () => {
         dispatch(setCodeState(true));
       }
     }
+    setTimeout(() => {
+      handleScroll();
+      setIsConverting(false);
+    }, 1000);
   };
 
   const handleScroll = () => {

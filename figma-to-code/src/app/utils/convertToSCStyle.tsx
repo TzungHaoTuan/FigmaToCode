@@ -11,35 +11,34 @@ export default function ConvertToSCStyle(children: any) {
     ) {
       return ConvertToSCStyle(child.children);
     } else {
-      // if (child.type === "RECTANGLE") {
-      //   if (child.fills[0]?.type === "IMAGE") {
-      //     return `const ${child.name} = styled.img\`
-      //         width: ${child.absoluteBoundingBox.width}px;
-      //         height: ${Math.round(child.absoluteBoundingBox.height)}px;
-      //         left: ${child.absoluteBoundingBox.x}px;
-      //         top: ${child.absoluteBoundingBox.y}px;
-      //         ${
-      //           child.cornerRadius
-      //             ? `border-radius: ${child.cornerRadius}px`
-      //             : ""
-      //         }
-      //         ${
-      //           child.strokes.length !== 0
-      //             ? `border: ${
-      //                 child.strokeWeight
-      //               }px ${child.strokes[0].type.toLowerCase()} rgba(${Math.round(
-      //                 child.strokes[0]?.color.r * 255
-      //               )},${Math.round(
-      //                 child.strokes[0]?.color.g * 255
-      //               )},${Math.round(child.strokes[0]?.color.b * 255)},${
-      //                 child.strokes[0]?.color.a
-      //               })`
-      //             : ""
-      //         }
-      //   \``;
-      //   }
-      // } else
-      if (child.type === "TEXT") {
+      if (child.type === "RECTANGLE") {
+        if (child.fills[0]?.type === "SOLID") {
+          return `const ${child.name} = styled.img\`
+              width: ${Math.round(child.absoluteBoundingBox.width)}px;
+              height: ${Math.round(child.absoluteBoundingBox.height)}px;
+              left: ${Math.round(child.absoluteBoundingBox.x)}px;
+              top: ${Math.round(child.absoluteBoundingBox.y)}px;
+              ${
+                child.cornerRadius
+                  ? `border-radius: ${child.cornerRadius}px`
+                  : ""
+              }
+              ${
+                child.strokes.length !== 0
+                  ? `border: ${
+                      child.strokeWeight
+                    }px ${child.strokes[0].type.toLowerCase()} rgba(${Math.round(
+                      child.strokes[0]?.color.r * 255
+                    )},${Math.round(
+                      child.strokes[0]?.color.g * 255
+                    )},${Math.round(child.strokes[0]?.color.b * 255)},${
+                      child.strokes[0]?.color.a
+                    })`
+                  : ""
+              }
+        \``;
+        }
+      } else if (child.type === "TEXT") {
         return `const ${child.name} = styled.div\`
               width: ${child.absoluteBoundingBox.width}px;
               height: ${Math.round(child.absoluteBoundingBox.height)}px;

@@ -656,7 +656,7 @@ export default function CodeBlock() {
               </code>
               &gt;
               <span className="text-[#9AA5CE]">{child.characters}</span>
-              &lt;
+              &lt;/
               <code
                 className="nohighlight text-[#bb9af7]"
                 contentEditable
@@ -693,7 +693,7 @@ export default function CodeBlock() {
               >
                 {tags[child.id] ? tags[child.id] : child.name}
               </code>
-              &gt;&lt;
+              &gt;&lt;/
               <code
                 className="nohighlight text-[#bb9af7]"
                 contentEditable

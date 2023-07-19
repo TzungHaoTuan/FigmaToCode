@@ -66,7 +66,7 @@ const SearchForm = () => {
   return (
     <div className="w-full h-screen">
       <div className="w-full h-full  bg-slate-900 flex flex-col  items-center px-12 pt-24">
-        <div className=" text-5xl font-extrabold leading-tight tracking-wide text-slate-200 text-center mt-20">
+        <div className=" text-5xl font-extrabold leading-tight tracking-wide text-slate-200 text-center mt-28">
           Accelerate Layout Creation<br></br>with Effortless Conversion
         </div>
         <div className="text-xl  leading-tight  text-indigo-300 text-center mt-4">

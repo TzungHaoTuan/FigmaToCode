@@ -346,9 +346,8 @@ export default function Collect() {
         ${
           isCollecting
             ? " text-pink-500 bg-slate-100"
-            : " text-indigo-600 bg-indigo-600 hover:text-indigo-600  hover:bg-slate-100"
+            : " text-slate-100 bg-indigo-600 hover:text-indigo-600  hover:bg-slate-100"
         }
-          text-slate-100  
           
           text-xl font-bold  rounded-xl px-4`}
       >

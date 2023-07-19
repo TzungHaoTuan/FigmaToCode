@@ -843,7 +843,7 @@ export default function CodeBlock() {
                     />
                   </svg>
                 )}
-                <pre className="w-full h-[calc(100%-16px)]  overflow-auto no-scrollbar rounded whitespace-nowrap">
+                <pre className="w-full h-[calc(100%-16px)]  overflow-auto no-scrollbar rounded whitespace-nowrap pl-4">
                   <code className="nohighlight">
                     {convertToSCTagEdit(code)}
                   </code>

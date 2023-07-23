@@ -23,12 +23,11 @@ const Home: React.FC = () => {
     <Provider store={store}>
       {/* <Header /> */}
       <SearchForm />
-      <ImageSlider />
-      <Collect />
-      {frameIsScaled && <FrameScaled />}
-      <CodeBlock />
-      <FrameScaled />
-      <CodeBlock />
+      <ConvertedArea />
+      {/* <ImageSlider toggleScaled={toggleScaled} /> */}
+      {/* <Collect /> */}
+      {/* {frameIsScaled && <FrameScaled />} */}
+      {/* <CodeBlock /> */}
     </Provider>
   );
 };

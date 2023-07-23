@@ -1,9 +1,12 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, Fragment, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { setCurrentPage } from "@/store/currentPageSlice";
 import { setCurrentFrame } from "@/store/currentFrameSlice";
+
+import { Listbox, Transition } from "@headlessui/react";
+// import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 
 interface Image {
   page: string;
@@ -46,21 +49,232 @@ const ImageSlider = ({ toggleScaled }: any) => {
   const currentFrame = useSelector((state: any) => state.currentFrame.frame);
   const images = useSelector((state: ImagesState) => state.frameImages.images);
 
-  const [currentPageState, setCurrentPageState] = useState<string>();
-  const [currentFrameState, setCurrentFrameState] = useState<string>();
+  const [currentPageState, setCurrentPageState] = useState<string>("Pages");
+  const [currentFrameState, setCurrentFrameState] = useState<string>("Frames");
+
+  const [currentImageState, setCurrentImageState] = useState<any>(0);
+
+  const [isAnimating, setIsAnimating] = React.useState(false);
+  const [animationDirection, setAnimationDirection] = React.useState("next");
+
+  useEffect(() => {
+    console.log(pages);
+  }, [pages]);
+
+  useEffect(() => {
+    const selectedPage = pages.find((page) => page.name === currentPageState);
+    if (selectedPage) {
+      dispatch(setCurrentFrame(selectedPage.frames[0].id));
+      setCurrentFrameState(selectedPage.frames[0].name);
+    }
+  }, [currentPage, pages]);
 
   const dispatch = useDispatch();
 
   const handlePage = (name: string): void => {
-    setCurrentPageState(name);
     dispatch(setCurrentPage(name));
+    setCurrentPageState(name);
   };
-  const handleFrame = (id: string): void => {
-    setCurrentFrameState(id);
-    dispatch(setCurrentFrame(id));
+  const handleFrame = (value: any): void => {
+    dispatch(setCurrentFrame(value.id));
+    setCurrentFrameState(value.name);
   };
+
+  // images
+  const handleImageChange = (direction: any) => {
+    if (isAnimating) return;
+
+    setIsAnimating(true);
+    setAnimationDirection(direction);
+
+    // Wait for the animation to finish before updating the current image
+    setTimeout(() => {
+      if (direction === "next") {
+        setCurrentImageState((prevImage: any) =>
+          // 是不是最後一張
+          prevImage === images.length - 1 ? 0 : prevImage + 1
+        );
+      } else if (direction === "prev") {
+        setCurrentImageState((prevImage: any) =>
+          // 是不是第一張
+          prevImage === 0 ? images.length - 1 : prevImage - 1
+        );
+      }
+      setIsAnimating(false);
+    }, 800); // Adjust the animation duration as needed
+  };
+
+  //
   return (
-    <div>
+    <div className="w-1/2 h-full flex flex-col">
+      <div className="flex justify-between px-16">
+        <div className="w-[calc((100%-32px)/2)]">
+          <Listbox
+            value={currentPageState}
+            onChange={(value) => handlePage(value)}
+          >
+            <div className=" relative mt-1">
+              <Listbox.Button className="relative w-full text-center cursor-default rounded-lg bg-white py-2   shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
+                <span className="block truncate">{currentPageState}</span>
+                {/* <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2"></span> */}
+              </Listbox.Button>
+              <Transition
+                as={Fragment}
+                leave="transition ease-in duration-100"
+                leaveFrom="opacity-100"
+                leaveTo="opacity-0"
+              >
+                <Listbox.Options className="absolute w-full mt-1 max-h-60 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                  {pages &&
+                    pages.length !== 0 &&
+                    pages.map((page) => (
+                      <Listbox.Option
+                        key={page.id}
+                        className={({ active }) =>
+                          `relative cursor-default select-none py-2  text-center ${
+                            active
+                              ? "bg-amber-100 text-amber-900"
+                              : "text-gray-900"
+                          } ${
+                            currentPageState === page.name
+                              ? "font-bold"
+                              : "font-normal"
+                          }`
+                        }
+                        value={page.name}
+
+                        // onClick={() => handlePage(page.name)}
+                      >
+                        {page.name}
+                      </Listbox.Option>
+                    ))}
+                </Listbox.Options>
+              </Transition>
+            </div>
+          </Listbox>
+        </div>
+
+        <div className="w-[calc((100%-32px)/2)]">
+          <Listbox
+            value={currentFrameState}
+            onChange={(value) => handleFrame(value)}
+          >
+            <div className=" relative mt-1">
+              <Listbox.Button className="relative w-full text-center cursor-default rounded-lg bg-white py-2   shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
+                <span className="block truncate">{currentFrameState}</span>
+                {/* <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2"></span> */}
+              </Listbox.Button>
+              <Transition
+                as={Fragment}
+                leave="transition ease-in duration-100"
+                leaveFrom="opacity-100"
+                leaveTo="opacity-0"
+              >
+                <Listbox.Options className="absolute w-full mt-1 max-h-60  overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                  {pages &&
+                    pages.length !== 0 &&
+                    (currentPageState === "Pages"
+                      ? pages[0]?.frames.map((frame) => (
+                          <Listbox.Option
+                            key={frame.id}
+                            className={({ active }) =>
+                              `relative cursor-default select-none px-4 py-2 text-center ${
+                                active
+                                  ? "bg-amber-100 text-amber-900"
+                                  : "text-gray-900"
+                              } ${
+                                currentFrameState === frame.name
+                                  ? "font-bold"
+                                  : "font-normal"
+                              }`
+                            }
+                            value={{ id: frame.id, name: frame.name }}
+                          >
+                            {frame.name}
+                          </Listbox.Option>
+                        ))
+                      : pages
+                          .filter((page) => page.name === currentPageState)
+                          .map((page) =>
+                            page.frames.map((frame) => (
+                              <Listbox.Option
+                                key={frame.id}
+                                className={({ active }) =>
+                                  `relative cursor-default select-none py-2 pl-10 pr-4 ${
+                                    active
+                                      ? "bg-amber-100 text-amber-900"
+                                      : "text-gray-900"
+                                  } ${
+                                    currentFrameState === frame.name
+                                      ? "font-bold"
+                                      : "font-normal"
+                                  }`
+                                }
+                                value={{ id: frame.id, name: frame.name }}
+                              >
+                                {frame.name}
+                              </Listbox.Option>
+                            ))
+                          ))}
+                </Listbox.Options>
+              </Transition>
+            </div>
+          </Listbox>
+        </div>
+      </div>
+      <div
+        className="w-full h-[calc(100%-40px)] flex justify-center items-center px-16 py-8"
+        onClick={() => {
+          console.log(currentPage);
+          console.log(currentPageState);
+          console.log(currentFrame);
+          console.log(currentFrameState);
+        }}
+      >
+        {images.length !== 0
+          ? currentPage !== currentPageState &&
+            currentFrame !== currentFrameState
+            ? images.map(
+                (image) =>
+                  image.page === pages[0].name &&
+                  image.id === pages[0].frames[0].id && (
+                    <div
+                      key={image.id}
+                      className="h-full flex justify-center items-center"
+                    >
+                      <img
+                        key={image.id}
+                        src={image.url}
+                        alt="ImageImage"
+                        className="max-h-full object-auto"
+                      />
+                    </div>
+                  )
+              )
+            : images.map(
+                (image) =>
+                  image.page === currentPageState &&
+                  image.id === currentFrame && (
+                    <div
+                      key={image.id}
+                      className="h-full flex justify-center items-center"
+                    >
+                      <img
+                        key={image.id}
+                        src={image.url}
+                        alt="ImageImage"
+                        className="max-h-full object-auto"
+                      />
+                    </div>
+                  )
+              )
+          : null}
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="w-1/2">
       <div className="flex">
         {pages &&
           pages.map((page) => (

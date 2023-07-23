@@ -8,6 +8,7 @@ import SearchForm from "@/components/searchForm";
 import ImageSlider from "@/components/imageSlider";
 import CodeBlock from "@/components/codeBlock";
 import FrameScaled from "@/components/frameScaled";
+import ConvertedArea from "@/components/convertedArea";
 
 import Collect from "@/components/collect";
 
@@ -20,7 +21,7 @@ const Home: React.FC = () => {
     <Provider store={store}>
       <Header />
       <SearchForm />
-      <ImageSlider toggleScaled={toggleScaled} />
+      <ImageSlider />
       <Collect />
       {frameIsScaled && <FrameScaled />}
       <CodeBlock />

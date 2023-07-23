@@ -3,19 +3,21 @@ import Link from "next/link";
 
 export default function Header() {
   return (
-    <div>
-      <Link
-        href="/pages/collection"
-        className="border-2 border-black rounded-xl text-black px-4"
-      >
-        Collection
-      </Link>
-      <Link
-        href="/pages/profile"
-        className="border-2 border-black rounded-xl text-black px-4"
-      >
-        Profile
-      </Link>
+    <div className="fixed w-screen h-24">
+      <div className="w-full h-full flex items-center text-white font-semibold bg-white bg-opacity-10 px-16">
+        <Link href="/" className="text-2xl font-extrabold">
+          Figma to Code
+        </Link>
+        <Link href="/pages/collection" className="ml-auto ">
+          Collection
+        </Link>
+        <Link
+          href="/pages/profile"
+          className="ml-16 w-8 h-8 border-2 border-white rounded-full px-4"
+        >
+          P
+        </Link>
+      </div>
     </div>
   );
 }

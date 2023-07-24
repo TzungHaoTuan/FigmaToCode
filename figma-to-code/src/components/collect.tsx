@@ -15,6 +15,8 @@ import {
   addDoc,
   deleteDoc,
   updateDoc,
+  DocumentData,
+  DocumentReference,
 } from "firebase/firestore";
 
 import { db } from "../app/firebase/firebase";
@@ -27,7 +29,6 @@ export default function Collect() {
   const data = useSelector((state: any) => state.figmaData.data);
   const currentPage = useSelector((state: any) => state.currentPage.page);
   const currentFrame = useSelector((state: any) => state.currentFrame.frame);
-  const userCollection = useSelector((state: any) => state.collection.frames);
   const frameImages = useSelector((state: any) => state.frameImages.images);
   const tags = useSelector((state: any) => state.tag.tags);
   const isCollecting = useSelector((state: any) => state.collect.isCollecting);
@@ -41,19 +42,19 @@ export default function Collect() {
   const uid = user?.profile.uid;
   const userName = user?.profile.name;
 
-  useEffect(() => {
-    user.profile.uid ? console.log(user.profile.uid) : console.log("Not login");
-    // onAuthStateChanged(auth, (user: any) => {
-    //   if (user) {
-    //     // 已登入
-    //     console.log(user);
-    //     const uid = user.uid;
-    //     console.log(uid);
-    //   } else {
-    //     console.log("未登入");
-    //   }
-    // });
-  }, [isLogin]);
+  // useEffect(() => {
+  //   user.profile.uid ? console.log(user.profile.uid) : console.log("Not login");
+  //   // onAuthStateChanged(auth, (user: any) => {
+  //   //   if (user) {
+  //   //     // 已登入
+  //   //     console.log(user);
+  //   //     const uid = user.uid;
+  //   //     console.log(uid);
+  //   //   } else {
+  //   //     console.log("未登入");
+  //   //   }
+  //   // });
+  // }, [isLogin]);
   // const uid = onAuthStateChanged(auth, (user: any) => user.id);
 
   const handleCollection = async () => {
@@ -61,24 +62,24 @@ export default function Collect() {
       dispatch(setCollect());
 
       await frameImages
-        .filter((image: any) => image.id === currentFrame)
+        .filter((image: any) => image.id === currentFrame?.id)
         .map((image: any) =>
           uploadImage(
             image.id,
             "https://corsproxy.io/?" + encodeURIComponent(image.url)
           )
         );
-      await handleCollectionState();
+      // await handleCollectionState();
     }
   };
 
-  const handleCollectionState = async () => {
-    dispatch(
-      setCollection([
-        { name: data.name, page: currentPage, frame: currentFrame },
-      ])
-    );
-  };
+  // const handleCollectionState = async () => {
+  //   dispatch(
+  //     setCollection([
+  //       { name: data.name, page: currentPage, frame: currentFrame },
+  //     ])
+  //   );
+  // };
 
   const addDocument = async (imageId: any, snapshot: any) => {
     console.log("start writing data");
@@ -109,7 +110,7 @@ export default function Collect() {
         const frameDocSnapshot = await getDoc(frameDocRef);
         const frameData = frameDocSnapshot.data();
 
-        if (frame.id === currentFrame) {
+        if (frame.id === currentFrame.id) {
           await setDoc(frameDocRef, {
             ...frameData,
             id: frame.id,
@@ -126,7 +127,7 @@ export default function Collect() {
         const frameRef = doc(framesRef, frame.name);
         const childrenRef = collection(frameRef, "children");
         const childrenPromises = frame.children.map((child: any) => {
-          return setDoc(doc(childrenRef, child.name), { children: child });
+          return setDoc(doc(childrenRef, child.name), child);
         });
 
         return Promise.all(childrenPromises);
@@ -145,85 +146,157 @@ export default function Collect() {
   };
 
   const handleTag = async () => {
-    const usersRef = doc(db, "users", uid);
-    const collectionRef = collection(usersRef, "collection");
-    const collectionSnapshot = await getDocs(collectionRef);
-
-    const collectionPromises = collectionSnapshot.docs.map(
-      async (collectionDoc) => {
-        const pagesRef = collection(collectionDoc.ref, "pages");
-        const pagesSnapshot = await getDocs(pagesRef);
-
-        const pagesPromises = pagesSnapshot.docs.map(async (pageDoc) => {
-          const framesRef = collection(pageDoc.ref, "frames");
-          const framesSnapshot = await getDocs(framesRef);
-
-          const framesPromises = framesSnapshot.docs.map(async (frameDoc) => {
-            const childrenRef = collection(frameDoc.ref, "children");
-            const childrenSnapshot = await getDocs(childrenRef);
-
-            const childrenPromises = childrenSnapshot.docs.map(
-              async (childDoc) => {
-                const childDocObj = childDoc.data().children;
-                const childrenArray = childDocObj.children;
-
-                if (childrenArray) {
-                  const childrenArrayInside = childrenArray[1]?.children;
-                  if (childrenArrayInside) {
-                    for (const child of childrenArrayInside) {
-                      if (tags[child.id]) {
-                        child.name = tags[child.id];
-                      }
-                      await updateDoc(childDoc.ref, { children: childDocObj });
-                    }
-                  }
-                }
-              }
-            );
-
-            await Promise.all(childrenPromises); //
-
-            await Promise.all(childrenPromises);
-          });
-
-          await Promise.all(framesPromises);
-        });
-
-        await Promise.all(pagesPromises);
-      }
+    // Assuming you know the user ID, collection ID, page ID, and frame ID
+    const frameRef = doc(
+      db,
+      "users",
+      uid,
+      "collection",
+      data.name,
+      "pages",
+      currentPage,
+      "frames",
+      currentFrame.name
     );
-
-    await Promise.all(collectionPromises);
-  };
-
-  const newhandleTag = async (tag: any) => {
-    console.log(tag);
-    const usersRef = doc(db, "users", uid);
-    const collectionRef = collection(usersRef, "collection");
-    const collectionSnapshot = await getDocs(collectionRef);
-    const pagesRef = collection(collectionRef, "pages");
-    const pagesSnapshot = await getDocs(pagesRef);
-
-    const firstPageDoc = pagesSnapshot.docs[0];
-    const framesRef = collection(firstPageDoc.ref, "frames");
-    const framesSnapshot = await getDocs(framesRef);
-
-    const firstFrameDoc = framesSnapshot.docs[1];
-    const childrenRef = collection(firstFrameDoc.ref, "children");
+    const childrenRef = collection(frameRef, "children");
     const childrenSnapshot = await getDocs(childrenRef);
 
-    const firstChildDoc = childrenSnapshot.docs[2];
-    const childrenData = firstChildDoc.data();
-    console.log(childrenData);
-    const children = childrenData.children;
-    children.children[0].name = "Image";
-    await updateDoc(firstChildDoc.ref, { children: children });
-    // if (childrenData && childrenData.children) {
-    //   const children = childrenData.children;
-    //   children[1].children[0].name = tag["103:157"];
-    //   await updateDoc(firstChildDoc.ref, { children: children });
-    // }
+    const childrenPromises = childrenSnapshot.docs.map((childDoc) =>
+      updateChildren(childDoc, tags)
+    );
+
+    await Promise.all(childrenPromises);
   };
+
+  async function updateChildRecursive(
+    docData: DocumentData,
+    tags: { [x: string]: any }
+  ) {
+    // Clone the document data
+    let clonedData = { ...docData };
+
+    // Flag to check if an update has been made
+    let updated = false;
+
+    // Base case: if the object has an 'id' field and that id exists in tags
+    if (clonedData.id && tags[clonedData.id]) {
+      // Update the name
+      clonedData.name = tags[clonedData.id];
+      updated = true;
+    }
+
+    // Recursive case: if the property 'children' is an array, recurse on each child object
+    if (Array.isArray(clonedData.children)) {
+      for (let i = 0; i < clonedData.children.length; i++) {
+        const child = clonedData.children[i];
+        if (typeof child === "object") {
+          // Get the updated child
+          const [updatedChild, childUpdated] = await updateChildRecursive(
+            child,
+            tags
+          );
+          // If the child was updated, replace it in the children array
+          if (childUpdated) {
+            clonedData.children[i] = updatedChild;
+            updated = true;
+          }
+        }
+      }
+    }
+
+    return [clonedData, updated];
+  }
+
+  async function updateChildren(childDoc: any, tags: any) {
+    const docData = childDoc.data();
+    const [updatedData, dataUpdated] = await updateChildRecursive(
+      docData,
+      tags
+    );
+    // If the data was updated, update the document in Firestore
+    if (dataUpdated) {
+      await updateDoc(childDoc.ref, updatedData);
+    }
+  }
+
+  // const handleTag = async () => {
+  //   const usersRef = doc(db, "users", uid);
+  //   const collectionRef = collection(usersRef, "collection");
+  //   const collectionSnapshot = await getDocs(collectionRef);
+
+  //   const collectionPromises = collectionSnapshot.docs.map(
+  //     async (collectionDoc) => {
+  //       const pagesRef = collection(collectionDoc.ref, "pages");
+  //       const pagesSnapshot = await getDocs(pagesRef);
+
+  //       const pagesPromises = pagesSnapshot.docs.map(async (pageDoc) => {
+  //         const framesRef = collection(pageDoc.ref, "frames");
+  //         const framesSnapshot = await getDocs(framesRef);
+
+  //         const framesPromises = framesSnapshot.docs.map(async (frameDoc) => {
+  //           const childrenRef = collection(frameDoc.ref, "children");
+  //           const childrenSnapshot = await getDocs(childrenRef);
+
+  //           const childrenPromises = childrenSnapshot.docs.map(
+  //             async (childDoc) => {
+  //               const childDocObj = childDoc.data().children;
+  //               const childrenArray = childDocObj.children;
+
+  //               if (childrenArray) {
+  //                 const childrenArrayInside = childrenArray[1]?.children;
+  //                 if (childrenArrayInside) {
+  //                   for (const child of childrenArrayInside) {
+  //                     if (tags[child.id]) {
+  //                       child.name = tags[child.id];
+  //                     }
+  //                     await updateDoc(childDoc.ref, { children: childDocObj });
+  //                   }
+  //                 }
+  //               }
+  //             }
+  //           );
+
+  //           await Promise.all(childrenPromises);
+  //         });
+
+  //         await Promise.all(framesPromises);
+  //       });
+
+  //       await Promise.all(pagesPromises);
+  //     }
+  //   );
+
+  //   await Promise.all(collectionPromises);
+  // };
+
+  // const newhandleTag = async (tag: any) => {
+  //   console.log(tag);
+  //   const usersRef = doc(db, "users", uid);
+  //   const collectionRef = collection(usersRef, "collection");
+  //   const collectionSnapshot = await getDocs(collectionRef);
+  //   const pagesRef = collection(collectionRef, "pages");
+  //   const pagesSnapshot = await getDocs(pagesRef);
+
+  //   const firstPageDoc = pagesSnapshot.docs[0];
+  //   const framesRef = collection(firstPageDoc.ref, "frames");
+  //   const framesSnapshot = await getDocs(framesRef);
+
+  //   const firstFrameDoc = framesSnapshot.docs[1];
+  //   const childrenRef = collection(firstFrameDoc.ref, "children");
+  //   const childrenSnapshot = await getDocs(childrenRef);
+
+  //   const firstChildDoc = childrenSnapshot.docs[2];
+  //   const childrenData = firstChildDoc.data();
+  //   console.log(childrenData);
+  //   const children = childrenData.children;
+  //   children.children[0].name = "Image";
+  //   await updateDoc(firstChildDoc.ref, { children: children });
+  //   // if (childrenData && childrenData.children) {
+  //   //   const children = childrenData.children;
+  //   //   children[1].children[0].name = tag["103:157"];
+  //   //   await updateDoc(firstChildDoc.ref, { children: children });
+  //   // }
+  // };
 
   // const handleTag = async (tags: any) => {
   //   const productsRef = doc(db, "products", "data");
@@ -339,7 +412,10 @@ export default function Collect() {
   // }
 
   return (
-    <div className="w-full flex justify-center items-center mt-[56px] px-16">
+    <div
+      className="w-full flex justify-center items-center mt-[56px] px-16"
+      onClick={() => console.log([data.name, currentPage, currentFrame])}
+    >
       <button
         onClick={handleCollection}
         className={`w-full h-12 flex justify-center items-center

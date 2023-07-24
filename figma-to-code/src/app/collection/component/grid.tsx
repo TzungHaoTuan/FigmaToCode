@@ -111,20 +111,19 @@ export default function Grid() {
             const childrenSnapshot = await getDocs(
               collection(frameDoc.ref, "children")
             );
-            const childrenArray = childrenSnapshot.docs.map(
-              (childDoc) => childDoc.data().children
+            const childDocData = childrenSnapshot.docs.map((childDoc) =>
+              childDoc.data()
             );
             if (!collectionFrames[frameData.id]) {
               collectionFrames[frameData.id] = {
                 imagePath: frameData.storagePath,
-                children: childrenArray,
+                children: childDocData,
               };
             }
           }
         }
       }
     }
-    console.log(collectionFrames);
     return collectionFrames;
   }
 

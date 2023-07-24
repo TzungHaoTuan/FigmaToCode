@@ -88,7 +88,10 @@ export const handleFetch = async (url: string) => {
       })
     );
     const currentPage = await pages[0].name;
-    const currentFrame = await pages[0].frames[0].id;
+    const currentFrame = await {
+      id: pages[0].frames[0].id,
+      name: pages[0].frames[0].name,
+    };
 
     return { data, pages, currentPage, currentFrame, frameImages, images };
   }

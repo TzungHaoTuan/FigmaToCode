@@ -81,7 +81,7 @@ export default function CodeBlock() {
         codeRaw = pages
           .filter((page: any) => page.name === currentPage)[0]
           .frames.filter(
-            (frame: any) => frame.id === currentFrame
+            (frame: any) => frame.id === currentFrame.id
           )[0]?.children;
         setCode(codeRaw); // array of elements object
       }
@@ -187,13 +187,13 @@ export default function CodeBlock() {
   };
 
   //
-  const filterPagesToFrame = (pages: any) => {
-    const page = pages?.filter((page: any) => page.name === currentPage)[0];
-    const frame = page?.frames.filter(
-      (frame: any) => frame.id === currentFrame
-    );
-    // console.log(frame.name);
-  };
+  // const filterPagesToFrame = (pages: any) => {
+  //   const page = pages?.filter((page: any) => page.name === currentPage)[0];
+  //   const frame = page?.frames.filter(
+  //     (frame: any) => frame.id === currentFrame.id
+  //   );
+  //   // console.log(frame.name);
+  // };
 
   // Tailwind
   const renderTai = (children: any) => {

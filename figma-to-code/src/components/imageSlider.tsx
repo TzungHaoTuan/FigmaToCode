@@ -64,7 +64,12 @@ const ImageSlider = ({ toggleScaled }: any) => {
   useEffect(() => {
     const selectedPage = pages.find((page) => page.name === currentPageState);
     if (selectedPage) {
-      dispatch(setCurrentFrame(selectedPage.frames[0].id));
+      dispatch(
+        setCurrentFrame({
+          id: selectedPage.frames[0].id,
+          name: selectedPage.frames[0].name,
+        })
+      );
       setCurrentFrameState(selectedPage.frames[0].name);
     }
   }, [currentPage, pages]);
@@ -74,37 +79,40 @@ const ImageSlider = ({ toggleScaled }: any) => {
   const handlePage = (name: string): void => {
     dispatch(setCurrentPage(name));
   };
-  const handleFrame = (id: any): void => {
-    dispatch(setCurrentFrame(id));
+  const handleFrame = (id: string, name: string): void => {
+    dispatch(setCurrentFrame({ id, name }));
   };
 
   // images
-  const handleImageChange = (direction: any) => {
-    if (isAnimating) return;
+  // const handleImageChange = (direction: any) => {
+  //   if (isAnimating) return;
 
-    setIsAnimating(true);
-    setAnimationDirection(direction);
+  //   setIsAnimating(true);
+  //   setAnimationDirection(direction);
 
-    // Wait for the animation to finish before updating the current image
-    setTimeout(() => {
-      if (direction === "next") {
-        setCurrentImageState((prevImage: any) =>
-          // 是不是最後一張
-          prevImage === images.length - 1 ? 0 : prevImage + 1
-        );
-      } else if (direction === "prev") {
-        setCurrentImageState((prevImage: any) =>
-          // 是不是第一張
-          prevImage === 0 ? images.length - 1 : prevImage - 1
-        );
-      }
-      setIsAnimating(false);
-    }, 800); // Adjust the animation duration as needed
-  };
+  //   // Wait for the animation to finish before updating the current image
+  //   setTimeout(() => {
+  //     if (direction === "next") {
+  //       setCurrentImageState((prevImage: any) =>
+  //         // 是不是最後一張
+  //         prevImage === images.length - 1 ? 0 : prevImage + 1
+  //       );
+  //     } else if (direction === "prev") {
+  //       setCurrentImageState((prevImage: any) =>
+  //         // 是不是第一張
+  //         prevImage === 0 ? images.length - 1 : prevImage - 1
+  //       );
+  //     }
+  //     setIsAnimating(false);
+  //   }, 800); // Adjust the animation duration as needed
+  // };
 
   //
   return (
-    <div className="w-full h-2/3 flex flex-col">
+    <div
+      className="w-full h-2/3 flex flex-col"
+      onClick={() => console.log([currentPage, currentFrame])}
+    >
       <div className="flex justify-between px-16">
         <div className="w-[calc((100%-32px)/2)]">
           {/* page 選單*/}
@@ -213,7 +221,7 @@ const ImageSlider = ({ toggleScaled }: any) => {
                           >
                             <div
                               className="w-full h-full flex justify-center items-center"
-                              onClick={() => handleFrame(frame.id)}
+                              onClick={() => handleFrame(frame.id, frame.name)}
                             >
                               {frame.name}
                             </div>
@@ -242,7 +250,7 @@ const ImageSlider = ({ toggleScaled }: any) => {
                                 <div
                                   className="w-full h-full flex justify-center items-center"
                                   onClick={() => {
-                                    handleFrame(frame.id);
+                                    handleFrame(frame.id, frame.name);
                                   }}
                                 >
                                   {frame.name}
@@ -281,7 +289,7 @@ const ImageSlider = ({ toggleScaled }: any) => {
             : images.map(
                 (image) =>
                   image.page === currentPageState &&
-                  image.id === currentFrame && (
+                  image.id === currentFrame.id && (
                     <div
                       key={image.id}
                       className="h-full flex justify-center items-center"

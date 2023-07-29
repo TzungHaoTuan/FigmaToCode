@@ -10,9 +10,7 @@ import {
   GoogleAuthProvider,
 } from "firebase/auth";
 import { app } from "@/app/firebase/firebase";
-import { Provider } from "react-redux";
 
-import store from "@/store/store";
 import { setLogin, setLogout } from "@/store/userSlice";
 
 export default function FirebaseAuth() {
@@ -30,14 +28,22 @@ export default function FirebaseAuth() {
 
         console.log("isLogin");
 
-        dispatch(
-          setLogin({
-            name,
-            email,
-            photo,
-            uid,
-          })
-        );
+        const payload: {
+          name: string;
+          email: string;
+          uid: string;
+          photo?: string;
+        } = {
+          name,
+          email,
+          uid,
+        };
+
+        if (photo) {
+          payload.photo = photo;
+        }
+
+        dispatch(setLogin(payload));
       } else {
         dispatch(setLogout());
 

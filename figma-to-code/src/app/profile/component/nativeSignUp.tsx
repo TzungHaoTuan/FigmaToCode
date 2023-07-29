@@ -19,7 +19,6 @@ const nativeSignUp = (
       console.log(user);
       updateProfile(auth.currentUser, {
         displayName: name,
-        photoURL: userAvatar,
       })
         .then(() => {
           console.log("Profile updated successfully");

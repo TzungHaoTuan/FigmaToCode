@@ -1,16 +1,8 @@
 "use client";
-import React from "react";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import {
-  getAuth,
-  signInWithPopup,
-  signOut,
-  onAuthStateChanged,
-  GoogleAuthProvider,
-} from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { app } from "@/app/firebase/firebase";
-
 import { setLogin, setLogout } from "@/store/userSlice";
 
 export default function FirebaseAuth() {

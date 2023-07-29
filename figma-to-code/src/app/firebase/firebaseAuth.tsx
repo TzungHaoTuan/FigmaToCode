@@ -23,18 +23,25 @@ export default function FirebaseAuth() {
     onAuthStateChanged(auth, (user: any) => {
       if (user) {
         // 已登入
-        console.log(user.displayName, user.email);
+        const name = user.displayName;
+        const email = user.email;
+        const photo = user.photoURL;
+        const uid = user.uid;
+
+        console.log("isLogin");
+
         dispatch(
           setLogin({
-            name: user.displayName,
-            email: user.email,
-            photo: user.photoURL,
-            uid: user.uid,
+            name,
+            email,
+            photo,
+            uid,
           })
         );
       } else {
         dispatch(setLogout());
-        console.log("未登入");
+
+        console.log("isLogout");
       }
     });
   }, []);

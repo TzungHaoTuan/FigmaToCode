@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { setLogin } from "@/store/userSlice";
 import { setLogout } from "@/store/userSlice";
+import nativeSignUp from "./nativeSignUp";
+import nativeSignIn from "./nativeSignIn";
 
 import {
   getAuth,
@@ -17,11 +19,17 @@ import store from "@/store/store";
 import { app } from "@/app/firebase/firebase";
 import Image from "next/image";
 import GoogleIcon from "../../icons/google.ico";
-import userAvatar from "../../images/user.png";
+import isLogOutAvatar from "../../images/user.png";
 
 function NewMain() {
-  // const [userName, setUserName] = useState("");
-  // const [userEmail, setUserEmail] = useState("");
+  const auth = getAuth(app);
+
+  const [signUpName, setSignUpName] = useState("");
+  const [signUpEmail, setSignUpEmail] = useState("");
+  const [signUpPassword, setSignUpPassword] = useState("");
+
+  const [signInEmail, setSignInEmail] = useState("user@gmail.com");
+  const [signInPassword, setSignInPassword] = useState("user12345");
 
   const provider = new GoogleAuthProvider();
   provider.setCustomParameters({
@@ -30,17 +38,17 @@ function NewMain() {
 
   const dispatch = useDispatch();
   const user = useSelector((state: any) => state.user);
+  const name = user.profile.name;
+  const email = user.profile.email;
+  const photo = user.profile.photo;
+  const uid = user.profile.uid;
   const isLogin = user.profile.login;
-
-  const auth = getAuth(app);
 
   useEffect(() => {
     onAuthStateChanged(auth, (user: any) => {
       if (user) {
         // 已登入
         console.log(user);
-        // setUserName(user.displayName);
-        // setUserEmail(user.email);
 
         dispatch(
           setLogin({
@@ -50,18 +58,12 @@ function NewMain() {
             uid: user.uid,
           })
         );
-        const uid = user.uid;
-        console.log(uid);
       } else {
         // 未登入
-        // setUserName("");
-        // setUserEmail("");
         dispatch(setLogout());
-
         console.log("未登入");
       }
     });
-    console.log(user);
   }, []);
 
   const handleGoogleSignIn = async (auth: any) => {
@@ -71,8 +73,6 @@ function NewMain() {
         const credential = GoogleAuthProvider.credentialFromResult(result);
         const token = credential?.accessToken;
         const user = result.user;
-        // console.log(token);
-        // console.log(user);
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -92,6 +92,40 @@ function NewMain() {
       .catch((error) => {
         // error
       });
+  };
+
+  const handleSignUpSubmit = (event: any) => {
+    event.preventDefault();
+    nativeSignUp(auth, signUpName, signUpEmail, signUpPassword);
+  };
+
+  const handleSignInSubmit = async (event: any) => {
+    event.preventDefault();
+
+    try {
+      const user = await nativeSignIn(auth, signInEmail, signInPassword);
+
+      if (user) {
+        const name = user.displayName;
+        const email = user.email;
+        const photo = user.photoURL;
+        const uid = user.uid;
+
+        dispatch(
+          setLogin({
+            name,
+            email,
+            photo,
+            uid,
+          })
+        );
+      }
+    } catch (error) {
+      // handle or log error
+      if (error instanceof Error) {
+        console.log(error.message);
+      }
+    }
   };
 
   return (
@@ -117,24 +151,70 @@ function NewMain() {
             </div>
           ) : (
             <div className="w-full h-full flex flex-col  items-center rounded-xl">
-              <Image
-                alt="user avatar"
-                src={userAvatar}
-                className="w-24 h-24 rounded-full border-2 grayscale opacity-30 shadow-[0_0px_30px_0px_rgba(255,255,255,1)] shadow-white mt-10"
-              />
-              <input
-                placeholder="Email"
-                className="w-2/3 h-12 border-2 border-white backdrop-brightness-0 bg-slate-50 rounded-xl focus:outline-none mt-8 px-8"
-              ></input>
-              <input
-                placeholder="Password"
-                className="w-2/3 h-12 border-2 border-white backdrop-brightness-0 bg-slate-50 rounded-xl focus:outline-none mt-2 px-8"
-              ></input>
+              <form onSubmit={handleSignUpSubmit}>
+                <input
+                  value={signUpName}
+                  onChange={(e) => setSignUpName(e.target.value)}
+                  required
+                  className="w-2/3 h-12 border-2 border-white backdrop-brightness-0 bg-slate-50 rounded-xl focus:outline-none mt-8 px-8"
+                ></input>
+                <input
+                  type="email"
+                  value={signUpEmail}
+                  onChange={(e) => setSignUpEmail(e.target.value)}
+                  required
+                  className="w-2/3 h-12 border-2 border-white backdrop-brightness-0 bg-slate-50 rounded-xl focus:outline-none mt-8 px-8"
+                ></input>
+                <input
+                  type="password"
+                  value={signUpPassword}
+                  onChange={(e) => setSignUpPassword(e.target.value)}
+                  required
+                  autoComplete="current-password"
+                  className="w-2/3 h-12 border-2 border-white backdrop-brightness-0 bg-slate-50 rounded-xl focus:outline-none mt-8 px-8"
+                ></input>
+                <button
+                  type="submit"
+                  className="w-2/3 h-12 text-white bg-rose-900 font-bold text-md border-2 border-white   rounded-xl mt-4"
+                >
+                  Sign Up
+                </button>
+              </form>
+
+              <form onSubmit={handleSignInSubmit}>
+                <Image
+                  alt="user avatar"
+                  src={isLogOutAvatar}
+                  className="w-24 h-24 rounded-full border-2 grayscale opacity-30 shadow-[0_0px_30px_0px_rgba(255,255,255,1)] shadow-white mt-10"
+                />
+                <input
+                  type="email"
+                  value={signInEmail}
+                  onChange={(e) => setSignInEmail(e.target.value)}
+                  required
+                  className="w-2/3 h-12 border-2 border-white backdrop-brightness-0 bg-slate-50 rounded-xl focus:outline-none mt-8 px-8"
+                ></input>
+                <input
+                  type="password"
+                  value={signInPassword}
+                  onChange={(e) => setSignInPassword(e.target.value)}
+                  required
+                  autoComplete="current-password"
+                  className="w-2/3 h-12 border-2 border-white backdrop-brightness-0 bg-slate-50 rounded-xl focus:outline-none mt-8 px-8"
+                ></input>
+                <button
+                  type="submit"
+                  className="w-2/3 h-12 text-white bg-rose-900 font-bold text-md border-2 border-white   rounded-xl mt-4"
+                >
+                  Sign In
+                </button>
+              </form>
+
               <button
                 onClick={() => handleSignOut(auth)}
                 className="w-2/3 h-12 text-white bg-rose-900 font-bold text-md border-2 border-white   rounded-xl mt-4"
               >
-                Sign in
+                Sign Out
               </button>
               <button
                 onClick={() => handleGoogleSignIn(auth)}

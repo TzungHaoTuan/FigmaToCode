@@ -34,7 +34,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/store/userSlice.js",
+    "src/store/userSlice.tsx",
     "src/app/firebase/firebase.js",
     "src/components/demo.jsx"
   ],

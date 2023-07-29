@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  frame: "",
+  frame: {},
 };
 
 const currentFrameSlice = createSlice({

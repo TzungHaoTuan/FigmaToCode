@@ -11,6 +11,7 @@ import collectionSliceReducer from "./collectionSlice";
 import tagNameSliceReducer from "./tagsSlice";
 import codeStateSliceReducer from "./codeStateSlice";
 import collectSliceReducer from "./collectSlice";
+import convertSliceReducer from "./convertSlice";
 
 const store = configureStore({
   reducer: {
@@ -25,6 +26,7 @@ const store = configureStore({
     tag: tagNameSliceReducer,
     codeState: codeStateSliceReducer,
     collect: collectSliceReducer,
+    convert: convertSliceReducer,
   },
 });
 

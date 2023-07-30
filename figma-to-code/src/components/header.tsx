@@ -38,19 +38,25 @@ export default function Header() {
 
   return (
     <Provider store={store}>
-      <div className="fixed w-screen h-24 z-20">
+      <div
+        ref={elementRef}
+        className="fixed w-screen sm:h-36 flex justify-center items-center z-20
+        transition-all duration-500  ease-in-out"
+      >
         <div
-          ref={elementRef}
-          className=" w-full h-full  flex items-center text-slate-100 font-semibold  transition-all duration-500  ease-in-out px-24"
+          className="w-[270px] sm:w-3/4 md:w-4/5 flex flex-col sm:flex-row  justify-between items-center 
+           text-slate-100 font-semibold pt-16 sm:pt-0"
         >
           <Link
             href="/"
-            className="text-3xl font-black    bg-gradient-to-r from-[#f24d18] via-[#a358ff] to-[#13bdfe] text-transparent bg-clip-text bg-300% animate-gradient"
+            className="text-4xl sm:text-3xl font-black bg-gradient-to-r from-[#f24d18] via-[#a358ff] to-[#13bdfe] text-transparent bg-clip-text bg-300% animate-gradient"
           >
             Figma to Code
           </Link>
-          <CollectCategory />
-          <HeadShot />
+          <div className="flex flex-col-reverse justify-center sm:flex-row items-center mt-8 sm:mt-0">
+            <CollectCategory />
+            <HeadShot />
+          </div>
         </div>
         {/* <div className="absolute top-[64px] w-full h-12 blur bg-slate-900"></div> */}
       </div>

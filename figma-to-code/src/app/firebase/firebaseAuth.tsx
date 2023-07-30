@@ -18,7 +18,7 @@ export default function FirebaseAuth() {
         const photo = user.photoURL;
         const uid = user.uid;
 
-        console.log("isLogin");
+        console.log(user);
 
         const payload: {
           name: string;

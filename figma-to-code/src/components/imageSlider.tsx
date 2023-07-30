@@ -48,18 +48,14 @@ const ImageSlider = ({ toggleScaled }: any) => {
   const currentPage = useSelector((state: any) => state.currentPage.page);
   const currentFrame = useSelector((state: any) => state.currentFrame.frame);
   const images = useSelector((state: ImagesState) => state.frameImages.images);
+  const isCoverting = useSelector((state: any) => state.convert.isConverting);
 
   const [currentPageState, setCurrentPageState] = useState<string>("Pages");
   const [currentFrameState, setCurrentFrameState] = useState<string>("Frames");
-
   const [currentImageState, setCurrentImageState] = useState<any>(0);
 
   const [isAnimating, setIsAnimating] = React.useState(false);
   const [animationDirection, setAnimationDirection] = React.useState("next");
-
-  // useEffect(() => {
-  //   console.log(pages);
-  // }, [pages]);
 
   useEffect(() => {
     const selectedPage = pages.find((page) => page.name === currentPageState);
@@ -110,11 +106,11 @@ const ImageSlider = ({ toggleScaled }: any) => {
   //
   return (
     <div
-      className="w-full h-2/3 flex flex-col"
+      className="w-full flex flex-col items-center xl:justify-between"
       onClick={() => console.log([currentPage, currentFrame])}
     >
-      <div className="flex justify-between px-16">
-        <div className="w-[calc((100%-32px)/2)]">
+      <div className="w-full flex justify-between">
+        <div className="w-[calc((100%-24px)/2)] lg:w-[calc((100%-32px)/2)]">
           {/* page 選單*/}
           <Listbox
             value={currentPageState}
@@ -123,8 +119,8 @@ const ImageSlider = ({ toggleScaled }: any) => {
           >
             <div className="relative">
               <Listbox.Button
-                className="relative flex justify-center items-center w-full h-12 text-center text-xl font-bold cursor-default rounded-lg
-               border-2 border-pink-300 text-white tracking-wider my-1 py-2   shadow-md 
+                className="relative flex justify-center items-center w-full h-16 text-center text-xl font-bold cursor-default rounded-lg
+               border-2 border-pink-300 text-white tracking-wider py-2 shadow-md 
                focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 "
               >
                 <span className="block truncate">{currentPageState}</span>
@@ -174,7 +170,7 @@ const ImageSlider = ({ toggleScaled }: any) => {
 
         {/* frame 選單 */}
 
-        <div className="w-[calc((100%-32px)/2)]">
+        <div className="w-[calc((100%-24px)/2)] md:w-[calc((100%-32px)/2)]">
           <Listbox
             value={currentFrameState}
             onChange={setCurrentFrameState}
@@ -183,8 +179,8 @@ const ImageSlider = ({ toggleScaled }: any) => {
           >
             <div className=" relative">
               <Listbox.Button
-                className="relative  flex justify-center items-center w-full h-12 text-center text-xl font-bold cursor-default rounded-lg
-               border-2 border-violet-300 text-white tracking-wider my-1 py-2   shadow-md
+                className="relative  flex justify-center items-center w-full h-16 text-center text-xl font-bold cursor-default rounded-lg
+               border-2 border-violet-300 text-white tracking-wider py-2   shadow-md
                 focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300"
               >
                 <span className="block truncate">{currentFrameState}</span>
@@ -265,117 +261,72 @@ const ImageSlider = ({ toggleScaled }: any) => {
           </Listbox>
         </div>
       </div>
-      <div className="w-full h-[calc(100%-54px)] flex justify-center items-center px-16 py-8">
-        {images.length !== 0
-          ? currentPageState === "Pages" || currentFrameState === "Frames"
-            ? images.map(
-                (image) =>
-                  image.page === pages[0].name &&
-                  image.id === pages[0].frames[0].id && (
-                    <div
+      <div className="w-full h-[250px] sm:h-[350px] md:h-[450px] xl:h-[350px] flex justify-center items-center pt-12">
+        {images.length !== 0 ? (
+          currentPageState === "Pages" || currentFrameState === "Frames" ? (
+            images.map(
+              (image) =>
+                image.page === pages[0].name &&
+                image.id === pages[0].frames[0].id && (
+                  <div
+                    key={image.id}
+                    className="h-full flex justify-center items-center"
+                  >
+                    <img
                       key={image.id}
-                      className="h-full flex justify-center items-center"
-                    >
-                      <img
-                        key={image.id}
-                        src={image.url}
-                        alt="ImageImage"
-                        className="max-h-full object-auto"
-                        // onClick={() => console.log(image.id)}
-                      />
-                    </div>
-                  )
-              )
-            : images.map(
-                (image) =>
-                  image.page === currentPageState &&
-                  image.id === currentFrame.id && (
-                    <div
+                      src={image.url}
+                      alt="ImageImage"
+                      className="max-h-full object-auto"
+                      // onClick={() => console.log(image.id)}
+                    />
+                  </div>
+                )
+            )
+          ) : (
+            images.map(
+              (image) =>
+                image.page === currentPageState &&
+                image.id === currentFrame.id && (
+                  <div
+                    key={image.id}
+                    className="h-full flex justify-center items-center"
+                    onClick={() => console.log(images)}
+                  >
+                    <img
                       key={image.id}
-                      className="h-full flex justify-center items-center"
-                      onClick={() => console.log(images)}
-                    >
-                      <img
-                        key={image.id}
-                        src={image.url}
-                        alt="ImageImage"
-                        className="max-h-full object-auto"
-                      />
-                    </div>
-                  )
-              )
-          : null}
+                      src={image.url}
+                      alt="ImageImage"
+                      className="max-h-full object-auto"
+                    />
+                  </div>
+                )
+            )
+          )
+        ) : (
+          // skeleton
+          <div
+            role="status"
+            className={`w-full h-full space-y-8 ${
+              isCoverting ? "animate-pulse" : ""
+            }
+             md:space-y-0 md:space-x-8 md:flex md:items-center`}
+          >
+            <div className="flex items-center justify-center w-full h-full bg-slate-300 rounded-lg  dark:bg-slate-700">
+              <svg
+                className="w-16 h-16 text-slate-200 dark:text-slate-600"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor"
+                viewBox="0 0 20 18"
+              >
+                <path d="M18 0H2a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2Zm-5.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm4.376 10.481A1 1 0 0 1 16 15H4a1 1 0 0 1-.895-1.447l3.5-7A1 1 0 0 1 7.468 6a.965.965 0 0 1 .9.5l2.775 4.757 1.546-1.887a1 1 0 0 1 1.618.1l2.541 4a1 1 0 0 1 .028 1.011Z" />
+              </svg>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
-
-  // return (
-  //   <div className="w-1/2">
-  //     <div className="flex">
-  //       {pages &&
-  //         pages.map((page) => (
-  //           <div
-  //             key={page.id}
-  //             className="border-2 border-black"
-  //             onClick={() => handlePage(page.name)}
-  //           >
-  //             {page.name}
-  //           </div>
-  //         ))}
-  //     </div>
-  //     <div className="flex">
-  //       {pages
-  //         ? pages
-  //             .filter((page) => page.name === currentPageState)
-  //             .map((page) =>
-  //               page.frames.map((frame) => (
-  //                 <div key={frame.id} onClick={() => handleFrame(frame.id)}>
-  //                   {frame.name}
-  //                 </div>
-  //               ))
-  //             )
-  //         : // : pages
-  //           // ? pages[0].frames.map((frame) => (
-  //           //     <div key={frame.id} onClick={() => handleFrame(frame.id)}>
-  //           //       {frame.name}
-  //           //     </div>
-  //           //   ))
-  //           null}
-  //     </div>
-  //     <div className="flex" onClick={toggleScaled}>
-  //       {currentFrameState && images.length !== 0
-  //         ? images.map(
-  //             (image) =>
-  //               image.page === currentPageState &&
-  //               image.id === currentFrameState && (
-  //                 <div key={image.id}>
-  //                   <img
-  //                     key={image.id}
-  //                     src={image.url}
-  //                     alt="ImageImage"
-  //                     className="max-h-96"
-  //                   />
-  //                 </div>
-  //               )
-  //           )
-  //         : images.length !== 0
-  //         ? images.map(
-  //             (image) =>
-  //               image.id === currentFrame && (
-  //                 <div key={image.id}>
-  //                   <img
-  //                     key={image.id}
-  //                     src={image.url}
-  //                     alt="ImageImage"
-  //                     className="max-h-96"
-  //                   />
-  //                 </div>
-  //               )
-  //           )
-  //         : null}
-  //     </div>
-  //   </div>
-  // );
 };
 
 export default ImageSlider;

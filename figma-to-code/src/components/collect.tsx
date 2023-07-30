@@ -213,125 +213,10 @@ export default function Collect() {
       docData,
       tags
     );
-    // If the data was updated, update the document in Firestore
     if (dataUpdated) {
       await updateDoc(childDoc.ref, updatedData);
     }
   }
-
-  // const handleTag = async () => {
-  //   const usersRef = doc(db, "users", uid);
-  //   const collectionRef = collection(usersRef, "collection");
-  //   const collectionSnapshot = await getDocs(collectionRef);
-
-  //   const collectionPromises = collectionSnapshot.docs.map(
-  //     async (collectionDoc) => {
-  //       const pagesRef = collection(collectionDoc.ref, "pages");
-  //       const pagesSnapshot = await getDocs(pagesRef);
-
-  //       const pagesPromises = pagesSnapshot.docs.map(async (pageDoc) => {
-  //         const framesRef = collection(pageDoc.ref, "frames");
-  //         const framesSnapshot = await getDocs(framesRef);
-
-  //         const framesPromises = framesSnapshot.docs.map(async (frameDoc) => {
-  //           const childrenRef = collection(frameDoc.ref, "children");
-  //           const childrenSnapshot = await getDocs(childrenRef);
-
-  //           const childrenPromises = childrenSnapshot.docs.map(
-  //             async (childDoc) => {
-  //               const childDocObj = childDoc.data().children;
-  //               const childrenArray = childDocObj.children;
-
-  //               if (childrenArray) {
-  //                 const childrenArrayInside = childrenArray[1]?.children;
-  //                 if (childrenArrayInside) {
-  //                   for (const child of childrenArrayInside) {
-  //                     if (tags[child.id]) {
-  //                       child.name = tags[child.id];
-  //                     }
-  //                     await updateDoc(childDoc.ref, { children: childDocObj });
-  //                   }
-  //                 }
-  //               }
-  //             }
-  //           );
-
-  //           await Promise.all(childrenPromises);
-  //         });
-
-  //         await Promise.all(framesPromises);
-  //       });
-
-  //       await Promise.all(pagesPromises);
-  //     }
-  //   );
-
-  //   await Promise.all(collectionPromises);
-  // };
-
-  // const newhandleTag = async (tag: any) => {
-  //   console.log(tag);
-  //   const usersRef = doc(db, "users", uid);
-  //   const collectionRef = collection(usersRef, "collection");
-  //   const collectionSnapshot = await getDocs(collectionRef);
-  //   const pagesRef = collection(collectionRef, "pages");
-  //   const pagesSnapshot = await getDocs(pagesRef);
-
-  //   const firstPageDoc = pagesSnapshot.docs[0];
-  //   const framesRef = collection(firstPageDoc.ref, "frames");
-  //   const framesSnapshot = await getDocs(framesRef);
-
-  //   const firstFrameDoc = framesSnapshot.docs[1];
-  //   const childrenRef = collection(firstFrameDoc.ref, "children");
-  //   const childrenSnapshot = await getDocs(childrenRef);
-
-  //   const firstChildDoc = childrenSnapshot.docs[2];
-  //   const childrenData = firstChildDoc.data();
-  //   console.log(childrenData);
-  //   const children = childrenData.children;
-  //   children.children[0].name = "Image";
-  //   await updateDoc(firstChildDoc.ref, { children: children });
-  //   // if (childrenData && childrenData.children) {
-  //   //   const children = childrenData.children;
-  //   //   children[1].children[0].name = tag["103:157"];
-  //   //   await updateDoc(firstChildDoc.ref, { children: children });
-  //   // }
-  // };
-
-  // const handleTag = async (tags: any) => {
-  //   const productsRef = doc(db, "products", "data");
-  //   const pagesRef = collection(productsRef, "pages");
-  //   const pagesSnapshot = await getDocs(pagesRef);
-
-  //   await Promise.all(
-  //     pagesSnapshot.docs.map(async (pageDoc) => {
-  //       const framesRef = collection(pageDoc.ref, "frames");
-  //       const framesSnapshot = await getDocs(framesRef);
-
-  //       await Promise.all(
-  //         framesSnapshot.docs.map(async (frameDoc) => {
-  //           const childrenRef = collection(frameDoc.ref, "children");
-  //           const childrenSnapshot = await getDocs(childrenRef);
-
-  //           await Promise.all(
-  //             childrenSnapshot.docs.map(async (childDoc) => {
-  //               const children = childDoc.data().children;
-
-  //               children.forEach(async (child: any) => {
-  //                 if (tags[child.id]) {
-  //                   child.name = tags[child.id];
-
-  //                   const myDoc = childDoc;
-  //                   await updateDoc(myDoc.ref, { children: children });
-  //                 }
-  //               });
-  //             })
-  //           );
-  //         })
-  //       );
-  //     })
-  //   );
-  // };
 
   async function uploadImage(imageId: any, imageUrl: any) {
     try {
@@ -413,7 +298,7 @@ export default function Collect() {
 
   return (
     <div
-      className="w-full flex justify-center items-center mt-[56px] px-16"
+      className="w-full flex justify-center items-center mt-[56px]"
       onClick={() => console.log([data.name, currentPage, currentFrame])}
     >
       <button

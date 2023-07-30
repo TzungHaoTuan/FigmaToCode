@@ -9,6 +9,7 @@ import { setFrameImages } from "@/store/frameImagesSlice";
 import { setImages } from "@/store/imagesSlice";
 import { setCodeState } from "@/store/codeStateSlice";
 import { handleFetch } from "@/app/utils/fetchFigmaData";
+import { setConvert } from "@/store/convertSlice";
 
 const SearchForm = () => {
   const dispatch = useDispatch();
@@ -19,12 +20,7 @@ const SearchForm = () => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsConverting(true);
-    // setTimeout(() => {
-    //   handleScroll();
-    // }, 7000);
-    // setTimeout(() => {
-    //   setIsConverting(false);
-    // }, 8000);
+    dispatch(setConvert());
 
     const url = urlRef.current?.value;
     if (url) {
@@ -41,12 +37,17 @@ const SearchForm = () => {
         dispatch(setFrameImages(frameImages));
         dispatch(setImages(images));
         dispatch(setCodeState(true));
+        dispatch(setConvert());
+
+        handleScroll();
+        setIsConverting(false);
       }
     }
-    setTimeout(() => {
-      handleScroll();
-      setIsConverting(false);
-    }, 1000);
+    // setTimeout(() => {
+    //   handleScroll();
+    //   setIsConverting(false);
+    //   dispatch(setConvert())
+    // }, 1000);
   };
 
   const handleScroll = () => {
@@ -56,20 +57,23 @@ const SearchForm = () => {
     });
   };
 
-  // bg-gradient-to-br
-  // from-red-200
-  // from-10%
-  // via-purple-800
-  // via-70%
-  // to-violet-900
-  // animate-gradient-x
   return (
     <div className="w-full h-screen">
-      <div className="w-full h-full  bg-slate-900 flex flex-col  items-center px-12 pt-24">
-        <div className=" text-5xl font-extrabold leading-tight tracking-wide text-slate-200 text-center mt-28">
+      <div className="w-full h-full  bg-slate-900 flex flex-col justify-center items-center">
+        <div
+          className="w-[270px] sm:w-[480px] md:w-full text-3xl font-extrabold leading-tight tracking-wide
+         text-slate-200 text-center
+         sm:text-3xl
+         md:text-5xl xl:text-7xl
+         "
+        >
           Accelerate Layout Creation<br></br>with Effortless Conversion
         </div>
-        <div className="text-xl  leading-tight  text-indigo-300 text-center mt-4">
+        <div
+          className="w-[270px] sm:w-[480px] md:w-full text-lg leading-tight  text-indigo-300 text-center mt-8 sm:mt-4
+        sm:text-lg md:text-2xl xl:text-3xl
+        "
+        >
           Empowering Web Developers with Seamless<br></br>
           <span className="font-mono text-indigo-400"> Tailwind </span>
           and
@@ -78,30 +82,36 @@ const SearchForm = () => {
         </div>
         <form
           onSubmit={handleSubmit}
-          className="flex w-[677px] justify-between items-center mt-8"
+          className="w-full flex flex-col  justify-center items-center mt-16 sm:mt-8 md:mt-16
+          md:w-[677px] md:flex-row md:justify-between
+          xl:w-[1016px]"
         >
-          <div className="relative flex justify-center items-center">
+          <div
+            className={`relative flex justify-center items-center
+            md:mr-8
+          ${
+            isConverting
+              ? "w-[270px] sm:w-[400px] xl:w-full xl:max-w-full"
+              : "w-[270px] sm:w-[480px] xl:w-full xl:max-w-full"
+          } `}
+          >
             <input
               type="text"
               ref={urlRef}
               placeholder="Figma file url..."
-              className={`${
-                isConverting ? "w-[400px]" : "w-[480px]"
-              } h-12 bg-gradient-to-r from-white to-slate-300 rounded-full font-semibold text-slate-800 px-16
+              className={`w-full h-12 bg-gradient-to-r from-white to-slate-300 rounded-full font-semibold text-slate-800 px-16
               placeholder:font-normal  placeholder:text-slate-400 ring-0
               focus:outline-none focus:ring-4 focus:ring-indigo-600/60  focus:shadow-lg focus:shadow-indigo-600
               hover:ring-4 hover:ring-indigo-600/60  hover:shadow-lg hover:shadow-indigo-600
-              transition-all duration-400 hover:transition-all hover:duration-400 hover:ease-in ${
-                isConverting ? "transition-all duration-300 ease-in-out" : ""
-              }`}
+              transition-all duration-400 hover:transition-all hover:duration-400 hover:ease-in
+              ${isConverting ? "transition-all duration-300 ease-in-out" : ""}`}
             ></input>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
               strokeWidth={1.5}
-              // stroke="currentColor"
-              className="w-6 h-6 absolute left-6 top-1/2 transform -translate-y-1/2 stroke-slate-400"
+              className="absolute w-6 h-6 left-6 top-1/2 transform -translate-y-1/2 stroke-slate-400"
             >
               <path
                 strokeLinecap="round"
@@ -113,9 +123,14 @@ const SearchForm = () => {
 
           <button
             type="submit"
-            className={`${
-              isConverting ? "w-56" : "w-44"
-            } h-12 flex justify-center items-center  text-lg font-semibold tracking-wider  
+            className={`
+            h-12 flex justify-center items-center  text-lg font-semibold tracking-wider 
+            mt-4 md:mt-0
+            ${
+              isConverting
+                ? "w-[270px] sm:w-[400px] md:w-56"
+                : "w-[270px] sm:w-[480px] md:w-44"
+            } 
                  ${
                    isConverting
                      ? "text-indigo-600 bg-slate-300"
@@ -128,7 +143,7 @@ const SearchForm = () => {
               <svg
                 aria-hidden="true"
                 role="status"
-                className="inline w-6 h-6 mr-3 text-white animate-spin"
+                className="inline w-6 h-6 mr-3 animate-spin"
                 viewBox="0 0 100 101"
                 fill=""
                 xmlns="http://www.w3.org/2000/svg"

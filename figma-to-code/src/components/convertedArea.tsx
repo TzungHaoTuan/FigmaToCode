@@ -6,15 +6,14 @@ import Collect from "./collect";
 
 export default function ConvertedArea() {
   return (
-    <div className="w-full h-screen min-h-screen">
-      <div className="w-full h-full bg-slate-900 flex justify-between items-center pt-32">
-        <div className="w-1/2 h-full flex flex-col items-center">
+    <div className="w-full min-h-screen bg-slate-900 flex flex-col items-center">
+      <div className="w-[270px] sm:w-3/4 md:w-4/5 flex flex-col xl:flex-row pt-56">
+        <div className="w-full  xl:w-1/2  flex flex-col justify-between items-center mb-16 sm:mb-16 xl:mb-0 xl:pr-3">
           <ImageSlider />
           <Collect />
         </div>
         <CodeBlock />
       </div>
-      {/* <div className="footer h-4 bg-gradient-to-r from-pink-600 to-purple-600"></div> */}
     </div>
   );
 }

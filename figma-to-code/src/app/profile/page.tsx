@@ -87,11 +87,22 @@ function Profile() {
           <div className="w-[600px] h-[600px]  bg-slate-700 shadow-[0_0px_100px_0px_rgba(255,255,255,0.3)] backdrop-blur-md backdrop-brightness-150  bg-opacity-10 rounded-full">
             {isLogin ? (
               <div className="w-full h-full text-white font-medium flex flex-col justify-center items-center ">
-                <Image
-                  alt="user avatar"
-                  src={photo ? photo : isLogOutAvatar}
-                  className="w-24 h-24 rounded-full border-2  opacity-90 shadow-[0_0px_30px_0px_rgba(255,255,255,1)] shadow-white mt-10"
-                />
+                {photo ? (
+                  <img
+                    alt="user avatar"
+                    src={photo}
+                    className="w-24 h-24 rounded-full border-2  opacity-90 shadow-[0_0px_30px_0px_rgba(255,255,255,1)] shadow-white mt-10"
+                  />
+                ) : (
+                  <Image
+                    alt="user avatar"
+                    src={isLogOutAvatar}
+                    width={96}
+                    height={96}
+                    className="rounded-full border-2  opacity-90 shadow-[0_0px_30px_0px_rgba(255,255,255,1)] shadow-white mt-10"
+                  />
+                )}
+
                 <div className="text-3xl font-bold mt-8">
                   {user.profile.name}
                 </div>

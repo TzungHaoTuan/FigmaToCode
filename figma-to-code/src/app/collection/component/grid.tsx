@@ -326,12 +326,7 @@ export default function Grid() {
   });
 
   return (
-    <div
-      className="relative bg-color-ball-2  py-48  px-24"
-      onClick={() => {
-        console.log(collectionGrid);
-      }}
-    >
+    <div className="relative w-screen min-h-screen bg-color-ball-2 py-48 px-24">
       <div className="relative w-full h-84 bg-slate-900 bg-opacity-20 rounded-3xl backdrop-blur backdrop-brightness-110 p-4">
         {/* each collection */}
         {Object.keys(collectionGrid).length !== 0 ? (
@@ -468,37 +463,21 @@ export default function Grid() {
             </div>
           ))
         ) : (
-          <div>
+          <div className="animate-pulse">
             <div className="w-full h-64  flex justify-between   bg-slate-900 bg-opacity-10 rounded-3xl mb-2 px-2 py-2">
               <div className="w-60 h-full flex justify-center items-center bg-white/20 rounded-3xl  ">
-                <div className="opacity-20">
-                  <div className="relative w-16 h-16 animate-spin rounded-full bg-gradient-to-r from-slate-100  to-slate-900 ">
-                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-slate-100 rounded-full"></div>
-                  </div>
-                </div>
+                <div className="opacity-20"></div>
               </div>
               <div className="w-[calc(100%-256px)] h-full flex justify-center items-center bg-white/20 rounded-3xl  ml-4 ">
-                <div className="opacity-20">
-                  <div className="relative w-16 h-16 animate-spin rounded-full bg-gradient-to-r from-slate-100  to-slate-900 ">
-                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-slate-100 rounded-full"></div>
-                  </div>
-                </div>
+                <div className="opacity-20"></div>
               </div>
             </div>
             <div className="w-full h-64  flex justify-between   bg-slate-900 bg-opacity-10 rounded-3xl mb-2 px-2 py-2">
               <div className="w-60 h-full flex justify-center items-center bg-white/20 rounded-3xl  ">
-                <div className="opacity-20">
-                  <div className="relative w-16 h-16 animate-spin rounded-full bg-gradient-to-r from-slate-100  to-slate-900 ">
-                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-slate-100 rounded-full"></div>
-                  </div>
-                </div>
+                <div className="opacity-20"></div>
               </div>
               <div className="w-[calc(100%-256px)] h-full flex justify-center items-center bg-white/20 rounded-3xl  ml-4 ">
-                <div className="opacity-20">
-                  <div className="relative w-16 h-16 animate-spin rounded-full bg-gradient-to-r from-slate-100  to-slate-900 ">
-                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-slate-100 rounded-full"></div>
-                  </div>
-                </div>
+                <div className="opacity-20"></div>
               </div>
             </div>
           </div>

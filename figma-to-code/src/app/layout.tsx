@@ -21,7 +21,7 @@ export default function RootLayout({
       <head>
         <link rel="icon" href="/favicon.ico" />
       </head>
-      <body className={inter.className}>
+      <body className={`${inter.className} overscroll-none`}>
         <ReduxProvider>
           <FirebaseAuth />
           <Header />

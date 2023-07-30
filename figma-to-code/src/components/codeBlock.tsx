@@ -1,28 +1,11 @@
 "use client";
 
-// import Prism from "prismjs";
-// import "prismjs/components/prism-core";
-// import "prismjs/components/prism-markup";
-// import "prismjs/themes/prism-solarizedlight.css";
-
 import hljs from "highlight.js/lib/core";
 import html from "highlight.js/lib/languages/xml";
 hljs.registerLanguage("html", html);
 import "highlight.js/styles/tokyo-night-dark.css";
 
 import { Tab } from "@headlessui/react";
-import {
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  setDoc,
-  addDoc,
-  deleteDoc,
-  updateDoc,
-  arrayUnion,
-} from "firebase/firestore";
-import { db } from "../app/firebase/firebase";
 import React, { useState, useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { setTag } from "@/store/tagsSlice";
@@ -33,6 +16,7 @@ import ConvertToSCTag from "@/app/utils/convertToSCTag";
 import ConvertToSCStyle from "@/app/utils/convertToSCStyle";
 import ConvertToSCTagEdit from "@/app/utils/convertToSCTagEdit";
 import { staticGenerationAsyncStorage } from "next/dist/client/components/static-generation-async-storage";
+import CodeSkeleton from "./codeSkeleton";
 
 export default function CodeBlock() {
   // const [currentStyle, setCurrentStyle] = useState(true);
@@ -49,6 +33,7 @@ export default function CodeBlock() {
   const codeState = useSelector((state: any) => state.codeState.state);
   const codeStyle = useSelector((state: any) => state.codeState.style);
   const codeIsToggle = useSelector((state: any) => state.codeState.isToggle);
+  const isCoverting = useSelector((state: any) => state.convert.isConverting);
 
   const dispatch = useDispatch();
 
@@ -63,18 +48,6 @@ export default function CodeBlock() {
 
   const codeTailwind = useRef("");
   useEffect(() => {
-    // console.log(pages);
-    // console.log(codeTailwind);
-    // console.log(currentPage);
-    // console.log(currentFrame);
-
-    // if (pages.length !== 0) {
-    //   const codeRaw = pages
-    //     .filter((page: any) => page.name === currentPage)[0]
-    //     .frames.filter((frame: any) => frame.id === currentFrame); // array of one frame object
-
-    //   codeTailwind = codeRaw[0]?.name;
-    // }
     if (pages.length !== 0) {
       let codeRaw;
       if (currentPage && currentFrame) {
@@ -87,88 +60,9 @@ export default function CodeBlock() {
       }
     }
   }, [pages, currentPage, currentFrame]);
-  // useEffect(() => {
-  //   Prism.highlightAll();
-  // }, [currentStyle]);
 
-  // color div
-
-  // useEffect(() => {
-  //   hljs.highlightAll();
-  //   hljs.configure({ ignoreUnescapedHTML: true });
-  // }),
-  //   [];
-  // useEffect(() => {
-  //   if (divRef.current) {
-  //     hljs.highlightElement(divRef.current);
-  //   }
-  // }, []);
   const handleCodeStyle = (style: any) => {
     dispatch(setCodeStyle(style));
-  };
-
-  const newhandleTag = async (id: any, tag: any) => {
-    // console.log(id, tag);
-
-    const productsRef = doc(db, "products", "data");
-    const pagesRef = collection(productsRef, "pages");
-    const pagesSnapshot = await getDocs(pagesRef);
-
-    const firstPageDoc = pagesSnapshot.docs[0];
-    const framesRef = collection(firstPageDoc.ref, "frames");
-    const framesSnapshot = await getDocs(framesRef);
-
-    const firstFrameDoc = framesSnapshot.docs[0];
-    const childrenRef = collection(firstFrameDoc.ref, "children");
-    const childrenSnapshot = await getDocs(childrenRef);
-
-    const firstChildDoc = childrenSnapshot.docs[0];
-    const childrenData = firstChildDoc.data();
-    if (childrenData && childrenData.children) {
-      const children = childrenData.children;
-      children[1].children[0].name = tag;
-      await updateDoc(firstChildDoc.ref, { children: children });
-    }
-  };
-
-  const handleTag = async (id: any, tag: any) => {
-    // console.log(id, tag);
-
-    const productsRef = doc(db, "products", "data");
-    const pagesRef = collection(productsRef, "pages");
-    const pagesSnapshot = await getDocs(pagesRef);
-
-    await Promise.all(
-      pagesSnapshot.docs.map(async (pageDoc) => {
-        const framesRef = collection(pageDoc.ref, "frames");
-        const framesSnapshot = await getDocs(framesRef);
-
-        await Promise.all(
-          framesSnapshot.docs.map(async (frameDoc) => {
-            const childrenRef = collection(frameDoc.ref, "children");
-            const childrenSnapshot = await getDocs(childrenRef);
-
-            await Promise.all(
-              childrenSnapshot.docs.map(async (childDoc) => {
-                const children = childDoc.data().children;
-
-                // children[1].children[0].name = tag;
-                // const myDoc = childDoc;
-                // await updateDoc(myDoc.ref, { children: children });
-                children.forEach(async (child: any) => {
-                  if (child.children.id === id) {
-                    child.name = tag;
-
-                    const myDoc = childDoc;
-                    await updateDoc(myDoc.ref, { children: children });
-                  }
-                });
-              })
-            );
-          })
-        );
-      })
-    );
   };
 
   const copydiv = (ref: any) => {
@@ -185,15 +79,6 @@ export default function CodeBlock() {
       navigator.clipboard.writeText(scStyleRef.current.innerText);
     }
   };
-
-  //
-  // const filterPagesToFrame = (pages: any) => {
-  //   const page = pages?.filter((page: any) => page.name === currentPage)[0];
-  //   const frame = page?.frames.filter(
-  //     (frame: any) => frame.id === currentFrame.id
-  //   );
-  //   // console.log(frame.name);
-  // };
 
   // Tailwind
   const renderTai = (children: any) => {
@@ -726,28 +611,25 @@ export default function CodeBlock() {
 
   let [categories] = useState({
     Tailwind: [{}],
-    ["Styled Component"]: [{}],
+    ["Styled Components"]: [{}],
   });
 
   return (
-    <div
-      className="w-1/2 h-full  flex flex-col justify-center items-center pr-12"
-      onClick={() => console.log(tags)}
-    >
+    <div className="w-full xl:w-1/2 flex flex-col justify-center items-center mb-32 xl:mb-0 xl:pl-3">
       {/* Tab */}
-      <div className="w-full h-full">
+      <div className="w-full">
         <Tab.Group>
-          <Tab.List className="flex space-x-1 rounded-xl bg-blue-900/20 p-1">
+          <Tab.List className="flex space-x-1 rounded-xl bg-blue-900/20">
             {Object.keys(categories).map((category) => (
               <Tab
                 key={category}
                 className={({ selected }) =>
                   classNames(
-                    "w-full  h-12 rounded-lg py-2.5 text-lg font-extrabold tracking-wide leading-5  ",
+                    "w-full h-16 rounded-lg font-extrabold text-base sm:text-xl leading-5",
                     "ring-pink ring-opacity-60 ring-offset-2 ring-offset-purple-400 focus:outline-none focus:ring-1",
                     selected
                       ? "bg-gradient-to-r from-pink-400/80 to-violet-600  text-slate-900"
-                      : "text-violet-600   hover:text-pink hover:shadow-[0_0px_20px_0px_rgba(0,0,0,1)] hover:shadow-violet-600"
+                      : " text-violet-300 hover:text-pink hover:shadow-[0_0px_20px_0px_rgba(0,0,0,1)] hover:shadow-violet-600"
                   )
                 }
                 onClick={() => handleCodeStyle(category)}
@@ -756,10 +638,10 @@ export default function CodeBlock() {
               </Tab>
             ))}
           </Tab.List>
-          <Tab.Panels className="w-full max-h-screen h-[calc(100%-90px)] mt-3">
+          <Tab.Panels className="w-full h-[600px] xl:h-[400px]">
             <Tab.Panel
               className={classNames(
-                " h-5/6   rounded-xl bg-[#1a1b26] shadow-[inset_0_0px_10px_0px_rgba(15,23,42,1)] ring-1 ring-violet-100 my-8  p-4 pt-8"
+                "relative h-full rounded-xl bg-[#1a1b26] shadow-[inset_0_0px_10px_0px_rgba(15,23,42,1)] ring-1 ring-violet-100 mt-12  p-4"
               )}
             >
               {isCopied ? (
@@ -769,7 +651,7 @@ export default function CodeBlock() {
                   viewBox="0 0 24 24"
                   strokeWidth={1.5}
                   stroke="currentColor"
-                  className="absolute right-16 bg-slate-900 cursor-pointer w-10 h-10 border-[1px]
+                  className="absolute top-6 right-6 bg-slate-900 cursor-pointer w-10 h-10 border-[1px]
               border-pink-600 stroke-pink-600 rounded p-2"
                 >
                   <path
@@ -785,7 +667,7 @@ export default function CodeBlock() {
                   viewBox="0 0 24 24"
                   strokeWidth={1.5}
                   stroke="currentColor"
-                  className="absolute right-16 bg-slate-900 cursor-pointer w-10 h-10 stroke-white ml-auto border-[1px] border-white
+                  className="absolute top-6 right-6 bg-slate-900 cursor-pointer w-10 h-10 stroke-white ml-auto border-[1px] border-white
                  hover:border-pink-600 hover:stroke-pink-600 rounded p-2"
                   onClick={() => copydiv("taiRef")}
                 >
@@ -796,19 +678,22 @@ export default function CodeBlock() {
                   />
                 </svg>
               )}
-
-              <pre className="w-full h-[calc(100%-16px)]  overflow-auto no-scrollbar rounded">
-                <code ref={taiRef} className="language-html no-scrollbar">
-                  {ConvertToTai(code)}
-                </code>
-              </pre>
+              {code ? (
+                <pre className="w-full h-[calc(100%-16px)]  overflow-auto no-scrollbar rounded">
+                  <code ref={taiRef} className="language-html no-scrollbar">
+                    {ConvertToTai(code)}
+                  </code>
+                </pre>
+              ) : (
+                <CodeSkeleton />
+              )}
             </Tab.Panel>
             <Tab.Panel
               className={classNames(
-                " h-5/6  divide-y rounded-xl bg-[#1a1b26] shadow-[inset_0_0px_10px_0px_rgba(15,23,42,1)] ring-1 ring-violet-100 my-8  py-4"
+                "h-full  divide-y rounded-xl bg-[#1a1b26] shadow-[inset_0_0px_10px_0px_rgba(15,23,42,1)] ring-1 ring-violet-100 mt-12 p-4"
               )}
             >
-              <div className="w-full h-1/2">
+              <div className="relative w-full h-1/2">
                 {isCopied ? (
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -816,7 +701,7 @@ export default function CodeBlock() {
                     viewBox="0 0 24 24"
                     strokeWidth={1.5}
                     stroke="currentColor"
-                    className="absolute right-16 bg-slate-900 cursor-pointer w-10 h-10 border-[1px]
+                    className="absolute top-2 right-2 bg-slate-900 cursor-pointer w-10 h-10 border-[1px]
               border-pink-600 stroke-pink-600 rounded p-2"
                   >
                     <path
@@ -832,7 +717,7 @@ export default function CodeBlock() {
                     viewBox="0 0 24 24"
                     strokeWidth={1.5}
                     stroke="currentColor"
-                    className="absolute right-16 bg-slate-900 cursor-pointer w-10 h-10 stroke-white ml-auto border-[1px] border-white
+                    className="absolute top-2 right-2 bg-slate-900 cursor-pointer w-10 h-10 stroke-white ml-auto border-[1px] border-white
                  hover:border-pink-600 hover:stroke-pink-600 rounded p-2"
                     onClick={() => copydiv("scTagRef")}
                   >
@@ -843,17 +728,21 @@ export default function CodeBlock() {
                     />
                   </svg>
                 )}
-                <pre className="w-full h-[calc(100%-16px)]  overflow-auto no-scrollbar rounded whitespace-nowrap pl-4">
-                  <code className="nohighlight">
-                    {convertToSCTagEdit(code)}
-                  </code>
-                </pre>
+                {code ? (
+                  <pre className="w-full h-[calc(100%-16px)]  overflow-auto no-scrollbar rounded whitespace-nowrap pl-4">
+                    <code className="nohighlight">
+                      {convertToSCTagEdit(code)}
+                    </code>
+                  </pre>
+                ) : (
+                  <CodeSkeleton />
+                )}
               </div>
               {/* <code contentEditable className="nohighlight text-[#bb9af7]">
                     &lt;test&gt;
                   </code> */}
               <div
-                className="w-full h-1/2 pt-4"
+                className="relative w-full h-1/2 pt-4"
                 onClick={() => console.log(tags)}
               >
                 {isCopied ? (
@@ -863,7 +752,7 @@ export default function CodeBlock() {
                     viewBox="0 0 24 24"
                     strokeWidth={1.5}
                     stroke="currentColor"
-                    className="absolute right-16 bg-slate-900 cursor-pointer w-10 h-10 border-[1px]
+                    className="absolute top-6 right-2 bg-slate-900 cursor-pointer w-10 h-10 border-[1px]
               border-pink-600 stroke-pink-600 rounded p-2"
                   >
                     <path
@@ -879,7 +768,7 @@ export default function CodeBlock() {
                     viewBox="0 0 24 24"
                     strokeWidth={1.5}
                     stroke="currentColor"
-                    className="absolute right-16 bg-slate-900 cursor-pointer w-10 h-10 stroke-white ml-auto border-[1px] border-white
+                    className="absolute top-6 right-2 bg-slate-900 cursor-pointer w-10 h-10 stroke-white ml-auto border-[1px] border-white
                  hover:border-pink-600 hover:stroke-pink-600 rounded p-2"
                     onClick={() => copydiv("scStyleRef")}
                   >
@@ -890,11 +779,18 @@ export default function CodeBlock() {
                     />
                   </svg>
                 )}
-                <pre className="w-full h-full	overflow-auto no-scrollbar rounded">
-                  <code ref={scStyleRef} className="language-html no-scrollbar">
-                    {ConvertToSCStyle(code)}
-                  </code>
-                </pre>
+                {code ? (
+                  <pre className="w-full h-full	overflow-auto no-scrollbar rounded">
+                    <code
+                      ref={scStyleRef}
+                      className="language-html no-scrollbar"
+                    >
+                      {ConvertToSCStyle(code)}
+                    </code>
+                  </pre>
+                ) : (
+                  <CodeSkeleton />
+                )}
               </div>
             </Tab.Panel>
           </Tab.Panels>

@@ -21,13 +21,8 @@ const Home: React.FC = () => {
   }
   return (
     <Provider store={store}>
-      {/* <Header /> */}
       <SearchForm />
       <ConvertedArea />
-      {/* <ImageSlider toggleScaled={toggleScaled} /> */}
-      {/* <Collect /> */}
-      {/* {frameIsScaled && <FrameScaled />} */}
-      {/* <CodeBlock /> */}
     </Provider>
   );
 };

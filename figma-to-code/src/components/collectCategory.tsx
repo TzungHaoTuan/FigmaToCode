@@ -10,7 +10,7 @@ export default function CollectCategory() {
   return (
     <Link
       href="/collection"
-      className="w-24 ml-auto relative"
+      className="ml-0 mt-2 sm:ml-auto sm:mt-0 relative"
       onClick={() => {
         dispatch(setCollected(false));
       }}

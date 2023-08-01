@@ -298,7 +298,7 @@ export default function Collect() {
 
   return (
     <div
-      className="w-full flex justify-center items-center mt-[56px]"
+      className="w-full flex justify-center items-center"
       onClick={() => console.log([data.name, currentPage, currentFrame])}
     >
       <button

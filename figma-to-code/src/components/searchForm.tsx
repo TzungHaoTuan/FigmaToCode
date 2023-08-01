@@ -58,8 +58,8 @@ const SearchForm = () => {
   };
 
   return (
-    <div className="w-full h-screen">
-      <div className="w-full h-full  bg-slate-900 flex flex-col justify-center items-center">
+    <div className="w-full h-screen bg-gradient-to-b from-slate-600 to-slate-900">
+      <div className="w-full h-full flex flex-col sm:justify-center items-center pt-[224px] sm:pt-0">
         <div
           className="w-[270px] sm:w-[480px] md:w-full text-3xl font-extrabold leading-tight tracking-wide
          text-slate-200 text-center

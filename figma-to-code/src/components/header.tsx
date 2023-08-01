@@ -29,10 +29,10 @@ export default function Header() {
     const element: any = elementRef.current;
     if (isScrolling && scrollPosition > 0) {
       // Change the background color of the element here
-      element.classList.add("bg-slate-900/90");
+      element.classList.add(`bg-slate-900/90`);
     } else {
       // Reset the background color if not scrolling or at the top
-      element.classList.remove("bg-slate-900/90");
+      element.classList.remove(`bg-slate-900/90`);
     }
   }, [isScrolling, scrollPosition]);
 
@@ -40,8 +40,7 @@ export default function Header() {
     <Provider store={store}>
       <div
         ref={elementRef}
-        className="fixed w-screen sm:h-36 flex justify-center items-center z-20
-        transition-all duration-500  ease-in-out"
+        className="fixed w-screen sm:h-36 flex justify-center items-center z-20"
       >
         <div
           className="w-[270px] sm:w-3/4 md:w-4/5 flex flex-col sm:flex-row  justify-between items-center 

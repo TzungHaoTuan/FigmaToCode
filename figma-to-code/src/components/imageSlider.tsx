@@ -106,11 +106,11 @@ const ImageSlider = ({ toggleScaled }: any) => {
   //
   return (
     <div
-      className="w-full flex flex-col items-center xl:justify-between"
+      className="w-full h-[calc(100%-48px)] flex flex-col items-center "
       onClick={() => console.log([currentPage, currentFrame])}
     >
       <div className="w-full flex justify-between">
-        <div className="w-[calc((100%-24px)/2)] lg:w-[calc((100%-32px)/2)]">
+        <div className="w-[calc((100%-24px)/2)] xl:w-[calc((100%-32px)/2)]">
           {/* page 選單*/}
           <Listbox
             value={currentPageState}
@@ -261,23 +261,19 @@ const ImageSlider = ({ toggleScaled }: any) => {
           </Listbox>
         </div>
       </div>
-      <div className="w-full h-[250px] sm:h-[350px] md:h-[450px] xl:h-[350px] flex justify-center items-center pt-12">
+      <div className="w-full h-full flex shrink justify-center items-center pt-12">
         {images.length !== 0 ? (
           currentPageState === "Pages" || currentFrameState === "Frames" ? (
             images.map(
               (image) =>
                 image.page === pages[0].name &&
                 image.id === pages[0].frames[0].id && (
-                  <div
-                    key={image.id}
-                    className="h-full flex justify-center items-center"
-                  >
+                  <div key={image.id} className="h-full">
                     <img
                       key={image.id}
                       src={image.url}
                       alt="ImageImage"
-                      className="max-h-full object-auto"
-                      // onClick={() => console.log(image.id)}
+                      className="h-[calc(100%-114px)] xl:h-[calc(100%-100px)]"
                     />
                   </div>
                 )
@@ -289,14 +285,14 @@ const ImageSlider = ({ toggleScaled }: any) => {
                 image.id === currentFrame.id && (
                   <div
                     key={image.id}
-                    className="h-full flex justify-center items-center"
                     onClick={() => console.log(images)}
+                    className="h-full"
                   >
                     <img
                       key={image.id}
                       src={image.url}
                       alt="ImageImage"
-                      className="max-h-full object-auto"
+                      className="h-[calc(100%-114px)] xl:h-[calc(100%-100px)]"
                     />
                   </div>
                 )
@@ -306,12 +302,10 @@ const ImageSlider = ({ toggleScaled }: any) => {
           // skeleton
           <div
             role="status"
-            className={`w-full h-full space-y-8 ${
-              isCoverting ? "animate-pulse" : ""
-            }
-             md:space-y-0 md:space-x-8 md:flex md:items-center`}
+            className={`w-full  h-full ${isCoverting ? "animate-pulse" : ""}
+             md:space-y-0 md:space-x-8`}
           >
-            <div className="flex items-center justify-center w-full h-full bg-slate-300 rounded-lg  dark:bg-slate-700">
+            <div className="flex items-center justify-center w-full h-[calc(100%-48px)] bg-slate-300 rounded-lg  dark:bg-slate-700 pd-12">
               <svg
                 className="w-16 h-16 text-slate-200 dark:text-slate-600"
                 aria-hidden="true"

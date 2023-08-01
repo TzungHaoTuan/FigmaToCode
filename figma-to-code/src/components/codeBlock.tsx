@@ -615,35 +615,84 @@ export default function CodeBlock() {
   });
 
   return (
-    <div className="w-full xl:w-1/2 flex flex-col justify-center items-center mb-32 xl:mb-0 xl:pl-3">
+    <div className="w-full xl:w-1/2 h-screen xl:h-4/5 flex flex-col items-center justify-start xl:justify-between pt-56 sm:pt-36 xl:pt-0 pb-12 xl:pb-0 ">
       {/* Tab */}
-      <div className="w-full">
-        <Tab.Group>
-          <Tab.List className="flex space-x-1 rounded-xl bg-blue-900/20">
-            {Object.keys(categories).map((category) => (
-              <Tab
-                key={category}
-                className={({ selected }) =>
-                  classNames(
-                    "w-full h-16 rounded-lg font-extrabold text-base sm:text-xl leading-5",
-                    "ring-pink ring-opacity-60 ring-offset-2 ring-offset-purple-400 focus:outline-none focus:ring-1",
-                    selected
-                      ? "bg-gradient-to-r from-pink-400/80 to-violet-600  text-slate-900"
-                      : " text-violet-300 hover:text-pink hover:shadow-[0_0px_20px_0px_rgba(0,0,0,1)] hover:shadow-violet-600"
-                  )
-                }
-                onClick={() => handleCodeStyle(category)}
-              >
-                {category}
-              </Tab>
-            ))}
-          </Tab.List>
-          <Tab.Panels className="w-full h-[600px] xl:h-[400px]">
-            <Tab.Panel
-              className={classNames(
-                "relative h-full rounded-xl bg-[#1a1b26] shadow-[inset_0_0px_10px_0px_rgba(15,23,42,1)] ring-1 ring-violet-100 mt-12  p-4"
-              )}
+      <Tab.Group>
+        <Tab.List className="w-full flex space-x-1 rounded-xl bg-blue-900/20">
+          {Object.keys(categories).map((category) => (
+            <Tab
+              key={category}
+              className={({ selected }) =>
+                classNames(
+                  "w-full h-16 rounded-lg font-extrabold text-base sm:text-xl leading-5",
+                  "ring-pink ring-opacity-60 ring-offset-2 ring-offset-purple-400 focus:outline-none focus:ring-1",
+                  selected
+                    ? "bg-gradient-to-r from-pink-400/80 to-violet-600  text-slate-900"
+                    : " text-violet-300 hover:text-pink hover:shadow-[0_0px_20px_0px_rgba(0,0,0,1)] hover:shadow-violet-600"
+                )
+              }
+              onClick={() => handleCodeStyle(category)}
             >
+              {category}
+            </Tab>
+          ))}
+        </Tab.List>
+        <Tab.Panels className="w-full h-[calc(100%-60px)] xl:h-[calc(100%-112px)] pt-12 xl:pt-0">
+          <Tab.Panel
+            className={classNames(
+              "relative h-full rounded-xl bg-[#1a1b26] shadow-[inset_0_0px_10px_0px_rgba(15,23,42,1)] ring-1 ring-violet-100 p-4"
+            )}
+          >
+            {isCopied ? (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="absolute top-6 right-6 bg-slate-900 cursor-pointer w-10 h-10 border-[1px]
+              border-pink-600 stroke-pink-600 rounded p-2"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M4.5 12.75l6 6 9-13.5"
+                />
+              </svg>
+            ) : (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="absolute top-6 right-6 bg-slate-900 cursor-pointer w-10 h-10 stroke-white ml-auto border-[1px] border-white
+                 hover:border-pink-600 hover:stroke-pink-600 rounded p-2"
+                onClick={() => copydiv("taiRef")}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75"
+                />
+              </svg>
+            )}
+            {code ? (
+              <pre className="w-full h-[calc(100%-16px)]  overflow-auto no-scrollbar rounded">
+                <code ref={taiRef} className="language-html no-scrollbar">
+                  {ConvertToTai(code)}
+                </code>
+              </pre>
+            ) : (
+              <CodeSkeleton />
+            )}
+          </Tab.Panel>
+          <Tab.Panel
+            className={classNames(
+              "h-full  divide-y rounded-xl bg-[#1a1b26] shadow-[inset_0_0px_10px_0px_rgba(15,23,42,1)] ring-1 ring-violet-100 p-4"
+            )}
+          >
+            <div className="relative w-full h-1/2">
               {isCopied ? (
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -651,7 +700,7 @@ export default function CodeBlock() {
                   viewBox="0 0 24 24"
                   strokeWidth={1.5}
                   stroke="currentColor"
-                  className="absolute top-6 right-6 bg-slate-900 cursor-pointer w-10 h-10 border-[1px]
+                  className="absolute top-2 right-2 bg-slate-900 cursor-pointer w-10 h-10 border-[1px]
               border-pink-600 stroke-pink-600 rounded p-2"
                 >
                   <path
@@ -667,9 +716,9 @@ export default function CodeBlock() {
                   viewBox="0 0 24 24"
                   strokeWidth={1.5}
                   stroke="currentColor"
-                  className="absolute top-6 right-6 bg-slate-900 cursor-pointer w-10 h-10 stroke-white ml-auto border-[1px] border-white
+                  className="absolute top-2 right-2 bg-slate-900 cursor-pointer w-10 h-10 stroke-white ml-auto border-[1px] border-white
                  hover:border-pink-600 hover:stroke-pink-600 rounded p-2"
-                  onClick={() => copydiv("taiRef")}
+                  onClick={() => copydiv("scTagRef")}
                 >
                   <path
                     strokeLinecap="round"
@@ -679,123 +728,69 @@ export default function CodeBlock() {
                 </svg>
               )}
               {code ? (
-                <pre className="w-full h-[calc(100%-16px)]  overflow-auto no-scrollbar rounded">
-                  <code ref={taiRef} className="language-html no-scrollbar">
-                    {ConvertToTai(code)}
+                <pre className="w-full h-[calc(100%-16px)]  overflow-auto no-scrollbar rounded whitespace-nowrap pl-4">
+                  <code className="nohighlight">
+                    {convertToSCTagEdit(code)}
                   </code>
                 </pre>
               ) : (
                 <CodeSkeleton />
               )}
-            </Tab.Panel>
-            <Tab.Panel
-              className={classNames(
-                "h-full  divide-y rounded-xl bg-[#1a1b26] shadow-[inset_0_0px_10px_0px_rgba(15,23,42,1)] ring-1 ring-violet-100 mt-12 p-4"
-              )}
-            >
-              <div className="relative w-full h-1/2">
-                {isCopied ? (
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="absolute top-2 right-2 bg-slate-900 cursor-pointer w-10 h-10 border-[1px]
-              border-pink-600 stroke-pink-600 rounded p-2"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M4.5 12.75l6 6 9-13.5"
-                    />
-                  </svg>
-                ) : (
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="absolute top-2 right-2 bg-slate-900 cursor-pointer w-10 h-10 stroke-white ml-auto border-[1px] border-white
-                 hover:border-pink-600 hover:stroke-pink-600 rounded p-2"
-                    onClick={() => copydiv("scTagRef")}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75"
-                    />
-                  </svg>
-                )}
-                {code ? (
-                  <pre className="w-full h-[calc(100%-16px)]  overflow-auto no-scrollbar rounded whitespace-nowrap pl-4">
-                    <code className="nohighlight">
-                      {convertToSCTagEdit(code)}
-                    </code>
-                  </pre>
-                ) : (
-                  <CodeSkeleton />
-                )}
-              </div>
-              {/* <code contentEditable className="nohighlight text-[#bb9af7]">
+            </div>
+            {/* <code contentEditable className="nohighlight text-[#bb9af7]">
                     &lt;test&gt;
                   </code> */}
-              <div
-                className="relative w-full h-1/2 pt-4"
-                onClick={() => console.log(tags)}
-              >
-                {isCopied ? (
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="absolute top-6 right-2 bg-slate-900 cursor-pointer w-10 h-10 border-[1px]
+            <div
+              className="relative w-full h-1/2 pt-4"
+              onClick={() => console.log(tags)}
+            >
+              {isCopied ? (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="absolute top-6 right-2 bg-slate-900 cursor-pointer w-10 h-10 border-[1px]
               border-pink-600 stroke-pink-600 rounded p-2"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M4.5 12.75l6 6 9-13.5"
-                    />
-                  </svg>
-                ) : (
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="absolute top-6 right-2 bg-slate-900 cursor-pointer w-10 h-10 stroke-white ml-auto border-[1px] border-white
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M4.5 12.75l6 6 9-13.5"
+                  />
+                </svg>
+              ) : (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="absolute top-6 right-2 bg-slate-900 cursor-pointer w-10 h-10 stroke-white ml-auto border-[1px] border-white
                  hover:border-pink-600 hover:stroke-pink-600 rounded p-2"
-                    onClick={() => copydiv("scStyleRef")}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75"
-                    />
-                  </svg>
-                )}
-                {code ? (
-                  <pre className="w-full h-full	overflow-auto no-scrollbar rounded">
-                    <code
-                      ref={scStyleRef}
-                      className="language-html no-scrollbar"
-                    >
-                      {ConvertToSCStyle(code)}
-                    </code>
-                  </pre>
-                ) : (
-                  <CodeSkeleton />
-                )}
-              </div>
-            </Tab.Panel>
-          </Tab.Panels>
-        </Tab.Group>
-      </div>
+                  onClick={() => copydiv("scStyleRef")}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75"
+                  />
+                </svg>
+              )}
+              {code ? (
+                <pre className="w-full h-full	overflow-auto no-scrollbar rounded">
+                  <code ref={scStyleRef} className="language-html no-scrollbar">
+                    {ConvertToSCStyle(code)}
+                  </code>
+                </pre>
+              ) : (
+                <CodeSkeleton />
+              )}
+            </div>
+          </Tab.Panel>
+        </Tab.Panels>
+      </Tab.Group>
     </div>
   );
 }

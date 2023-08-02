@@ -1,8 +1,8 @@
+<p align="center">
+  <img src="https://github.com/TzungHaoTuan/FigmaToCode/assets/126651608/998865ae-5a86-4c84-97e9-6c52a95643cf" />
+</p>
 
-![Logo](https://i.imgur.com/XT4JJJa.png)
 [![MIT License](https://img.shields.io/badge/License-MIT-blue.svg)](https://choosealicense.com/licenses/mit/)
-
-
 
 # Figma to Code
 
@@ -47,6 +47,17 @@
 ## Flow chart
 
 ![Flow chart](https://i.imgur.com/97Dc7sL.png)
+
+## Demo
+
+### Converting Figma file to Tailwind / Styled Components code
+![Converting](https://github.com/TzungHaoTuan/FigmaToCode/assets/126651608/8fa2e331-599a-4970-aa28-65cca6a76e85)
+
+### Add frame and code into collection
+![Collecting](https://github.com/TzungHaoTuan/FigmaToCode/assets/126651608/c4acac7f-ccb7-4c06-b392-d7cca5ce14eb)
+
+### Edit Styled Components name
+![Edit component name](https://github.com/TzungHaoTuan/FigmaToCode/assets/126651608/f269b131-0fae-4d62-8eaa-4ffa2e8cd236)
 
 
 ## Future Features

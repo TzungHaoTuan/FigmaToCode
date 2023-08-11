@@ -12,16 +12,14 @@ import { setTag } from "@/store/tagsSlice";
 import { setCodeStyle } from "@/store/codeStateSlice";
 
 import ConvertToTai from "@/app/utils/convertToTai";
-import ConvertToSCTag from "@/app/utils/convertToSCTag";
 import ConvertToSCStyle from "@/app/utils/convertToSCStyle";
-import ConvertToSCTagEdit from "@/app/utils/convertToSCTagEdit";
 import { staticGenerationAsyncStorage } from "next/dist/client/components/static-generation-async-storage";
 import CodeSkeleton from "./codeSkeleton";
 
 export default function CodeBlock() {
   // const [currentStyle, setCurrentStyle] = useState(true);
   const [code, setCode] = useState<any>();
-  const [isCopied, setIsCopied] = useState<any>(false);
+  const [isCopied, setIsCopied] = useState<any>({});
   const taiRef = useRef<HTMLDivElement>(null);
   const scTagRef = useRef<HTMLDivElement>(null);
   const scStyleRef = useRef<HTMLDivElement>(null);
@@ -66,17 +64,30 @@ export default function CodeBlock() {
   };
 
   const copydiv = (ref: any) => {
-    setIsCopied(true);
+    setIsCopied((prevState: any) => ({ ...prevState, [ref]: true }));
     setTimeout(() => {
       setIsCopied(false);
     }, 1000);
 
-    if (ref === "taiRef" && taiRef.current) {
-      navigator.clipboard.writeText(taiRef.current.innerText);
-    } else if (ref === "scTagRef" && scTagRef.current) {
-      navigator.clipboard.writeText(scTagRef.current.innerText);
-    } else if (ref === "scStyleRef" && scStyleRef.current) {
-      navigator.clipboard.writeText(scStyleRef.current.innerText);
+    switch (ref) {
+      case "taiRef":
+        {
+          taiRef.current &&
+            navigator.clipboard.writeText(taiRef.current.innerText);
+        }
+        break;
+      case "scTagRef":
+        {
+          scTagRef.current &&
+            navigator.clipboard.writeText(scTagRef.current.innerText);
+        }
+        break;
+      case "scStyleRef":
+        {
+          scStyleRef.current &&
+            navigator.clipboard.writeText(scStyleRef.current.innerText);
+        }
+        break;
     }
   };
 
@@ -643,7 +654,7 @@ export default function CodeBlock() {
               "relative h-full rounded-xl bg-[#1a1b26] shadow-[inset_0_0px_10px_0px_rgba(15,23,42,1)] ring-1 ring-violet-100 p-4"
             )}
           >
-            {isCopied ? (
+            {isCopied["taiRef"] ? (
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -693,7 +704,7 @@ export default function CodeBlock() {
             )}
           >
             <div className="relative w-full h-1/2">
-              {isCopied ? (
+              {isCopied["scTagRef"] ? (
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -729,7 +740,7 @@ export default function CodeBlock() {
               )}
               {code ? (
                 <pre className="w-full h-[calc(100%-16px)]  overflow-auto no-scrollbar rounded whitespace-nowrap pl-4">
-                  <code className="nohighlight">
+                  <code ref={scTagRef} className="nohighlight">
                     {convertToSCTagEdit(code)}
                   </code>
                 </pre>
@@ -744,7 +755,7 @@ export default function CodeBlock() {
               className="relative w-full h-1/2 pt-4"
               onClick={() => console.log(tags)}
             >
-              {isCopied ? (
+              {isCopied["scStyleRef"] ? (
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"

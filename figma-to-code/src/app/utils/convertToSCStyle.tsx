@@ -40,10 +40,10 @@ export default function ConvertToSCStyle(children: any) {
         }
       } else if (child.type === "TEXT") {
         return `const ${child.name} = styled.div\`
-              width: ${child.absoluteBoundingBox.width}px;
+              width: ${Math.round(child.absoluteBoundingBox.width)}px;
               height: ${Math.round(child.absoluteBoundingBox.height)}px;
-              left: ${child.absoluteBoundingBox.x}px;
-              top: ${child.absoluteBoundingBox.y}px;
+              left: ${Math.round(child.absoluteBoundingBox.x)}px;
+              top: ${Math.round(child.absoluteBoundingBox.y)}px;
               font-family: ${child.style.fontFamily};
               font-weight: ${child.style.fontWeight};
               font-size: ${child.style.fontSize}px;

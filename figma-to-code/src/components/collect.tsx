@@ -220,14 +220,13 @@ export default function Collect() {
 
   async function uploadImage(imageId: any, imageUrl: any) {
     try {
-      const blob = await loadImageAsBlob(imageUrl);
+      const blob = await compressImage(imageUrl);
       const storageRef = ref(storage, `images/frames/${imageId}.jpg`);
       await uploadBytes(storageRef, blob as Blob)
         // Store the path in Firestore
         .then(async (snapshot) => {
           await addDocument(imageId, snapshot);
           console.log("Successful upload the Blob!");
-          // await storeImagePath(imageId, snapshot);
         });
     } catch (error) {
       console.error("Failed to compress image:", error);
@@ -235,66 +234,10 @@ export default function Collect() {
     }
   }
 
-  function loadImageAsBlob(imageUrl: any) {
-    return new Promise((resolve, reject) => {
-      const xhr = new XMLHttpRequest();
-      xhr.open("GET", imageUrl, true);
-      xhr.responseType = "blob";
-
-      xhr.onload = function () {
-        if (xhr.status === 200) {
-          const blob = xhr.response;
-          resolve(blob);
-        } else {
-          reject(
-            new Error(
-              `Failed to fetch image (${xhr.status}): ${xhr.statusText}`
-            )
-          );
-        }
-      };
-
-      xhr.onerror = function () {
-        reject(new Error("Failed to fetch image"));
-      };
-
-      xhr.send();
-    });
+  async function compressImage(imageUrl: any) {
+    const blob = await fetch(imageUrl).then((response) => response.blob());
+    return blob;
   }
-
-  // async function storeImagePath(imageId: any, snapshot: any) {
-  //   const storagePath = snapshot.ref.fullPath;
-
-  //   const productsRef = doc(db, "products", "data");
-  //   const pagesRef = collection(productsRef, "pages");
-  //   const pagesSnapshot = await getDocs(pagesRef);
-  //   pagesSnapshot.forEach(async (pageDoc) => {
-  //     const framesRef = collection(pageDoc.ref, "frames");
-  //     const framesSnapshot = await getDocs(framesRef);
-  //     framesSnapshot.forEach(async (frameDoc) => {
-  //       if (frameDoc.data().id === imageId) {
-  //         await updateDoc(frameDoc.ref, { storagePath });
-  //       }
-  //     });
-  //   });
-  // }
-
-  // async function compressImage(imageUrl: any) {
-  //   const blob = await fetch(imageUrl).then((response) => response.blob());
-  //   return blob;
-  // }
-  // async function uploadImage(imageId: any, imageUrl: any) {
-  //   // Compress the image
-  //   const blob = await compressImage(imageUrl);
-
-  //   // Upload the image
-  //   const storageRef = ref(storage, `images/frames/${imageId}.jpg`);
-  //   uploadBytes(storageRef, blob)
-  //     // Store the path in Firestore
-  //     .then(async (snapshot) => {
-  //       // await storeImagePath(imageId, snapshot);
-  //     });
-  // }
 
   return (
     <div

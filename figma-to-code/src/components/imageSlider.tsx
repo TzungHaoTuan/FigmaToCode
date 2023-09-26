@@ -1,64 +1,55 @@
 "use client";
-import React, { useState, Fragment, useEffect } from "react";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
+import { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { setCurrentPage } from "@/store/currentPageSlice";
 import { setCurrentFrame } from "@/store/currentFrameSlice";
-
 import { Listbox, Transition } from "@headlessui/react";
-// import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 
-interface Image {
-  page: string;
-  id: string;
-  url: string;
-}
-interface Images {
-  images: Image[];
-}
+// import { StringChain } from "lodash";
 
-interface ImagesState {
-  frameImages: Images;
-}
+// type FrameState = {
+//   initialFrame: {
+//     frame: string;
+//   };
+// };
+import {
+  Frame,
+  Pages,
+  Page,
+  CurrentPage,
+  CurrentFrame,
+  frameImages,
+  Images,
+  Image,
+  IsConverting,
+} from "@/types";
 
-type FrameState = {
-  initialFrame: {
-    frame: string;
-  };
-};
-interface Frame {
-  id: string;
-  name: string;
-}
-interface Page {
-  id: string;
-  name: string;
-  frames: Frame[];
-}
+export default function ImageSlide(): JSX.Element {
+  const pages = useSelector((state: Pages) => state.pages.pages);
+  const currentPage = useSelector(
+    (state: CurrentPage) => state.currentPage.page
+  );
+  const currentFrame = useSelector(
+    (state: CurrentFrame) => state.currentFrame.frame
+  );
+  const frameImages = useSelector(
+    (state: frameImages) => state.frameImages.images
+  );
+  const isCoverting = useSelector(
+    (state: IsConverting) => state.convert.isConverting
+  );
 
-interface Pages {
-  pages: Page[];
-}
-interface PagesState {
-  pages: Pages;
-}
+  const dispatch = useDispatch();
 
-const ImageSlider = ({ toggleScaled }: any) => {
-  const pages = useSelector((state: PagesState) => state.pages.pages);
-  const currentPage = useSelector((state: any) => state.currentPage.page);
-  const currentFrame = useSelector((state: any) => state.currentFrame.frame);
-  const images = useSelector((state: ImagesState) => state.frameImages.images);
-  const isCoverting = useSelector((state: any) => state.convert.isConverting);
+  // const [currentPageState, setCurrentPageState] = useState<string>("Pages");
+  // const [currentFrameState, setCurrentFrameState] = useState<string>("Frames");
+  // const [currentImageState, setCurrentImageState] = useState<any>(0);
 
-  const [currentPageState, setCurrentPageState] = useState<string>("Pages");
-  const [currentFrameState, setCurrentFrameState] = useState<string>("Frames");
-  const [currentImageState, setCurrentImageState] = useState<any>(0);
-
-  const [isAnimating, setIsAnimating] = React.useState(false);
-  const [animationDirection, setAnimationDirection] = React.useState("next");
+  // const [isAnimating, setIsAnimating] = useState(false);
+  // const [animationDirection, setAnimationDirection] = useState("next");
 
   useEffect(() => {
-    const selectedPage = pages.find((page) => page.name === currentPageState);
+    const selectedPage = pages.find((page) => page.name === currentPage);
     if (selectedPage) {
       dispatch(
         setCurrentFrame({
@@ -66,11 +57,9 @@ const ImageSlider = ({ toggleScaled }: any) => {
           name: selectedPage.frames[0].name,
         })
       );
-      setCurrentFrameState(selectedPage.frames[0].name);
+      // setCurrentFrameState(selectedPage.frames[0].name);
     }
-  }, [currentPage, pages]);
-
-  const dispatch = useDispatch();
+  }, [pages, currentPage]);
 
   const handlePage = (name: string): void => {
     dispatch(setCurrentPage(name));
@@ -79,7 +68,7 @@ const ImageSlider = ({ toggleScaled }: any) => {
     dispatch(setCurrentFrame({ id, name }));
   };
 
-  // images
+  // images slider feature
   // const handleImageChange = (direction: any) => {
   //   if (isAnimating) return;
 
@@ -103,18 +92,14 @@ const ImageSlider = ({ toggleScaled }: any) => {
   //   }, 800); // Adjust the animation duration as needed
   // };
 
-  //
   return (
-    <div
-      className="w-full h-[calc(100%-48px)] flex flex-col items-center "
-      onClick={() => console.log([currentPage, currentFrame])}
-    >
+    <div className="w-full h-[calc(100%-48px)] flex flex-col items-center ">
       <div className="w-full flex justify-between">
         <div className="w-[calc((100%-24px)/2)] xl:w-[calc((100%-32px)/2)]">
           {/* page 選單*/}
           <Listbox
-            value={currentPageState}
-            onChange={setCurrentPageState}
+            value={currentPage}
+            // onChange={setCurrentPageState}
             // onChange={(value) => handlePage(value)}
           >
             <div className="relative">
@@ -123,7 +108,7 @@ const ImageSlider = ({ toggleScaled }: any) => {
                border-2 border-pink-300 text-white tracking-wider py-2 shadow-md 
                focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 "
               >
-                <span className="block truncate">{currentPageState}</span>
+                <span className="block truncate">{currentPage}</span>
                 {/* <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2"></span> */}
               </Listbox.Button>
               <Transition
@@ -146,7 +131,7 @@ const ImageSlider = ({ toggleScaled }: any) => {
                               ? "bg-pink-300 text-pink-900"
                               : "bg-pink-200  text-slate-900"
                           } ${
-                            currentPageState === page.name
+                            currentPage === page.name
                               ? "font-extrabold"
                               : "font-bold"
                           }`
@@ -169,11 +154,10 @@ const ImageSlider = ({ toggleScaled }: any) => {
         </div>
 
         {/* frame 選單 */}
-
         <div className="w-[calc((100%-24px)/2)] md:w-[calc((100%-32px)/2)]">
           <Listbox
-            value={currentFrameState}
-            onChange={setCurrentFrameState}
+            value={currentFrame}
+            // onChange={setCurrentFrameState}
 
             // onChange={(value) => handleFrame(value)}
           >
@@ -183,7 +167,7 @@ const ImageSlider = ({ toggleScaled }: any) => {
                border-2 border-violet-300 text-white tracking-wider py-2   shadow-md
                 focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300"
               >
-                <span className="block truncate">{currentFrameState}</span>
+                <span className="block truncate">{currentFrame.name}</span>
                 {/* <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2"></span> */}
               </Listbox.Button>
               <Transition
@@ -197,7 +181,7 @@ const ImageSlider = ({ toggleScaled }: any) => {
                     className="absolute w-full mt-1 max-h-60  overflow-auto rounded-md bg-white  text-lg
                     shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
                   >
-                    {currentPageState === "Pages"
+                    {currentPage === "Pages"
                       ? pages[0]?.frames.map((frame) => (
                           <Listbox.Option
                             key={frame.id}
@@ -207,13 +191,12 @@ const ImageSlider = ({ toggleScaled }: any) => {
                                   ? "bg-violet-300 text-violet-900 drop-shadow-xl"
                                   : "bg-violet-200  text-slate-900"
                               } ${
-                                currentFrameState === frame.name
+                                currentFrame.name === frame.name
                                   ? "font-extrabold"
                                   : "font-bold"
                               }`
                             }
                             value={frame.name}
-                            // onClick={() => handleFrame(frame.id)}
                           >
                             <div
                               className="w-full h-full flex justify-center items-center"
@@ -224,7 +207,7 @@ const ImageSlider = ({ toggleScaled }: any) => {
                           </Listbox.Option>
                         ))
                       : pages
-                          .filter((page) => page.name === currentPageState)
+                          .filter((page) => page.name === currentPage)
                           .map((page) =>
                             page.frames.map((frame) => (
                               <Listbox.Option
@@ -235,13 +218,12 @@ const ImageSlider = ({ toggleScaled }: any) => {
                                       ? "bg-violet-300 text-violet-900 drop-shadow-xl"
                                       : "bg-violet-200  text-slate-900"
                                   } ${
-                                    currentFrameState === frame.name
+                                    currentFrame.name === frame.name
                                       ? "font-extrabold"
                                       : "font-bold"
                                   }`
                                 }
                                 value={frame.name}
-                                // onClick={() => handleFrame(frame.id)}
                               >
                                 <div
                                   className="w-full h-full flex justify-center items-center"
@@ -262,16 +244,16 @@ const ImageSlider = ({ toggleScaled }: any) => {
         </div>
       </div>
       <div className="w-full h-full flex shrink justify-center items-center pt-12">
-        {images.length !== 0 ? (
-          currentPageState === "Pages" || currentFrameState === "Frames" ? (
-            images.map(
-              (image) =>
-                image.page === pages[0].name &&
-                image.id === pages[0].frames[0].id && (
-                  <div key={image.id} className="h-full">
+        {frameImages.length !== 0 ? (
+          currentPage === "Pages" || currentFrame.name === "Frames" ? (
+            frameImages.map(
+              (frameImage) =>
+                frameImage.page === pages[0].name &&
+                frameImage.id === pages[0].frames[0].id && (
+                  <div key={frameImage.id} className="h-full">
                     <img
-                      key={image.id}
-                      src={image.url}
+                      key={frameImage.id}
+                      src={frameImage.url}
                       alt="ImageImage"
                       className="h-[calc(100%-114px)] xl:h-[calc(100%-100px)]"
                     />
@@ -279,18 +261,14 @@ const ImageSlider = ({ toggleScaled }: any) => {
                 )
             )
           ) : (
-            images.map(
-              (image) =>
-                image.page === currentPageState &&
-                image.id === currentFrame.id && (
-                  <div
-                    key={image.id}
-                    onClick={() => console.log(images)}
-                    className="h-full"
-                  >
+            frameImages.map(
+              (frameImage) =>
+                frameImage.page === currentPage &&
+                frameImage.id === currentFrame.id && (
+                  <div key={frameImage.id} className="h-full">
                     <img
-                      key={image.id}
-                      src={image.url}
+                      key={frameImage.id}
+                      src={frameImage.url}
                       alt="ImageImage"
                       className="h-[calc(100%-114px)] xl:h-[calc(100%-100px)]"
                     />
@@ -321,6 +299,4 @@ const ImageSlider = ({ toggleScaled }: any) => {
       </div>
     </div>
   );
-};
-
-export default ImageSlider;
+}

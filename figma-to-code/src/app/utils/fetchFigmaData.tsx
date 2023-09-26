@@ -3,96 +3,137 @@ import api from "@/app/utils/api";
 
 const token = process.env.NEXT_PUBLIC_FM_TOKEN as string;
 
-interface Image {
-  page: string;
-  frame: string[];
-  id: string;
-  url: string;
-}
-interface Frame {
+type PageData = {
   id: string;
   name: string;
-}
+  children: FrameData[];
+};
+type FrameData = {
+  id: string;
+  name: string;
+  children: object[];
+};
 interface Page {
   id: string;
   name: string;
-  frames: Frame[];
+  frames: Frames[];
+}
+interface Frames {
+  id: string;
+  name: string;
+  children: object[];
+}
+interface Frame {
+  page: string;
+  frameId: string;
+}
+interface Images {
+  [id: string]: string;
+}
+interface FrameImage {
+  page: string;
+  id: string;
+  url: string;
 }
 
-async function fetchData(fileKey: string) {
+const getFile = async (fileKey: string) => {
   try {
-    const data = await api.fetchData(token, fileKey);
-    // console.log(data);
-    return data;
-  } catch {}
-}
+    const file = await api.fetchData(token, fileKey);
+    return file;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  }
+};
 
-async function fetchImages(fileKey: string) {
+const getImages = async (fileKey: string): Promise<Images> => {
   try {
-    const data = await api.fetchImages(token, fileKey);
-    const images = [];
-    images.push(data.meta.images);
+    const images = await api.fetchImages(token, fileKey);
     return images;
-  } catch {}
-}
+  } catch (error) {
+    console.error("Error fetching images:", error);
+    return {};
+  }
+};
 
-async function fetchFrameImages(fileKey: string, frames: any) {
+const getFrameImages = async (
+  fileKey: string,
+  frames: Frame[]
+): Promise<FrameImage[]> => {
   try {
-    const frameImages: object[] = [];
+    const frameImages: FrameImage[] = [];
     await Promise.all(
-      frames.map(async (frame: any) => {
-        const data = await api.fetchFrameImages(token, fileKey, frame.ids);
+      frames.map(async (frame: Frame) => {
+        const images = await api.fetchFrameImages(
+          token,
+          fileKey,
+          frame.frameId
+        );
         const image = {
           page: frame.page,
-          id: frame.ids,
-          url: data.images[frame.ids],
+          id: frame.frameId,
+          url: images[frame.frameId],
         };
         frameImages.push(image);
       })
     );
+    console.log(frameImages);
     return frameImages;
-  } catch {}
-}
+  } catch (error) {
+    console.error("Error fetching frame images:", error);
+    throw error;
+  }
+};
 
 export const handleFetch = async (url: string) => {
-  if (url) {
-    const fileStartIndex = url.indexOf("file/") + 5;
-    const fileEndIndex = url.indexOf("/", fileStartIndex);
-    const fileKey = url.substring(fileStartIndex, fileEndIndex);
+  if (!url) return;
 
-    //get imageKey
-    // const imageStartIndex = url.indexOf("node-id=") + 8;
-    // const imageEndIndex = url.indexOf("&", imageStartIndex);
-    // const imageId = url.substring(imageStartIndex, imageEndIndex);
+  const fileStartIndex = url.indexOf("file/") + 5;
+  const fileEndIndex = url.indexOf("/", fileStartIndex);
+  const fileKey = url.substring(fileStartIndex, fileEndIndex);
 
-    const data = await fetchData(fileKey);
-    const images = await fetchImages(fileKey);
+  //get imageKey
+  // const imageStartIndex = url.indexOf("node-id=") + 8;
+  // const imageEndIndex = url.indexOf("&", imageStartIndex);
+  // const imageId = url.substring(imageStartIndex, imageEndIndex);
 
-    const arrayOfPages: { page: string; ids: string[] }[] =
-      await data.document.children.map(
-        (page: { name: string; children: { name: string; id: string }[] }) => ({
-          page: page.name,
-          ids: page.children.map((frame) => frame.id),
-        })
-      );
-    const arrayOfFrames = arrayOfPages.flatMap(({ page, ids }) =>
-      ids.map((id) => ({ page, ids: id }))
-    );
-    const frameImages = await fetchFrameImages(fileKey, arrayOfFrames);
+  const file = await getFile(fileKey);
+  const images = await getImages(fileKey);
 
-    const pages = await data.document.children.map(
-      (page: { id: string; name: string; children: Frame[] }) => ({
-        id: page.id,
-        name: page.name,
-        frames: page.children,
-      })
-    );
-    const currentPage = await pages[0].name;
-    const currentFrame = await {
-      id: pages[0].frames[0].id,
-      name: pages[0].frames[0].name,
-    };
+  if (!file) return;
+  const pages = file.document.children.map((page: PageData) => ({
+    id: page.id,
+    name: page.name,
+    frames: page.children.map((frame: FrameData) => ({
+      id: frame.id,
+      name: frame.name,
+      children: frame.children,
+    })),
+  }));
+  console.log(pages);
 
-    return { data, pages, currentPage, currentFrame, frameImages, images };
-  }
+  const frames = pages.flatMap((page: Page) =>
+    page.frames.map((frame: Frames) => ({
+      page: page.name,
+      frameId: frame.id,
+    }))
+  );
+  console.log(frames);
+  const frameImages = await getFrameImages(fileKey, frames);
+
+  const currentPage = pages[0].name;
+  const currentFrame = {
+    id: pages[0].frames[0].id,
+    name: pages[0].frames[0].name,
+  };
+
+  // const arrayOfPages: { page: string; framesId: string[] }[] =
+  //   await data.document.children.map(
+  //     (page: { name: string; children: { name: string; id: string }[] }) => ({
+  //       page: page.name,
+  //       framesId: page.children.map((frame) => frame.id),
+  //     })
+  //   );
+  // console.log(arrayOfPages);
+
+  return { file, pages, currentPage, currentFrame, frameImages, images };
 };

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useRef } from "react";
+import { useState, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { setData } from "@/store/figmaDataSlice";
 import { setPages } from "@/store/pagesSlice";
@@ -11,46 +11,42 @@ import { setCodeState } from "@/store/codeStateSlice";
 import { handleFetch } from "@/app/utils/fetchFigmaData";
 import { setConvert } from "@/store/convertSlice";
 
-const SearchForm = () => {
+const SearchForm: React.FC = () => {
+  const [isConverting, setIsConverting] = useState(false);
+
   const dispatch = useDispatch();
   const urlRef = useRef<HTMLInputElement | null>(null);
-
-  const [isConverting, setIsConverting] = useState(false);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsConverting(true);
-    dispatch(setConvert());
+    // dispatch(setConvert());
 
     const url = urlRef.current?.value;
-    if (url) {
-      const result = await handleFetch(url);
-      if (result) {
-        const { data, pages, currentPage, currentFrame, frameImages, images } =
-          result;
-        console.log(data);
+    if (!url) return;
+    console.log(url);
 
-        dispatch(setData(data));
-        dispatch(setPages(pages));
-        dispatch(setCurrentPage(currentPage));
-        dispatch(setCurrentFrame(currentFrame));
-        dispatch(setFrameImages(frameImages));
-        dispatch(setImages(images));
-        dispatch(setCodeState(true));
-        dispatch(setConvert());
+    const result = await handleFetch(url);
+    if (!result) return;
+    console.log(result);
 
-        handleScroll();
-        setIsConverting(false);
-      }
-    }
-    // setTimeout(() => {
-    //   handleScroll();
-    //   setIsConverting(false);
-    //   dispatch(setConvert())
-    // }, 1000);
+    const { file, pages, currentPage, currentFrame, frameImages, images } =
+      result;
+    console.log(file);
+    dispatch(setData(file));
+    dispatch(setPages(pages));
+    dispatch(setCurrentPage(currentPage));
+    dispatch(setCurrentFrame(currentFrame));
+    dispatch(setFrameImages(frameImages));
+    dispatch(setImages(images));
+    dispatch(setCodeState(true));
+    // dispatch(setConvert());
+
+    handleScroll();
+    setIsConverting(false);
   };
 
-  const handleScroll = () => {
+  const handleScroll = (): void => {
     window.scrollBy({
       top: window.innerHeight,
       behavior: "smooth",
@@ -96,6 +92,7 @@ const SearchForm = () => {
           } `}
           >
             <input
+              required
               type="text"
               ref={urlRef}
               placeholder="Figma file url..."

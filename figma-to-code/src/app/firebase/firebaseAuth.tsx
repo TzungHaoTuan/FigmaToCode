@@ -5,43 +5,32 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { app } from "@/app/firebase/firebase";
 import { setLogin, setLogout } from "@/store/userSlice";
 
+interface Payload {
+  name: string | null;
+  email: string | null;
+  uid: string;
+  photo?: string;
+}
+
 export default function FirebaseAuth() {
   const auth = getAuth(app);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    onAuthStateChanged(auth, (user: any) => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        // 已登入
-        const name = user.displayName;
-        const email = user.email;
-        const photo = user.photoURL;
-        const uid = user.uid;
-
-        console.log(user);
-
-        const payload: {
-          name: string;
-          email: string;
-          uid: string;
-          photo?: string;
-        } = {
-          name,
-          email,
-          uid,
+        const payload: Payload = {
+          name: user.displayName,
+          email: user.email,
+          uid: user.uid,
+          photo: user.photoURL ?? "",
         };
-
-        if (photo) {
-          payload.photo = photo;
-        }
-
         dispatch(setLogin(payload));
       } else {
         dispatch(setLogout());
-
-        console.log("isLogout");
       }
     });
-  }, []);
-  return <></>;
+    return () => unsubscribe();
+  }, [auth]);
+  return null;
 }

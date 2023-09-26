@@ -2,8 +2,8 @@
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import { setCollection } from "@/store/collectionSlice";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+// import { setCollection } from "@/store/collectionSlice";
+// import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 import { getStorage, ref, uploadBytes } from "firebase/storage";
 import {
@@ -20,24 +20,71 @@ import {
 } from "firebase/firestore";
 
 import { db } from "../app/firebase/firebase";
-import { app } from "@/app/firebase/firebase";
+// import { app } from "@/app/firebase/firebase";
 
 import { setCollect } from "@/store/collectSlice";
 import { setCollected } from "@/store/collectSlice";
-
+import {
+  Frame,
+  Pages,
+  Page,
+  CurrentPage,
+  CurrentFrame,
+  frameImages,
+  Images,
+  Image,
+  IsConverting,
+  Tag,
+} from "@/types";
+interface State {
+  user: User;
+  figmaData: {
+    data: FigmaData;
+  };
+  collect: {
+    isCollecting: boolean;
+  };
+}
+interface User {
+  profile: {
+    name: string;
+    email: string;
+    photo: string;
+    uid: string;
+    login: boolean;
+  };
+}
+interface FigmaData {
+  name: string;
+  document: {
+    id: string;
+    name: string;
+    type: string;
+    children: object[];
+  };
+}
 export default function Collect() {
-  const data = useSelector((state: any) => state.figmaData.data);
-  const currentPage = useSelector((state: any) => state.currentPage.page);
-  const currentFrame = useSelector((state: any) => state.currentFrame.frame);
-  const frameImages = useSelector((state: any) => state.frameImages.images);
-  const tags = useSelector((state: any) => state.tag.tags);
-  const isCollecting = useSelector((state: any) => state.collect.isCollecting);
+  const data = useSelector((state: State) => state.figmaData.data);
+  const currentPage = useSelector(
+    (state: CurrentPage) => state.currentPage.page
+  );
+  const currentFrame = useSelector(
+    (state: CurrentFrame) => state.currentFrame.frame
+  );
+  const frameImages = useSelector(
+    (state: frameImages) => state.frameImages.images
+  );
+  const tags = useSelector((state: Tag) => state.tag.tags);
+  const isCollecting = useSelector(
+    (state: State) => state.collect.isCollecting
+  );
 
   const dispatch = useDispatch();
   const storage = getStorage();
 
-  const auth = getAuth(app);
-  const user = useSelector((state: any) => state.user);
+  // const auth = getAuth(app);
+
+  const user = useSelector((state: State) => state.user);
   const isLogin = user?.profile.login;
   const uid = user?.profile.uid;
   const userName = user?.profile.name;

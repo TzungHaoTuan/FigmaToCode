@@ -12,7 +12,7 @@ export interface Pages {
 export interface Page {
     id: string;
     name: string;
-    frames: Frame[];
+    children: Frame[];
 }
 export interface CurrentPage {
     currentPage: {

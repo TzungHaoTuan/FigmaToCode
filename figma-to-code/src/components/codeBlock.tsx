@@ -597,7 +597,7 @@ export default function CodeBlock(): JSX.Element {
             <div key={child.id} className="text-[#F7768E]">
               &lt;
               <code
-                className="nohighlight text-[#bb9af7]"
+                className="text-[#bb9af7]"
                 contentEditable
                 dir="RTL"
                 suppressContentEditableWarning={true}
@@ -613,7 +613,7 @@ export default function CodeBlock(): JSX.Element {
               <span className="text-[#9AA5CE]">{child.characters}</span>
               &lt;/
               <code
-                className="nohighlight text-[#bb9af7]"
+                className="text-[#bb9af7]"
                 contentEditable
                 dir="RTL"
                 suppressContentEditableWarning={true}
@@ -633,7 +633,7 @@ export default function CodeBlock(): JSX.Element {
             <div key={child.id} className="text-[#F7768E]">
               &lt;
               <code
-                className="nohighlight text-[#bb9af7]"
+                className="text-[#bb9af7]"
                 contentEditable
                 dir="RTL"
                 suppressContentEditableWarning={true}
@@ -655,7 +655,7 @@ export default function CodeBlock(): JSX.Element {
               </code>
               &gt;&lt;/
               <code
-                className="nohighlight text-[#bb9af7]"
+                className="text-[#bb9af7]"
                 contentEditable
                 dir="RTL"
                 suppressContentEditableWarning={true}
@@ -806,7 +806,7 @@ export default function CodeBlock(): JSX.Element {
               )}
               {frameChildren ? (
                 <pre className="w-full h-[calc(100%-16px)]  overflow-auto no-scrollbar rounded whitespace-nowrap pl-4">
-                  <code ref={scTagRef} className="nohighlight">
+                  <code ref={scTagRef}>
                     {convertToSCTagEdit(frameChildren.styledComponentsTag)}
                   </code>
                 </pre>

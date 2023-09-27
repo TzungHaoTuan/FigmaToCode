@@ -103,7 +103,7 @@ export default function CodeBlock(): JSX.Element {
     const selectedPage = pages.filter(
       (page: Page) => page.name === currentPage
     )[0];
-    const selectedFrame = selectedPage.frames.filter(
+    const selectedFrame = selectedPage.children.filter(
       (frame: Frame) => frame.name === currentFrame
     )[0];
     if (selectedFrame) {

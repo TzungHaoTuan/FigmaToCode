@@ -1,5 +1,3 @@
-import React from "react";
-
 export default function ConvertToSCTag(children: any) {
   if (!children) {
     return null;

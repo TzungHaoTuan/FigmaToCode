@@ -1,5 +1,3 @@
-import React from "react";
-
 import CodeBlock from "./codeBlock";
 import ImageSlider from "./imageSlider";
 import Collect from "./collect";

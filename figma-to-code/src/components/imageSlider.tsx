@@ -53,8 +53,8 @@ export default function ImageSlide(): JSX.Element {
     if (selectedPage) {
       dispatch(
         setCurrentFrame({
-          id: selectedPage.frames[0].id,
-          name: selectedPage.frames[0].name,
+          id: selectedPage.children[0].id,
+          name: selectedPage.children[0].name,
         })
       );
       // setCurrentFrameState(selectedPage.frames[0].name);
@@ -182,7 +182,7 @@ export default function ImageSlide(): JSX.Element {
                     shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
                   >
                     {currentPage === "Pages"
-                      ? pages[0]?.frames.map((frame) => (
+                      ? pages[0]?.children.map((frame) => (
                           <Listbox.Option
                             key={frame.id}
                             className={({ active }) =>
@@ -209,7 +209,7 @@ export default function ImageSlide(): JSX.Element {
                       : pages
                           .filter((page) => page.name === currentPage)
                           .map((page) =>
-                            page.frames.map((frame) => (
+                            page.children.map((frame) => (
                               <Listbox.Option
                                 key={frame.id}
                                 className={({ active }) =>
@@ -249,7 +249,7 @@ export default function ImageSlide(): JSX.Element {
             frameImages.map(
               (frameImage) =>
                 frameImage.page === pages[0].name &&
-                frameImage.id === pages[0].frames[0].id && (
+                frameImage.id === pages[0].children[0].id && (
                   <div key={frameImage.id} className="h-full">
                     <img
                       key={frameImage.id}

@@ -16,7 +16,7 @@ type FrameData = {
 interface Page {
   id: string;
   name: string;
-  frames: Frames[];
+  children: Frames[];
 }
 interface Frames {
   id: string;
@@ -103,27 +103,25 @@ export const handleFetch = async (url: string) => {
   const pages = file.document.children.map((page: PageData) => ({
     id: page.id,
     name: page.name,
-    frames: page.children.map((frame: FrameData) => ({
+    children: page.children.map((frame: FrameData) => ({
       id: frame.id,
       name: frame.name,
       children: frame.children,
     })),
   }));
-  console.log(pages);
 
   const frames = pages.flatMap((page: Page) =>
-    page.frames.map((frame: Frames) => ({
+    page.children.map((frame: Frames) => ({
       page: page.name,
       frameId: frame.id,
     }))
   );
-  console.log(frames);
   const frameImages = await getFrameImages(fileKey, frames);
 
   const currentPage = pages[0].name;
   const currentFrame = {
-    id: pages[0].frames[0].id,
-    name: pages[0].frames[0].name,
+    id: pages[0].children[0].id,
+    name: pages[0].children[0].name,
   };
 
   // const arrayOfPages: { page: string; framesId: string[] }[] =

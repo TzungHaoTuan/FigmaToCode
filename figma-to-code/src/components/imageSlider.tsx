@@ -53,8 +53,8 @@ export default function ImageSlide(): JSX.Element {
     if (selectedPage) {
       dispatch(
         setCurrentFrame({
-          id: selectedPage.frames[0].id,
-          name: selectedPage.frames[0].name,
+          id: selectedPage.children[0].id,
+          name: selectedPage.children[0].name,
         })
       );
       // setCurrentFrameState(selectedPage.frames[0].name);
@@ -181,8 +181,8 @@ export default function ImageSlide(): JSX.Element {
                     className="absolute w-full mt-1 max-h-60  overflow-auto rounded-md bg-white  text-lg
                     shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
                   >
-                    {currentPage === "Pages"
-                      ? pages[0]?.frames.map((frame) => (
+                    {pages && currentPage === "Pages"
+                      ? pages[0]?.children.map((frame) => (
                           <Listbox.Option
                             key={frame.id}
                             className={({ active }) =>
@@ -209,32 +209,34 @@ export default function ImageSlide(): JSX.Element {
                       : pages
                           .filter((page) => page.name === currentPage)
                           .map((page) =>
-                            page.frames.map((frame) => (
-                              <Listbox.Option
-                                key={frame.id}
-                                className={({ active }) =>
-                                  `relative w-full h-12 flex  justify-center items-center cursor-default select-none  ${
-                                    active
-                                      ? "bg-violet-300 text-violet-900 drop-shadow-xl"
-                                      : "bg-violet-200  text-slate-900"
-                                  } ${
-                                    currentFrame.name === frame.name
-                                      ? "font-extrabold"
-                                      : "font-bold"
-                                  }`
-                                }
-                                value={frame.name}
-                              >
-                                <div
-                                  className="w-full h-full flex justify-center items-center"
-                                  onClick={() => {
-                                    handleFrame(frame.id, frame.name);
-                                  }}
-                                >
-                                  {frame.name}
-                                </div>
-                              </Listbox.Option>
-                            ))
+                            page.children
+                              ? page.children.map((frame) => (
+                                  <Listbox.Option
+                                    key={frame.id}
+                                    className={({ active }) =>
+                                      `relative w-full h-12 flex  justify-center items-center cursor-default select-none  ${
+                                        active
+                                          ? "bg-violet-300 text-violet-900 drop-shadow-xl"
+                                          : "bg-violet-200  text-slate-900"
+                                      } ${
+                                        currentFrame.name === frame.name
+                                          ? "font-extrabold"
+                                          : "font-bold"
+                                      }`
+                                    }
+                                    value={frame.name}
+                                  >
+                                    <div
+                                      className="w-full h-full flex justify-center items-center"
+                                      onClick={() => {
+                                        handleFrame(frame.id, frame.name);
+                                      }}
+                                    >
+                                      {frame.name}
+                                    </div>
+                                  </Listbox.Option>
+                                ))
+                              : null
                           )}
                   </Listbox.Options>
                 )}
@@ -249,7 +251,7 @@ export default function ImageSlide(): JSX.Element {
             frameImages.map(
               (frameImage) =>
                 frameImage.page === pages[0].name &&
-                frameImage.id === pages[0].frames[0].id && (
+                frameImage.id === pages[0].children[0].id && (
                   <div key={frameImage.id} className="h-full">
                     <img
                       key={frameImage.id}

@@ -12,7 +12,6 @@ export default function HighLight({ frameChildren }: HighLightProps) {
   const codeRef = useRef<HTMLPreElement>(null);
 
   useEffect(() => {
-    console.log("frameChildren changed");
     if (codeRef.current && frameChildren) {
       // Remove the highlighted code elements added by highlight.js
       codeRef.current.textContent = "";
@@ -25,8 +24,8 @@ export default function HighLight({ frameChildren }: HighLightProps) {
     }
   }, [frameChildren]);
   return (
-    <pre ref={codeRef}>
-      <code className="language-html">{frameChildren}</code>
+    <pre ref={codeRef} className="language-html">
+      <code>{frameChildren}</code>
     </pre>
   );
 }

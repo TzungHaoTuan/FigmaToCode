@@ -115,3 +115,35 @@ export interface CodeStatus {
         isToggle: boolean;
     };
 }
+// user state
+export interface State {
+    user: User;
+    figmaData: {
+        data: FigmaData;
+    };
+    collect: {
+        isCollecting: boolean;
+        collected: boolean
+    };
+    convert: {
+        isConverting: boolean
+    }
+}
+export interface User {
+    profile: {
+        name: string;
+        email: string;
+        photo: string;
+        uid: string;
+        login: boolean;
+    };
+}
+export interface FigmaData {
+    name: string;
+    document: {
+        id: string;
+        name: string;
+        type: string;
+        children: Page[];
+    };
+}

@@ -76,7 +76,6 @@ const getFrameImages = async (
         frameImages.push(image);
       })
     );
-    console.log(frameImages);
     return frameImages;
   } catch (error) {
     console.error("Error fetching frame images:", error);
@@ -90,11 +89,6 @@ export const handleFetch = async (url: string) => {
   const fileStartIndex = url.indexOf("file/") + 5;
   const fileEndIndex = url.indexOf("/", fileStartIndex);
   const fileKey = url.substring(fileStartIndex, fileEndIndex);
-
-  //get imageKey
-  // const imageStartIndex = url.indexOf("node-id=") + 8;
-  // const imageEndIndex = url.indexOf("&", imageStartIndex);
-  // const imageId = url.substring(imageStartIndex, imageEndIndex);
 
   const file = await getFile(fileKey);
   const images = await getImages(fileKey);
@@ -124,14 +118,5 @@ export const handleFetch = async (url: string) => {
     name: pages[0].children[0].name,
   };
 
-  // const arrayOfPages: { page: string; framesId: string[] }[] =
-  //   await data.document.children.map(
-  //     (page: { name: string; children: { name: string; id: string }[] }) => ({
-  //       page: page.name,
-  //       framesId: page.children.map((frame) => frame.id),
-  //     })
-  //   );
-  // console.log(arrayOfPages);
-
-  return { file, pages, currentPage, currentFrame, frameImages, images };
+  return { file, pages, currentPage, currentFrame, frameImages, images};
 };

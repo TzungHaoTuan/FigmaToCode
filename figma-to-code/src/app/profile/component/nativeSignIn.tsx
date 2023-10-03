@@ -1,19 +1,19 @@
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { Auth, signInWithEmailAndPassword } from "firebase/auth";
 
-const nativeSignIn = (auth: any, email: string, password: string) => {
-  signInWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      const user = userCredential.user;
-      console.log(user);
-      console.log("Sign In successfully");
-    })
-    .catch((error) => {
-      const errorCode = error.code;
+const nativeSignIn = async (auth: Auth, email: string, password: string) => {
+  try {
+    const userCredential = await signInWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+    const user = userCredential.user;
+  } catch (error) {
+    if (error instanceof Error) {
       const errorMessage = error.message;
-      console.log(errorCode);
-      console.log(errorMessage);
-      throw error;
-    });
+      throw new Error(errorMessage);
+    }
+  }
 };
 
 export default nativeSignIn;

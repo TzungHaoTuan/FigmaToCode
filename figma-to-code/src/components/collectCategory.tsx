@@ -2,9 +2,9 @@ import React from "react";
 import Link from "next/link";
 import { useSelector, useDispatch } from "react-redux";
 import { setCollected } from "@/store/collectSlice";
-
+import { State } from "@/types";
 export default function CollectCategory() {
-  const isCollected = useSelector((state: any) => state.collect.collected);
+  const isCollected = useSelector((state: State) => state.collect.collected);
   const dispatch = useDispatch();
 
   return (

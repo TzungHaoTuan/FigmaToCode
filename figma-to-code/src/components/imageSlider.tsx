@@ -1,30 +1,19 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { setCurrentPage } from "@/store/currentPageSlice";
 import { setCurrentFrame } from "@/store/currentFrameSlice";
 import { Listbox, Transition } from "@headlessui/react";
 
-// import { StringChain } from "lodash";
-
-// type FrameState = {
-//   initialFrame: {
-//     frame: string;
-//   };
-// };
 import {
-  Frame,
   Pages,
-  Page,
   CurrentPage,
   CurrentFrame,
   frameImages,
-  Images,
-  Image,
   IsConverting,
 } from "@/types";
 
-export default function ImageSlide(): JSX.Element {
+export default function ImageSlider(): JSX.Element {
   const pages = useSelector((state: Pages) => state.pages.pages);
   const currentPage = useSelector(
     (state: CurrentPage) => state.currentPage.page
@@ -41,13 +30,6 @@ export default function ImageSlide(): JSX.Element {
 
   const dispatch = useDispatch();
 
-  // const [currentPageState, setCurrentPageState] = useState<string>("Pages");
-  // const [currentFrameState, setCurrentFrameState] = useState<string>("Frames");
-  // const [currentImageState, setCurrentImageState] = useState<any>(0);
-
-  // const [isAnimating, setIsAnimating] = useState(false);
-  // const [animationDirection, setAnimationDirection] = useState("next");
-
   useEffect(() => {
     const selectedPage = pages.find((page) => page.name === currentPage);
     if (selectedPage) {
@@ -57,7 +39,6 @@ export default function ImageSlide(): JSX.Element {
           name: selectedPage.children[0].name,
         })
       );
-      // setCurrentFrameState(selectedPage.frames[0].name);
     }
   }, [pages, currentPage]);
 
@@ -68,40 +49,12 @@ export default function ImageSlide(): JSX.Element {
     dispatch(setCurrentFrame({ id, name }));
   };
 
-  // images slider feature
-  // const handleImageChange = (direction: any) => {
-  //   if (isAnimating) return;
-
-  //   setIsAnimating(true);
-  //   setAnimationDirection(direction);
-
-  //   // Wait for the animation to finish before updating the current image
-  //   setTimeout(() => {
-  //     if (direction === "next") {
-  //       setCurrentImageState((prevImage: any) =>
-  //         // 是不是最後一張
-  //         prevImage === images.length - 1 ? 0 : prevImage + 1
-  //       );
-  //     } else if (direction === "prev") {
-  //       setCurrentImageState((prevImage: any) =>
-  //         // 是不是第一張
-  //         prevImage === 0 ? images.length - 1 : prevImage - 1
-  //       );
-  //     }
-  //     setIsAnimating(false);
-  //   }, 800); // Adjust the animation duration as needed
-  // };
-
   return (
     <div className="w-full h-[calc(100%-48px)] flex flex-col items-center ">
       <div className="w-full flex justify-between">
         <div className="w-[calc((100%-24px)/2)] xl:w-[calc((100%-32px)/2)]">
           {/* page 選單*/}
-          <Listbox
-            value={currentPage}
-            // onChange={setCurrentPageState}
-            // onChange={(value) => handlePage(value)}
-          >
+          <Listbox value={currentPage}>
             <div className="relative">
               <Listbox.Button
                 className="relative flex justify-center items-center w-full h-16 text-center text-xl font-bold cursor-default rounded-lg
@@ -109,10 +62,8 @@ export default function ImageSlide(): JSX.Element {
                focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 "
               >
                 <span className="block truncate">{currentPage}</span>
-                {/* <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2"></span> */}
               </Listbox.Button>
               <Transition
-                // as={Fragment}
                 leave="transition ease-in duration-100"
                 leaveFrom="opacity-100"
                 leaveTo="opacity-0"
@@ -155,12 +106,7 @@ export default function ImageSlide(): JSX.Element {
 
         {/* frame 選單 */}
         <div className="w-[calc((100%-24px)/2)] md:w-[calc((100%-32px)/2)]">
-          <Listbox
-            value={currentFrame}
-            // onChange={setCurrentFrameState}
-
-            // onChange={(value) => handleFrame(value)}
-          >
+          <Listbox value={currentFrame}>
             <div className=" relative">
               <Listbox.Button
                 className="relative  flex justify-center items-center w-full h-16 text-center text-xl font-bold cursor-default rounded-lg
@@ -168,10 +114,8 @@ export default function ImageSlide(): JSX.Element {
                 focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300"
               >
                 <span className="block truncate">{currentFrame.name}</span>
-                {/* <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2"></span> */}
               </Listbox.Button>
               <Transition
-                // as={Fragment}
                 leave="transition ease-in duration-100"
                 leaveFrom="opacity-100"
                 leaveTo="opacity-0"

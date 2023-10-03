@@ -37,34 +37,11 @@ import {
   IsConverting,
   Tag,
   Element,
+  State,
+  User,
+  FigmaData,
 } from "@/types";
-interface State {
-  user: User;
-  figmaData: {
-    data: FigmaData;
-  };
-  collect: {
-    isCollecting: boolean;
-  };
-}
-interface User {
-  profile: {
-    name: string;
-    email: string;
-    photo: string;
-    uid: string;
-    login: boolean;
-  };
-}
-interface FigmaData {
-  name: string;
-  document: {
-    id: string;
-    name: string;
-    type: string;
-    children: Page[];
-  };
-}
+
 export default function Collect() {
   const data = useSelector((state: State) => state.figmaData.data);
   const currentPage = useSelector(
@@ -112,7 +89,6 @@ export default function Collect() {
       await uploadBytes(storageRef, imageBlob as Blob)
         // Store the path in Firestore
         .then(async (snapshot) => {
-          console.log("Successful upload the Blob!");
           await addDocument(snapshot, uid, userName, data, currentFrame, tags);
         });
     } catch (error) {
@@ -134,68 +110,7 @@ export default function Collect() {
       fullPath: string;
     };
   }
-  // const addDocument = async (snapshot: Snapshot) => {
-  //   console.log("start writing data");
-  //   const storagePath = snapshot.ref.fullPath;
 
-  //   const usersRef = doc(db, "users", uid);
-  //   await setDoc(usersRef, {
-  //     name: userName,
-  //   });
-
-  //   const collectionRef = collection(usersRef, "collection");
-  //   const collectionDocRef = doc(collectionRef, data.name);
-  //   await setDoc(doc(collectionRef, data.name), {
-  //     project: data.name,
-  //   });
-
-  //   // Create the "pages" subcollection and inside
-  //   const pagesRef = collection(collectionDocRef, "pages");
-  //   const pagesPromises = data.document.children.map(async (page: any) => {
-  //     await setDoc(doc(pagesRef, page.name), { pageName: page.name });
-
-  //     const pageRef = doc(pagesRef, page.name);
-  //     const framesRef = collection(pageRef, "frames");
-  //     const framesPromises = page.children.map(async (frame: any) => {
-  //       // await setDoc(doc(framesRef, frame.name), { id: frame.id });
-
-  //       const frameDocRef = doc(framesRef, frame.name);
-  //       const frameDocSnapshot = await getDoc(frameDocRef);
-  //       const frameData = frameDocSnapshot.data();
-
-  //       if (frame.id === currentFrame.id) {
-  //         await setDoc(frameDocRef, {
-  //           ...frameData,
-  //           id: frame.id,
-  //           collected: true,
-  //           storagePath: storagePath,
-  //         });
-  //       } else {
-  //         await setDoc(frameDocRef, {
-  //           ...frameData,
-  //           id: frame.id,
-  //         });
-  //       }
-
-  //       const frameRef = doc(framesRef, frame.name);
-  //       const childrenRef = collection(frameRef, "children");
-  //       const childrenPromises = frame.children.map((child: any) => {
-  //         return setDoc(doc(childrenRef, child.name), child);
-  //       });
-
-  //       return Promise.all(childrenPromises);
-  //     });
-
-  //     return Promise.all(framesPromises);
-  //   });
-  //   await Promise.all(pagesPromises);
-  //   dispatch(setCollect());
-  //   dispatch(setCollected(true));
-  //   if (Object.keys(tags).length !== 0) {
-  //     await handleTag();
-  //   }
-  //   console.log("Finish writing data");
-  // };
   const addDocument = async (
     snapshot: Snapshot,
     uid: string,
@@ -204,7 +119,6 @@ export default function Collect() {
     currentFrame: { id: string; name: string },
     tags: Record<string, string>
   ) => {
-    console.log("start writing data");
     const storagePath = snapshot.ref.fullPath;
 
     const usersRef = doc(db, "users", uid);
@@ -258,8 +172,6 @@ export default function Collect() {
     if (Object.keys(tags).length !== 0) {
       await handleTag();
     }
-
-    console.log("Finish writing data");
   };
 
   const handleTag = async () => {
@@ -289,7 +201,6 @@ export default function Collect() {
     childDoc: QueryDocumentSnapshot<DocumentData>,
     tags: Record<string, string>
   ) {
-    console.log(childDoc);
     const docData = childDoc.data();
     const [updatedData, dataUpdated] = await updateChildRecursive(
       docData,
@@ -339,10 +250,7 @@ export default function Collect() {
   }
 
   return (
-    <div
-      className="w-full flex justify-center items-center"
-      onClick={() => console.log([data.name, currentPage, currentFrame])}
-    >
+    <div className="w-full flex justify-center items-center">
       <button
         onClick={handleCollection}
         className={`w-full h-12 flex justify-center items-center

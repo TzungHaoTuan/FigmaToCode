@@ -24,15 +24,12 @@ const SearchForm: React.FC = () => {
 
     const url = urlRef.current?.value;
     if (!url) return;
-    console.log(url);
 
     const result = await handleFetch(url);
     if (!result) return;
-    console.log(result);
 
     const { file, pages, currentPage, currentFrame, frameImages, images } =
       result;
-    console.log(file);
     dispatch(setData(file));
     dispatch(setPages(pages));
     dispatch(setCurrentPage(currentPage));
@@ -77,6 +74,7 @@ const SearchForm: React.FC = () => {
           Code Generation
         </div>
         <form
+          name="search form"
           onSubmit={handleSubmit}
           className="w-full flex flex-col  justify-center items-center mt-16 sm:mt-8 md:mt-16
           md:w-[677px] md:flex-row md:justify-between
@@ -93,6 +91,7 @@ const SearchForm: React.FC = () => {
           >
             <input
               required
+              name="search"
               type="text"
               ref={urlRef}
               placeholder="Figma file url..."

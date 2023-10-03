@@ -32,5 +32,6 @@ export default function FirebaseAuth() {
     });
     return () => unsubscribe();
   }, [auth]);
+
   return null;
 }

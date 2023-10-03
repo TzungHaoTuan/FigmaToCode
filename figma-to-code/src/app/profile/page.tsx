@@ -1,24 +1,28 @@
 "use client";
 
 import ReduxProvider from "@/redux/reduxProvider";
-import { useState } from "react";
+import { useState, FormEvent } from "react";
 import { useSelector } from "react-redux";
 import nativeSignUp from "./component/nativeSignUp";
 import nativeSignIn from "./component/nativeSignIn";
 
 import {
+  Auth,
   getAuth,
   signInWithPopup,
   signOut,
   GoogleAuthProvider,
+  UserCredential,
 } from "firebase/auth";
-
+import { FirebaseError } from "firebase/app";
 import { app } from "@/app/firebase/firebase";
 import Image from "next/image";
 import GoogleIcon from "../icons/google.ico";
 import isLogOutAvatar from "../images/user.png";
 
-function Profile() {
+import { State } from "@/types";
+
+export default function Profile() {
   const auth = getAuth(app);
 
   const [isSignUp, setIsSignUp] = useState(true);
@@ -30,54 +34,48 @@ function Profile() {
   const [signInEmail, setSignInEmail] = useState("user@gmail.com");
   const [signInPassword, setSignInPassword] = useState("user12345");
 
-  const provider = new GoogleAuthProvider();
-  provider.setCustomParameters({
-    prompt: "select_account",
-  });
+  const user = useSelector((state: State) => state.user);
+  const photo = user?.profile.photo;
+  const isLogin = user?.profile.login;
 
-  const user = useSelector((state: any) => state.user);
-  const name = user.profile.name;
-  const email = user.profile.email;
-  const photo = user.profile.photo;
-  const uid = user.profile.uid;
-  const isLogin = user.profile.login;
-
-  const handleSignUpSubmit = (event: any) => {
+  const handleSignUpSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     nativeSignUp(auth, signUpName, signUpEmail, signUpPassword);
   };
 
-  const handleSignInSubmit = async (event: any) => {
+  const handleSignInSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     nativeSignIn(auth, signInEmail, signInPassword);
   };
 
-  const handleGoogleSignIn = async (auth: any) => {
-    await signInWithPopup(auth, provider)
-      .then((result) => {
-        // 登入成功，取得 token、user
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-        const token = credential?.accessToken;
-        const user = result.user;
-      })
-      .catch((error) => {
-        const errorCode = error.code;
+  const handleGoogleSignIn = async (auth: Auth) => {
+    const provider = new GoogleAuthProvider();
+    provider.setCustomParameters({
+      prompt: "select_account",
+    });
+    try {
+      const result: UserCredential = await signInWithPopup(auth, provider);
+      const credential = GoogleAuthProvider.credentialFromResult(result);
+      const user = result.user;
+    } catch (error) {
+      if (error instanceof Error) {
         const errorMessage = error.message;
-        const credential = GoogleAuthProvider.credentialFromError(error);
-        console.log(errorCode);
-        console.log(errorMessage);
-        console.log(credential);
-      });
+
+        if ("code" in error) {
+          const errorCode = error.code;
+          const credential = GoogleAuthProvider.credentialFromError(
+            error as FirebaseError
+          ); // Here's the type assertion
+        }
+        throw new Error(errorMessage);
+      } else {
+        throw new Error("An unknown error occurred.");
+      }
+    }
   };
 
-  const handleSignOut = async (auth: any) => {
-    await signOut(auth)
-      .then(() => {
-        // 登出成功
-      })
-      .catch((error) => {
-        // error
-      });
+  const handleSignOut = async (auth: Auth) => {
+    await signOut(auth);
   };
 
   return (
@@ -119,6 +117,7 @@ function Profile() {
             ) : isSignUp ? (
               <div className="w-full h-full flex flex-col  items-center">
                 <form
+                  name="sign in"
                   onSubmit={handleSignInSubmit}
                   className="w-full flex flex-col items-center"
                 >
@@ -128,6 +127,7 @@ function Profile() {
                     className="w-24 h-24 rounded-full border-2 grayscale opacity-30 shadow-[0_0px_30px_0px_rgba(255,255,255,1)] shadow-white mt-20"
                   />
                   <input
+                    name="sign in email"
                     type="email"
                     value={signInEmail}
                     onChange={(e) => setSignInEmail(e.target.value)}
@@ -135,6 +135,7 @@ function Profile() {
                     className="w-2/3 h-12 border-2 border-white backdrop-brightness-0 bg-slate-50 rounded-full focus:outline-none mt-8 px-8"
                   ></input>
                   <input
+                    name="sign in password"
                     type="password"
                     value={signInPassword}
                     onChange={(e) => setSignInPassword(e.target.value)}
@@ -178,6 +179,7 @@ function Profile() {
             ) : (
               <div className="w-full h-full flex flex-col  items-center">
                 <form
+                  name="sign up"
                   onSubmit={handleSignUpSubmit}
                   className="w-full flex flex-col items-center"
                 >
@@ -187,6 +189,7 @@ function Profile() {
                     className="w-24 h-24 rounded-full border-2 grayscale opacity-30 shadow-[0_0px_30px_0px_rgba(255,255,255,1)] shadow-white mt-20"
                   />
                   <input
+                    name="sign up name"
                     placeholder="name"
                     value={signUpName}
                     onChange={(e) => setSignUpName(e.target.value)}
@@ -194,6 +197,7 @@ function Profile() {
                     className="w-2/3 h-12 border-2 border-white backdrop-brightness-0 bg-slate-50 rounded-full focus:outline-none mt-8 px-8"
                   ></input>
                   <input
+                    name="sign up email"
                     type="email"
                     placeholder="email"
                     value={signUpEmail}
@@ -202,6 +206,7 @@ function Profile() {
                     className="w-2/3 h-12 border-2 border-white backdrop-brightness-0 bg-slate-50 rounded-full focus:outline-none mt-4 px-8"
                   ></input>
                   <input
+                    name="sign up password"
                     type="password"
                     placeholder="password"
                     value={signUpPassword}
@@ -235,5 +240,3 @@ function Profile() {
     </ReduxProvider>
   );
 }
-
-export default Profile;

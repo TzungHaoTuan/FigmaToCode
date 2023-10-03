@@ -1,8 +1,8 @@
 import React from "react";
 import { useSelector } from "react-redux";
-
+import { State } from "@/types";
 export default function CodeSkeleton() {
-  const isCoverting = useSelector((state: any) => state.convert.isConverting);
+  const isCoverting = useSelector((state: State) => state.convert.isConverting);
 
   return (
     <div

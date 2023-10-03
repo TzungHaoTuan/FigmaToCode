@@ -1,10 +1,9 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import { Provider } from "react-redux";
-import { useSelector } from "react-redux";
-
 import store from "@/store/store";
 import Link from "next/link";
+
 import HeadShot from "./headShot";
 import CollectCategory from "./collectCategory";
 
@@ -12,10 +11,10 @@ export default function Header() {
   const [isScrolling, setIsScrolling] = useState(false);
   const [scrollPosition, setScrollPosition] = useState(0);
 
-  const elementRef = useRef(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const handleScroll = () => {
+    const handleScroll = (): void => {
       setScrollPosition(window.scrollY);
       setIsScrolling(true);
     };
@@ -25,13 +24,15 @@ export default function Header() {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
   useEffect(() => {
-    const element: any = elementRef.current;
+    const element = scrollRef.current;
+    if (!element) {
+      return;
+    }
     if (isScrolling && scrollPosition > 0) {
-      // Change the background color of the element here
       element.classList.add(`bg-slate-900/90`);
     } else {
-      // Reset the background color if not scrolling or at the top
       element.classList.remove(`bg-slate-900/90`);
     }
   }, [isScrolling, scrollPosition]);
@@ -39,7 +40,7 @@ export default function Header() {
   return (
     <Provider store={store}>
       <div
-        ref={elementRef}
+        ref={scrollRef}
         className="fixed w-screen sm:h-36 flex justify-center items-center z-20"
       >
         <div

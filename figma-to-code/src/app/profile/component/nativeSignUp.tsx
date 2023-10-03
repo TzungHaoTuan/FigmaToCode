@@ -1,43 +1,33 @@
 import {
-  getAuth,
+  Auth,
   createUserWithEmailAndPassword,
   updateProfile,
 } from "firebase/auth";
 
-const userAvatar = "../../images/userAvatar.png";
-const nativeSignUp = (
-  auth: any,
+const nativeSignUp = async (
+  auth: Auth,
   name: string,
   email: string,
   password: string
 ) => {
-  createUserWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      // 註冊成功
-      const user = userCredential.user;
-      console.log("Sign Up successfully");
-      console.log(user);
+  try {
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+    const user = userCredential.user;
+    if (auth.currentUser) {
       updateProfile(auth.currentUser, {
         displayName: name,
-      })
-        .then(() => {
-          console.log("Profile updated successfully");
-        })
-        .catch((error) => {
-          // An error occurred while updating the profile
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          console.log(errorCode);
-          console.log(errorMessage);
-        });
-    })
-    .catch((error) => {
-      // 註冊失敗
-      const errorCode = error.code;
+      });
+    }
+  } catch (error) {
+    if (error instanceof Error) {
       const errorMessage = error.message;
-      console.log(errorCode);
-      console.log(errorMessage);
-    });
+      throw new Error(errorMessage);
+    }
+  }
 };
 
 export default nativeSignUp;

@@ -1,22 +1,25 @@
-export default function ConvertToSCTag(children: any) {
+import { Element, ElementType } from "@/types";
+
+export default function convertToSCTag(
+  children: Element[] | undefined
+): string | null {
   if (!children) {
     return null;
   }
-
-  const renderedChildren = children.flatMap((child: any) => {
-    if (
-      child.type === "GROUP" ||
-      child.type === "INSTANCE" ||
-      child.type === "FRAME"
-    ) {
-      return ConvertToSCTag(child.children);
-    } else {
-      if (child.type === "TEXT") {
+  const renderedChildren = children.flatMap((child: Element) => {
+    switch (child.type) {
+      case ElementType.GROUP:
+      case ElementType.INSTANCE:
+      case ElementType.FRAME:
+        return convertToSCTag(child.children);
+      case ElementType.TEXT:
         return `<${child.name}>${child.characters}</${child.name}>`;
-      } else {
+      default:
         return `<${child.name}></${child.name}>`;
-      }
     }
   });
-  return renderedChildren.join("\n");
+  const styledComponentsTag = renderedChildren.filter(
+    (child) => child !== null
+  );
+  return styledComponentsTag.length > 0 ? styledComponentsTag.join("\n") : null;
 }

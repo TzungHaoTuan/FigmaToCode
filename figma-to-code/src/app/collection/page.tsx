@@ -126,51 +126,26 @@ async function getDocuments(uid: string) {
 }
 
 const Collection = () => {
-  // const [collectionFrames, setCollectionFrames] = useState<CollectionFrames>(
-  //   {}
-  // );
   const dispatch = useDispatch();
+  const user = useSelector((state: State) => state.user);
+  const uid = user.profile.uid;
 
-  const user = auth.currentUser;
-  const uid = user?.uid || "";
   const userCollection: CollectionFrames = useSelector(
     (state: State) => state.collection.frames
   );
 
   useEffect(() => {
     if (!uid) return;
-    console.log(uid);
     const getColltionFrames = async () => {
       const collectionFrames = await getDocuments(uid);
       dispatch(setCollection(collectionFrames));
     };
     getColltionFrames();
   }, [uid]);
-  // useEffect(() => {
-  //   const getCollectionFrames = async () => {
-  //     if (uid) {
-  //       try {
-  //         console.log(uid);
-  //         const userCollectionFrames = await getDocuments(uid);
-  //         setCollectionFrames(userCollectionFrames);
-  //       } catch (error) {
-  //         console.error("Error fetching collection frames:", error);
-  //       }
-  //     }
-  //     getCollectionFrames();
-  //   };
-  // }, [uid]);
 
   return (
     <div className="bg-slate-900 w-screen min-h-screen py-48 px-36">
       <div className="bg-opacity-20 rounded-3xl backdrop-blur backdrop-brightness-110">
-        {/* {Object.keys(userCollection).length === 0 ? (
-          <Grid />
-        ) : (
-          Array.from({ length: 3 }, (_, index) => (
-            <CollectionSkeleton key={index} />
-          ))
-        )} */}
         {!userCollection ? (
           <div className="text-white flex flex-col">
             <div className="inline-flex justify-center mb-8">Loading...</div>
@@ -190,11 +165,6 @@ const Collection = () => {
         ) : (
           <Grid />
         )}
-        {/* {collectionFrames ? (
-        <Grid collectionFrames={collectionFrames} />
-      ) : (
-        <p>not found</p>
-      )} */}
       </div>
     </div>
   );

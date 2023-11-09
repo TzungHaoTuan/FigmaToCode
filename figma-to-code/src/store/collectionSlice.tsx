@@ -1,7 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { CollectionFrames } from "@/types";
 
-const initialState = {
-  frames: [],
+const initialState: { frames: CollectionFrames | null } = {
+  frames: null,
 };
 
 const collectionSlice = createSlice({

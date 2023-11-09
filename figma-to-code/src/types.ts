@@ -128,6 +128,9 @@ export interface State {
     convert: {
         isConverting: boolean
     }
+    collection: {
+        frames: CollectionFrames;
+    }
 }
 export interface User {
     profile: {
@@ -145,5 +148,17 @@ export interface FigmaData {
         name: string;
         type: string;
         children: Page[];
+    };
+}
+
+export interface CollectionFrames {
+    [frameId: string]: { imagePath: string; children: Element[] };
+}
+export interface ConvertedFrames {
+    [frameId: string]: {
+        imageUrl: string | null;
+        tailwind: string | null;
+        styledComponentsTag: string | null;
+        styledComponentsStyle: string | null;
     };
 }

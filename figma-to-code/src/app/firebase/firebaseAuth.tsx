@@ -2,7 +2,7 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { app } from "@/app/firebase/firebase";
+import { auth } from "@/app/firebase/firebase";
 import { setLogin, setLogout } from "@/store/userSlice";
 
 interface Payload {
@@ -13,7 +13,7 @@ interface Payload {
 }
 
 export default function FirebaseAuth() {
-  const auth = getAuth(app);
+  // const auth = getAuth(app);
   const dispatch = useDispatch();
 
   useEffect(() => {

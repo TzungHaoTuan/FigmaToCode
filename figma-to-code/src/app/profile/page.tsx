@@ -93,6 +93,7 @@ export default function Profile() {
                   />
                 ) : (
                   <Image
+                    placeholder="blur"
                     alt="user avatar"
                     src={isLogOutAvatar}
                     width={96}

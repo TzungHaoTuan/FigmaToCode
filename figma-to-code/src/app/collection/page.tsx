@@ -1,94 +1,21 @@
 "use client";
-// import { Provider } from "react-redux";
-// import store from "@/store/store";
+
+import Link from "next/link";
 import CollectionSkeleton from "./component/CollectionSkeleton";
-import Grid from "./component/Collections";
-// async function getMovies() {
-//   let res = await fetch("https://dogapi.dog/api/v2/breeds");
-//   return res.json();
-// }
+import Collections from "./component/Collections";
+import { useRouter, usePathname } from "next/navigation";
+
 import { useSelector, useDispatch } from "react-redux";
 import { auth } from "../firebase/firebase";
 import { db } from "../firebase/firebase";
 import { State, Element } from "@/types";
 import { collection, doc, getDocs, query, where } from "firebase/firestore";
-import { useState, useEffect, useId } from "react";
-import { setCollected } from "@/store/collectSlice";
+import { useEffect } from "react";
 import { setCollection } from "@/store/collectionSlice";
-// const getDoc = async () => {
-//   const querySnapshot = await getDocs(collection(db, "users"));
-//   return querySnapshot.docs.map((doc) => doc.data());
-// };
-// const getUserId = () => {
-//   const user = useSelector((state: State) => state.user);
-//   const isLogin = user?.profile.login;
-//   const uid = user?.profile.uid;
-//   return uid;
-// };
-
-// import { collection, doc, getDocs, query, where } from "firebase/firestore";
-// import { db } from "@/app/firebase/firebase";
-// import { Tab } from "@headlessui/react";
-// import { State, Element } from "@/types";
-// import { auth } from "@/app/firebase/firebase";
-// import { getAuth, onAuthStateChanged } from "firebase/auth";
-// import { cookies } from "next/headers";
-
-// interface CollectionFrames {
-//   [frameId: string]: { imagePath: string; children: Element[] };
-// }
-// const uid = cookies().get("uid")
-// const uid = onAuthStateChanged(auth, (user) => {
-//   user?.uid
-// })
-
-// const handleDocuments = async () => {
-//   const results = await getDocuments(uid);
-//   return Object.values(results)[0].imagePath;
-// };
-
-// async function getDocuments(uid: string) {
-//   const collectionFrames: CollectionFrames = {};
-
-//   const userRef = doc(db, "users", uid);
-//   const collectionsSnapshot = await getDocs(collection(userRef, "collection"));
-
-//   for (const collectionDoc of collectionsSnapshot.docs) {
-//     const pagesSnapshot = await getDocs(collection(collectionDoc.ref, "pages"));
-
-//     for (const pageDoc of pagesSnapshot.docs) {
-//       const framesQuery = query(
-//         collection(pageDoc.ref, "frames"),
-//         where("collected", "==", true)
-//       );
-//       const framesSnapshot = await getDocs(framesQuery);
-
-//       for (const frameDoc of framesSnapshot.docs) {
-//         const frameData = frameDoc.data();
-
-//         const childrenSnapshot = await getDocs(
-//           collection(frameDoc.ref, "children")
-//         );
-//         const childDocData: Element[] = childrenSnapshot.docs.map(
-//           (childDoc) => childDoc.data() as Element
-//         );
-//         collectionFrames[frameData.id] = {
-//           imagePath: frameData.storagePath,
-//           children: childDocData,
-//         };
-//       }
-//     }
-//   }
-//   return collectionFrames;
-// }
 
 interface CollectionFrames {
   [frameId: string]: { imagePath: string; children: Element[] };
 }
-
-// useEffect(() => {
-//   fetchCollectionFrames();
-// }, [uid]);
 
 async function getDocuments(uid: string) {
   const collectionFrames: CollectionFrames = {};
@@ -126,9 +53,13 @@ async function getDocuments(uid: string) {
 }
 
 const Collection = () => {
+  const router = useRouter();
+  const pathname = usePathname();
+
   const dispatch = useDispatch();
   const user = useSelector((state: State) => state.user);
   const uid = user.profile.uid;
+  const isLogin = user.profile.login;
 
   const userCollection: CollectionFrames = useSelector(
     (state: State) => state.collection.frames
@@ -143,29 +74,46 @@ const Collection = () => {
     getColltionFrames();
   }, [uid]);
 
+  const navigateToLogin = () => {
+    router.push(`/profile?redirect=${pathname.slice(1)}`);
+  };
+
   return (
-    <div className="bg-slate-900 w-screen min-h-screen py-48 px-36">
-      <div className="bg-opacity-20 rounded-3xl backdrop-blur backdrop-brightness-110">
-        {!userCollection ? (
-          <div className="text-white flex flex-col">
-            <div className="inline-flex justify-center mb-8">Loading...</div>
-            {Array.from({ length: 3 }, (_, index) => (
-              <CollectionSkeleton key={index} />
-            ))}
-          </div>
-        ) : Object.keys(userCollection).length === 0 ? (
-          <div className="text-white flex flex-col">
-            <div className="inline-flex justify-center mb-8">
-              Currently no collections.
+    <div className="flex justify-center items-center w-screen min-h-screen bg-slate-900 py-48 px-36">
+      {isLogin ? (
+        <>
+          {!userCollection ? (
+            <div className="w-full text-white flex flex-col">
+              <div className="inline-flex justify-center mb-8">Loading...</div>
+              {Array.from({ length: 3 }, (_, index) => (
+                <CollectionSkeleton key={index} />
+              ))}
             </div>
-            {Array.from({ length: 3 }, (_, index) => (
-              <CollectionSkeleton key={index} />
-            ))}
-          </div>
-        ) : (
-          <Grid />
-        )}
-      </div>
+          ) : Object.keys(userCollection).length === 0 ? (
+            <div className="text-white flex flex-col">
+              <div className="inline-flex justify-center mb-8">
+                Currently no collections.
+              </div>
+              {Array.from({ length: 3 }, (_, index) => (
+                <CollectionSkeleton key={index} />
+              ))}
+            </div>
+          ) : (
+            <Collections />
+          )}
+        </>
+      ) : (
+        <div className="flex flex-col justify-end items-center">
+          <div className="text-white">Login to check collections!</div>
+          <button
+            onClick={navigateToLogin}
+            className="w-20 h-10 text-white hover:text-violet-600 text-md font-bold
+            bg-violet-600 hover:bg-white rounded-xl mt-4"
+          >
+            Login
+          </button>
+        </div>
+      )}
     </div>
   );
 };

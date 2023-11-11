@@ -1,7 +1,7 @@
 "use client";
 
 import ReduxProvider from "@/redux/reduxProvider";
-import { useState, FormEvent } from "react";
+import { useState, FormEvent, useEffect } from "react";
 import { useSelector } from "react-redux";
 import nativeSignUp from "./component/nativeSignUp";
 import nativeSignIn from "./component/nativeSignIn";
@@ -19,11 +19,15 @@ import { app } from "@/app/firebase/firebase";
 import Image from "next/image";
 import GoogleIcon from "../icons/google.ico";
 import isLogOutAvatar from "../images/user.png";
+import { useRouter, useSearchParams, redirect } from "next/navigation";
 
 import { State } from "@/types";
 
 export default function Profile() {
   const auth = getAuth(app);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectPage = searchParams.get("redirect");
 
   const [isSignUp, setIsSignUp] = useState(true);
 
@@ -35,8 +39,14 @@ export default function Profile() {
   const [signInPassword, setSignInPassword] = useState("user12345");
 
   const user = useSelector((state: State) => state.user);
-  const photo = user?.profile.photo;
-  const isLogin = user?.profile.login;
+  const photo = user.profile.photo;
+  const isLogin = user.profile.login;
+
+  useEffect(() => {
+    if (isLogin && redirectPage) {
+      redirect(`/${redirectPage}`);
+    }
+  }, [isLogin]);
 
   const handleSignUpSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -79,165 +89,169 @@ export default function Profile() {
   };
 
   return (
-    <ReduxProvider>
-      <div className="w-screen h-screen">
-        <div className="w-full h-full bg-color-ball flex justify-center items-center">
-          <div className="w-[600px] h-[600px]  bg-slate-700 shadow-[0_0px_100px_0px_rgba(255,255,255,0.3)] backdrop-blur-md backdrop-brightness-150  bg-opacity-10 rounded-full">
-            {isLogin ? (
-              <div className="w-full h-full text-white font-medium flex flex-col justify-center items-center ">
-                {photo ? (
-                  <img
-                    alt="user avatar"
-                    src={photo}
-                    className="w-24 h-24 rounded-full border-2  opacity-90 shadow-[0_0px_30px_0px_rgba(255,255,255,1)] shadow-white mt-10"
-                  />
-                ) : (
-                  <Image
-                    placeholder="blur"
-                    alt="user avatar"
-                    src={isLogOutAvatar}
-                    width={96}
-                    height={96}
-                    className="rounded-full border-2  opacity-90 shadow-[0_0px_30px_0px_rgba(255,255,255,1)] shadow-white mt-10"
-                  />
-                )}
-
-                <div className="text-3xl font-bold mt-8">
-                  {user.profile.name}
-                </div>
-                <div className="text-lg tracking-wide mt-2">
-                  {user.profile.email}
-                </div>
-                <button
-                  onClick={() => handleSignOut(auth)}
-                  className="w-1/2 h-16 text-white font-bold text-lg border-2 border-white backdrop-brightness-0 opacity-80 rounded-full mt-10"
-                >
-                  Sign out
-                </button>
-              </div>
-            ) : isSignUp ? (
-              <div className="w-full h-full flex flex-col  items-center">
-                <form
-                  name="sign in"
-                  onSubmit={handleSignInSubmit}
-                  className="w-full flex flex-col items-center"
-                >
-                  <Image
-                    alt="user avatar"
-                    src={isLogOutAvatar}
-                    className="w-24 h-24 rounded-full border-2 grayscale opacity-30 shadow-[0_0px_30px_0px_rgba(255,255,255,1)] shadow-white mt-20"
-                  />
-                  <input
-                    name="sign in email"
-                    type="email"
-                    value={signInEmail}
-                    onChange={(e) => setSignInEmail(e.target.value)}
-                    required
-                    className="w-2/3 h-12 border-2 border-white backdrop-brightness-0 bg-slate-50 rounded-full focus:outline-none mt-8 px-8"
-                  ></input>
-                  <input
-                    name="sign in password"
-                    type="password"
-                    value={signInPassword}
-                    onChange={(e) => setSignInPassword(e.target.value)}
-                    required
-                    autoComplete="current-password"
-                    className="w-2/3 h-12 border-2 border-white backdrop-brightness-0 bg-slate-50 rounded-full focus:outline-none mt-4 px-8"
-                  ></input>
-                  <button
-                    type="submit"
-                    className="w-2/3 h-12 text-white bg-rose-900 font-bold text-md border-2 border-white   rounded-full mt-4"
-                  >
-                    Sign In
-                  </button>
-                </form>
-                <button
-                  onClick={() => handleGoogleSignIn(auth)}
-                  className="relative w-2/3 h-12 flex justify-center items-center shadow-[0_0px_50px_-10px_rgba(255,255,255,0.1)] shadow-white drop-shadow-sm
-                 bg-slate-900  	backdrop-brightness-0 border-2 border-white rounded-full mt-4 px-8"
-                >
-                  <Image
-                    alt="google icon"
-                    src={GoogleIcon}
-                    className="absolute left-8 w-6 h-6 drop-shadow-sm	"
-                  />
-                  <div className="text-white font-bold text-md">
-                    Sign in with Google
-                  </div>
-                </button>
-                <div className="flex items-center mt-4">
-                  <div className="text-rose-900 opacity-50">
-                    Don't have an account?
-                  </div>
-                  <div
-                    onClick={() => setIsSignUp((prev) => !prev)}
-                    className="cursor-pointer font-bold text-rose-900 ml-4"
-                  >
-                    Sign Up
-                  </div>
-                </div>
-              </div>
+    <div className="w-screen h-screen bg-slate-900 flex justify-center items-center pt-36 pb-20">
+      <div className="w-[500px] h-full bg-opacity-10 rounded-xl border-2 border-indigo-600 shadow-[0_0_100px_-30px_rgba(79,70,229,1)] p-10">
+        {isLogin ? (
+          <div className="w-full h-full text-white font-medium flex flex-col justify-center items-center ">
+            {photo ? (
+              <img
+                alt="user avatar"
+                src={photo}
+                className="w-16 h-16 rounded-full border-2 border-indigo-600 shadow-[0_0_50px_-10px_rgba(79,70,229,1)]"
+              />
             ) : (
-              <div className="w-full h-full flex flex-col  items-center">
-                <form
-                  name="sign up"
-                  onSubmit={handleSignUpSubmit}
-                  className="w-full flex flex-col items-center"
-                >
-                  <Image
-                    alt="user avatar"
-                    src={isLogOutAvatar}
-                    className="w-24 h-24 rounded-full border-2 grayscale opacity-30 shadow-[0_0px_30px_0px_rgba(255,255,255,1)] shadow-white mt-20"
-                  />
-                  <input
-                    name="sign up name"
-                    placeholder="name"
-                    value={signUpName}
-                    onChange={(e) => setSignUpName(e.target.value)}
-                    required
-                    className="w-2/3 h-12 border-2 border-white backdrop-brightness-0 bg-slate-50 rounded-full focus:outline-none mt-8 px-8"
-                  ></input>
-                  <input
-                    name="sign up email"
-                    type="email"
-                    placeholder="email"
-                    value={signUpEmail}
-                    onChange={(e) => setSignUpEmail(e.target.value)}
-                    required
-                    className="w-2/3 h-12 border-2 border-white backdrop-brightness-0 bg-slate-50 rounded-full focus:outline-none mt-4 px-8"
-                  ></input>
-                  <input
-                    name="sign up password"
-                    type="password"
-                    placeholder="password"
-                    value={signUpPassword}
-                    onChange={(e) => setSignUpPassword(e.target.value)}
-                    required
-                    className="w-2/3 h-12 border-2 border-white backdrop-brightness-0 bg-slate-50 rounded-full focus:outline-none mt-4 px-8"
-                  ></input>
-                  <button
-                    type="submit"
-                    className="w-2/3 h-12 text-white bg-rose-900 font-bold text-md border-2 border-white rounded-full mt-4"
-                  >
-                    Sign Up
-                  </button>
-                </form>
-                <div className="flex items-center mt-4">
-                  <div className="text-rose-900 opacity-50">
-                    Already have an account?
-                  </div>
-                  <div
-                    onClick={() => setIsSignUp((prev) => !prev)}
-                    className="cursor-pointer font-bold text-rose-900 ml-4"
-                  >
-                    Sign In
-                  </div>
-                </div>
-              </div>
+              <Image
+                alt="user avatar"
+                src={isLogOutAvatar}
+                width={96}
+                height={96}
+                className="w-32 h-32 rounded-full border-2 border-indigo-600 shadow-[0_0_100px_-30px_rgba(79,70,229,1)]"
+              />
             )}
+
+            <div className="text-3xl font-bold mt-8">{user.profile.name}</div>
+            <div className="text-lg tracking-wide mt-2">
+              {user.profile.email}
+            </div>
+            <button
+              onClick={() => handleSignOut(auth)}
+              className="w-[400px] h-12 text-white hover:text-indigo-600
+              border-2 border-indigo-600 hover:border-0
+              hover:bg-white font-bold text-lg rounded-xl mt-10 px-8"
+            >
+              Sign out
+            </button>
           </div>
-        </div>
+        ) : isSignUp ? (
+          <div className="w-full h-full flex flex-col items-center">
+            <form
+              name="sign in"
+              onSubmit={handleSignInSubmit}
+              className="w-full flex flex-col items-center"
+            >
+              <Image
+                alt="user avatar"
+                src={isLogOutAvatar}
+                className="w-16 h-16 rounded-full border-2 border-indigo-600 shadow-[0_0_50px_-10px_rgba(79,70,229,1)]"
+              />
+              <input
+                name="sign in email"
+                type="email"
+                value={signInEmail}
+                onChange={(e) => setSignInEmail(e.target.value)}
+                required
+                className="w-[400px] h-12 text-white bg-slate-900 border-2 border-indigo-600 rounded-xl focus:outline-none mt-10 px-8"
+              ></input>
+              <input
+                name="sign in password"
+                type="password"
+                value={signInPassword}
+                onChange={(e) => setSignInPassword(e.target.value)}
+                required
+                autoComplete="current-password"
+                className="w-[400px] h-12 text-white bg-slate-900 border-2 border-indigo-600 rounded-xl focus:outline-none mt-4 px-8"
+              ></input>
+              <button
+                type="submit"
+                className="w-[400px] h-12 text-white hover:text-indigo-600
+                bg-indigo-600 hover:bg-white font-bold text-lg rounded-xl mt-4 px-8"
+              >
+                Sign In
+              </button>
+            </form>
+            <button
+              onClick={() => handleGoogleSignIn(auth)}
+              className="relative flex justify-center items-center w-[400px] h-12
+               text-white hover:text-violet-600
+               bg-slate-900 hover:bg-white
+               border-2 hover:border-0 border-violet-600 
+                font-bold text-lg rounded-xl mt-4 px-8"
+            >
+              <Image
+                alt="google icon"
+                src={GoogleIcon}
+                className="absolute left-20 w-5 h-5"
+              />
+              <div className="font-bold text-md">Sign in with Google</div>
+            </button>
+            <div className="flex items-center mt-4">
+              <div className="text-pink-600 opacity-60">
+                Don't have an account?
+              </div>
+              <div
+                onClick={() => setIsSignUp((prev) => !prev)}
+                className="cursor-pointer font-bold text-pink-600 ml-4"
+              >
+                Sign Up
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="w-full h-full flex flex-col items-center">
+            <form
+              name="sign up"
+              onSubmit={handleSignUpSubmit}
+              className="w-full flex flex-col items-center"
+            >
+              <Image
+                alt="user avatar"
+                src={isLogOutAvatar}
+                className="w-16 h-16 rounded-full border-2 border-indigo-600 shadow-[0_0_50px_-10px_rgba(79,70,229,1)]"
+              />
+              <input
+                name="sign up name"
+                placeholder="name"
+                value={signUpName}
+                onChange={(e) => setSignUpName(e.target.value)}
+                required
+                className="w-[400px] h-12 text-white bg-slate-900
+                 border-2 border-indigo-600 caret-indigo-600
+                 rounded-xl focus:outline-none mt-10 px-8"
+              ></input>
+              <input
+                name="sign up email"
+                type="email"
+                placeholder="email"
+                value={signUpEmail}
+                onChange={(e) => setSignUpEmail(e.target.value)}
+                required
+                className="w-[400px] h-12 text-white bg-slate-900
+                border-2 border-indigo-600 caret-indigo-600
+                rounded-xl focus:outline-none mt-4 px-8"
+              ></input>
+              <input
+                name="sign up password"
+                type="password"
+                placeholder="password"
+                value={signUpPassword}
+                onChange={(e) => setSignUpPassword(e.target.value)}
+                required
+                className="w-[400px] h-12 text-white bg-slate-900
+                border-2 border-indigo-600 caret-indigo-600
+                rounded-xl focus:outline-none mt-4 px-8"
+              ></input>
+              <button
+                type="submit"
+                className="w-[400px] h-12 text-white hover:text-indigo-600
+                bg-indigo-600 hover:bg-white font-bold text-lg rounded-xl mt-4 px-8"
+              >
+                Sign Up
+              </button>
+            </form>
+            <div className="flex items-center mt-4">
+              <div className="text-pink-600 opacity-60">
+                Already have an account?
+              </div>
+              <div
+                onClick={() => setIsSignUp((prev) => !prev)}
+                className="cursor-pointer font-bold text-pink-600 ml-4"
+              >
+                Sign In
+              </div>
+            </div>
+          </div>
+        )}
       </div>
-    </ReduxProvider>
+    </div>
   );
 }

@@ -5,7 +5,7 @@ export default function CollectionSkeleton() {
     return classes.filter(Boolean).join(" ");
   };
   return (
-    <div className="h-80 flex rounded-3xl mb-10 opacity-50">
+    <div className="w-full h-80 flex rounded-3xl mb-10 opacity-50">
       <div className="w-80 h-full flex justify-center items-center rounded-xl bg-slate-800">
         <svg
           className="w-20 h-20 fill-slate-900"

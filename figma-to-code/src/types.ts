@@ -155,10 +155,11 @@ export interface CollectionFrames {
     [frameId: string]: { imagePath: string; children: Element[] };
 }
 export interface ConvertedFrames {
-    [frameId: string]: {
-        imageUrl: string | null;
-        tailwind: string | null;
-        styledComponentsTag: string | null;
-        styledComponentsStyle: string | null;
-    };
+    [frameId: string]: ConvertedFramesData
+}
+export interface ConvertedFramesData {
+    imageUrl: string | null;
+    tailwind: string | null;
+    styledComponentsTag: string | null;
+    styledComponentsStyle: string | null;
 }

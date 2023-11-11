@@ -2,7 +2,7 @@
 // import { Provider } from "react-redux";
 // import store from "@/store/store";
 import CollectionSkeleton from "./component/CollectionSkeleton";
-import Grid from "./component/grid";
+import Grid from "./component/Collections";
 // async function getMovies() {
 //   let res = await fetch("https://dogapi.dog/api/v2/breeds");
 //   return res.json();

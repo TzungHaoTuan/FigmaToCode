@@ -1,17 +1,14 @@
 "use client";
 
-import Link from "next/link";
+import { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useRouter, usePathname } from "next/navigation";
+import { setCollection } from "@/store/collectionSlice";
+import { db } from "../firebase/firebase";
+import { collection, doc, getDocs, query, where } from "firebase/firestore";
+import { State, Element } from "@/types";
 import CollectionSkeleton from "./component/CollectionSkeleton";
 import Collections from "./component/Collections";
-import { useRouter, usePathname } from "next/navigation";
-
-import { useSelector, useDispatch } from "react-redux";
-import { auth } from "../firebase/firebase";
-import { db } from "../firebase/firebase";
-import { State, Element } from "@/types";
-import { collection, doc, getDocs, query, where } from "firebase/firestore";
-import { useEffect } from "react";
-import { setCollection } from "@/store/collectionSlice";
 
 interface CollectionFrames {
   [frameId: string]: { imagePath: string; children: Element[] };
@@ -84,7 +81,9 @@ const Collection = () => {
         <>
           {!userCollection ? (
             <div className="w-full text-white flex flex-col">
-              <div className="inline-flex justify-center mb-8">Loading...</div>
+              <div className="inline-flex justify-center text-indigo-600 mb-8">
+                Loading collections...
+              </div>
               {Array.from({ length: 3 }, (_, index) => (
                 <CollectionSkeleton key={index} />
               ))}

@@ -80,6 +80,7 @@ const Collection: React.FC<CollectionProps> = ({ frameData }) => {
               src={frameData.imageUrl}
               alt="Frame"
               fill
+              sizes="2000px"
               priority={true}
               className="object-cover object-top rounded-xl"
               onClick={scaleFrame}

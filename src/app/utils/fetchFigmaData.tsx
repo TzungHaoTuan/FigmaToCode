@@ -1,7 +1,7 @@
 "use client";
 import api from "@/app/utils/api";
 
-const token = process.env.NEXT_PUBLIC_FM_TOKEN as string;
+const token = process.env.NEXT_PUBLIC_FIGMA_TOKEN as string;
 
 type PageData = {
   id: string;
@@ -118,5 +118,5 @@ export const handleFetch = async (url: string) => {
     name: pages[0].children[0].name,
   };
 
-  return { file, pages, currentPage, currentFrame, frameImages, images};
+  return { file, pages, currentPage, currentFrame, frameImages, images };
 };

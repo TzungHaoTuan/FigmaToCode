@@ -1,4 +1,4 @@
-"use client";
+// "use client";
 import { Provider } from "react-redux";
 import store from "@/store/store";
 
@@ -7,10 +7,13 @@ import ConvertedArea from "@/components/convertedArea";
 
 const Home: React.FC = () => {
   return (
-    <Provider store={store}>
+    <>
       <SearchForm />
       <ConvertedArea />
-    </Provider>
+    </>
+    // <Provider store={store}>
+
+    // </Provider>
   );
 };
 export default Home;

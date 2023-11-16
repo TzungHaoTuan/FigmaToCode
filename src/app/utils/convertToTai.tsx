@@ -96,13 +96,13 @@ export default function ConvertToTai(
         )}px] top-[${Math.round(child.absoluteBoundingBox.y)}px]`;
         if (child.strokes.length) {
           lineOrVector += `bg-[rgb(${Math.round(
-            child.strokes[0]?.color.r * 255
-          )},${Math.round(child.strokes[0]?.color.g * 255)},${Math.round(
-            child.strokes[0]?.color.b * 255
+            child.strokes[0]?.color?.r * 255
+          )},${Math.round(child.strokes[0]?.color?.g * 255)},${Math.round(
+            child.strokes[0]?.color?.b * 255
           )})/${
             child.strokes[0]?.opacity
-              ? child.strokes[0]?.opacity * child.strokes[0]?.color.a * 100
-              : child.strokes[0]?.color.a * 100
+              ? child.strokes[0]?.opacity * child.strokes[0]?.color?.a * 100
+              : child.strokes[0]?.color?.a * 100
           }]`;
         }
         lineOrVector += ` absolute"></div>`;

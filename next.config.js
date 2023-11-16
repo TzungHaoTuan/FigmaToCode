@@ -13,6 +13,17 @@ const nextConfig = {
   //     },
   //   ];
   // },
+  images: {
+    // domains: ["firebasestorage.googleapis.com"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "firebasestorage.googleapis.com",
+        port: "",
+        pathname: "/v0/b/figma-to-code-80e67.appspot.com/**",
+      },
+    ],
+  },
 };
 
 module.exports = nextConfig;

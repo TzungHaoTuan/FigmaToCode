@@ -58,7 +58,6 @@ export default function Header() {
             <HeadShot />
           </div>
         </div>
-        {/* <div className="absolute top-[64px] w-full h-12 blur bg-slate-900"></div> */}
       </div>
     </Provider>
   );

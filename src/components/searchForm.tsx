@@ -27,9 +27,10 @@ const SearchForm: React.FC = () => {
 
     const result = await handleFetch(url);
     if (!result) return;
-
     const { file, pages, currentPage, currentFrame, frameImages, images } =
       result;
+    console.log(file);
+
     dispatch(setData(file));
     dispatch(setPages(pages));
     dispatch(setCurrentPage(currentPage));

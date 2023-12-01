@@ -15,6 +15,7 @@ const Collection: React.FC<CollectionProps> = ({ frameData }) => {
 
   const [frameIsScaled, setFrameIsScaled] = useState(false);
   const [frameIsFilled, setFrameIsFilled] = useState(true);
+  const [codePanelIsScaled, setCodePanelIsScaled] = useState(false);
   const [copied, setCopied] = useState("");
 
   const classNames = (...classes: string[]) => {
@@ -26,17 +27,25 @@ const Collection: React.FC<CollectionProps> = ({ frameData }) => {
   });
 
   const scaleFrame = () => {
-    setFrameIsScaled((prev) => !prev);
     if (frameIsFilled) {
+      setFrameIsScaled((prev) => !prev);
       setTimeout(() => {
         setFrameIsFilled((prev) => !prev);
-      }, 500);
+      }, 100);
     } else {
       setFrameIsFilled((prev) => !prev);
+      setTimeout(() => {
+        setFrameIsScaled((prev) => !prev);
+      }, 200);
     }
   };
 
-  const handleCopied = (style: string) => {
+  const scaleCodePanel = () => {
+    setCodePanelIsScaled((prev) => !prev);
+  };
+
+  const handleCopied = (e: React.MouseEvent<SVGSVGElement>, style: string) => {
+    e.stopPropagation();
     setCopied(style);
     setTimeout(() => {
       setCopied("");
@@ -67,6 +76,7 @@ const Collection: React.FC<CollectionProps> = ({ frameData }) => {
     <div className="relative w-full h-80 flex rounded-3xl mb-10">
       <div
         className={`
+        ${codePanelIsScaled && "w-0 border-0"}
       ${frameIsScaled ? "w-full" : "w-80"}
       transition-all
        absolute h-full z-10 rounded-xl overflow-scroll
@@ -109,8 +119,12 @@ const Collection: React.FC<CollectionProps> = ({ frameData }) => {
           </div>
         )}
       </div>
-      <div className={`${frameIsScaled ? "block" : "block"} h-80 w-80`}></div>
-      <div className="justify-self-end w-[calc(100%-336px)] h-full rounded-3xl ml-4">
+      <div className={`${codePanelIsScaled ? "w-0" : "w-80"} h-80`}></div>
+      <div
+        className={`${
+          codePanelIsScaled ? "w-full" : "w-[calc(100%-336px)] ml-4"
+        } h-full rounded-3xl`}
+      >
         <Tab.Group>
           <Tab.List className="h-16 flex space-x-1 rounded-xl bg-neutral-900 text-lg">
             {Object.keys(categories).map((category) => (
@@ -130,7 +144,10 @@ const Collection: React.FC<CollectionProps> = ({ frameData }) => {
               </Tab>
             ))}
           </Tab.List>
-          <Tab.Panels className="w-full h-[calc(100%-80px)] rounded-xl mt-4">
+          <Tab.Panels
+            onClick={scaleCodePanel}
+            className="w-full h-[calc(100%-80px)] rounded-xl mt-4 cursor-pointer"
+          >
             <Tab.Panel
               className={classNames(
                 "relative h-full rounded-xl bg-[#1a1b26] shadow-[inset_0_0px_10px_0px_rgba(15,23,42,1)] border-2 border-purple-300 p-4"
@@ -161,7 +178,7 @@ const Collection: React.FC<CollectionProps> = ({ frameData }) => {
                   stroke="currentColor"
                   className="absolute top-4 right-4 bg-slate-900 cursor-pointer w-10 h-10 stroke-purple-300 ml-auto border-2 border-purple-300
                  hover:border-purple-600 hover:stroke-purple-600 rounded p-2"
-                  onClick={() => handleCopied("Tailwind")}
+                  onClick={(e) => handleCopied(e, "Tailwind")}
                 >
                   <path
                     strokeLinecap="round"
@@ -210,7 +227,7 @@ const Collection: React.FC<CollectionProps> = ({ frameData }) => {
                     stroke="currentColor"
                     className="absolute top-0 right-4 bg-slate-900 cursor-pointer w-10 h-10 stroke-purple-300 ml-auto border-2 border-purple-300
                  hover:border-purple-600 hover:stroke-purple-600 rounded p-2"
-                    onClick={() => handleCopied("styledComponentsTag")}
+                    onClick={(e) => handleCopied(e, "styledComponentsTag")}
                   >
                     <path
                       strokeLinecap="round"
@@ -255,7 +272,7 @@ const Collection: React.FC<CollectionProps> = ({ frameData }) => {
                     stroke="currentColor"
                     className="absolute top-0 right-0 bg-slate-900 cursor-pointer w-10 h-10 stroke-purple-300 ml-auto border-2 border-purple-300
                  hover:border-purple-600 hover:stroke-purple-600 rounded p-2"
-                    onClick={() => handleCopied("styledComponentsStyle")}
+                    onClick={(e) => handleCopied(e, "styledComponentsStyle")}
                   >
                     <path
                       strokeLinecap="round"

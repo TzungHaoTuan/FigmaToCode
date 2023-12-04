@@ -9,39 +9,56 @@ import { setFrameImages } from "@/store/frameImagesSlice";
 import { setImages } from "@/store/imagesSlice";
 import { setCodeState } from "@/store/codeStateSlice";
 import { handleFetch } from "@/app/utils/fetchFigmaData";
-import { setConvert } from "@/store/convertSlice";
 
 const SearchForm: React.FC = () => {
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const [isConverting, setIsConverting] = useState(false);
+  const [isIncorrect, setIsIncorrect] = useState(false);
 
   const dispatch = useDispatch();
-  const urlRef = useRef<HTMLInputElement | null>(null);
+  const urlRef = useRef<HTMLInputElement>(null);
 
+  const handleInputChange = () => {
+    setIsButtonDisabled(!urlRef.current?.value);
+    setIsIncorrect(false);
+  };
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setIsConverting(true);
-    // dispatch(setConvert());
 
     const url = urlRef.current?.value;
     if (!url) return;
+    const figmaUrl = "https://www.figma.com/file";
+    if (!url.startsWith(figmaUrl)) {
+      setIsIncorrect(true);
+      return;
+    }
 
-    const result = await handleFetch(url);
-    if (!result) return;
-    const { file, pages, currentPage, currentFrame, frameImages, images } =
-      result;
-    console.log(file);
+    setIsConverting(true);
 
-    dispatch(setData(file));
-    dispatch(setPages(pages));
-    dispatch(setCurrentPage(currentPage));
-    dispatch(setCurrentFrame(currentFrame));
-    dispatch(setFrameImages(frameImages));
-    dispatch(setImages(images));
-    dispatch(setCodeState(true));
-    // dispatch(setConvert());
+    try {
+      const result = await handleFetch(url);
+      if (result) {
+        const { file, pages, currentPage, currentFrame, frameImages, images } =
+          result;
 
-    handleScroll();
-    setIsConverting(false);
+        dispatch(setData(file));
+        dispatch(setPages(pages));
+        dispatch(setCurrentPage(currentPage));
+        dispatch(setCurrentFrame(currentFrame));
+        dispatch(setFrameImages(frameImages));
+        dispatch(setImages(images));
+        dispatch(setCodeState(true));
+
+        handleScroll();
+      }
+    } catch (error) {
+      console.error("Error during fetch operation:", error);
+    } finally {
+      if (urlRef.current) {
+        urlRef.current.value = "";
+      }
+      setIsConverting(false);
+    }
   };
 
   const handleScroll = (): void => {
@@ -91,10 +108,10 @@ const SearchForm: React.FC = () => {
           } `}
           >
             <input
-              required
               name="search"
               type="text"
               ref={urlRef}
+              onChange={handleInputChange}
               placeholder="Figma file url..."
               className={`w-full h-12 bg-gradient-to-r from-white to-slate-300 rounded-full font-semibold text-slate-800 px-16
               placeholder:font-normal  placeholder:text-slate-400 ring-0
@@ -120,21 +137,18 @@ const SearchForm: React.FC = () => {
 
           <button
             type="submit"
+            disabled={isButtonDisabled}
             className={`
-            h-12 flex justify-center items-center  text-lg font-semibold tracking-wider 
-            mt-4 md:mt-0
+            w-[270px] sm:w-[480px] md:w-44 h-12 flex justify-center items-center text-lg font-semibold tracking-wider rounded-full  px-4 py-2
+            mt-4 md:mt-0 text-white bg-indigo-700
             ${
-              isConverting
-                ? "w-[270px] sm:w-[400px] md:w-56"
-                : "w-[270px] sm:w-[480px] md:w-44"
-            } 
-                 ${
-                   isConverting
-                     ? "text-indigo-600 bg-slate-300"
-                     : "text-white bg-indigo-700 hover:text-indigo-600 hover:bg-slate-300"
-                 }   rounded-full  px-4 py-2 ${
-              isConverting ? "transition-all duration-300 ease-in-out" : ""
-            }`}
+              isButtonDisabled
+                ? "opacity-20 grayscale"
+                : isConverting
+                ? "w-[270px] sm:w-[400px] md:w-56 text-indigo-600 bg-slate-300 transition-all duration-300 ease-in-out"
+                : "hover:text-indigo-600 hover:bg-slate-300"
+            }
+            `}
           >
             {isConverting ? (
               <svg
@@ -158,6 +172,13 @@ const SearchForm: React.FC = () => {
             {isConverting ? "Converting..." : "Convert"}
           </button>
         </form>
+        <div
+          className={`${
+            isIncorrect ? "opacity-100" : "opacity-0"
+          } text-red-600 mt-4`}
+        >
+          Please enter the correct Figma URL.
+        </div>
       </div>
     </div>
   );

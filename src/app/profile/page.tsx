@@ -89,8 +89,12 @@ export default function Profile() {
   };
 
   return (
-    <div className="w-screen h-screen bg-slate-900 flex justify-center items-center pt-36 pb-20">
-      <div className="w-[500px] h-full bg-opacity-10 rounded-xl border-2 border-indigo-600 shadow-[0_0_100px_-30px_rgba(79,70,229,1)] p-10">
+    <div className="w-screen min-h-screen  bg-slate-900 flex justify-center pt-[180px] pb-40 px-8">
+      <div
+        className="w-full sm:w-[500px] h-full bg-opacity-10 rounded-xl
+       border-2 border-indigo-600 shadow-[0_0_100px_-30px_rgba(79,70,229,1)]
+        px-8 py-8"
+      >
         {isLogin ? (
           <div className="w-full h-full text-white font-medium flex flex-col justify-center items-center ">
             {photo ? (
@@ -115,7 +119,7 @@ export default function Profile() {
             </div>
             <button
               onClick={() => handleSignOut(auth)}
-              className="w-[400px] h-12 text-white hover:text-indigo-600
+              className="w-full h-12 text-white hover:text-indigo-600
               border-2 border-indigo-600 hover:border-0
               hover:bg-white font-bold text-lg rounded-xl mt-10 px-8"
             >
@@ -140,7 +144,7 @@ export default function Profile() {
                 value={signInEmail}
                 onChange={(e) => setSignInEmail(e.target.value)}
                 required
-                className="w-[400px] h-12 text-white bg-slate-900 border-2 border-indigo-600 rounded-xl focus:outline-none mt-10 px-8"
+                className="w-full h-12 text-white bg-slate-900 border-2 border-indigo-600 rounded-xl focus:outline-none mt-4 px-8"
               ></input>
               <input
                 name="sign in password"
@@ -149,38 +153,38 @@ export default function Profile() {
                 onChange={(e) => setSignInPassword(e.target.value)}
                 required
                 autoComplete="current-password"
-                className="w-[400px] h-12 text-white bg-slate-900 border-2 border-indigo-600 rounded-xl focus:outline-none mt-4 px-8"
+                className="w-full h-12 text-white bg-slate-900 border-2 border-indigo-600 rounded-xl focus:outline-none mt-4 px-8"
               ></input>
               <button
                 type="submit"
-                className="w-[400px] h-12 text-white hover:text-indigo-600
-                bg-indigo-600 hover:bg-white font-bold text-lg rounded-xl mt-4 px-8"
+                className="w-full h-12 text-white hover:text-indigo-600
+                bg-indigo-600 hover:bg-white font-bold text-sm sm:text-lg rounded-xl mt-4 px-8"
               >
                 Sign In
               </button>
             </form>
             <button
               onClick={() => handleGoogleSignIn(auth)}
-              className="relative flex justify-center items-center w-[400px] h-12
+              className="relative flex justify-center items-center w-full h-12
                text-white hover:text-violet-600
                bg-slate-900 hover:bg-white
                border-2 hover:border-0 border-violet-600 
-                font-bold text-lg rounded-xl mt-4 px-8"
+                font-bold text-sm sm:text-lg rounded-xl mt-4 px-8"
             >
               <Image
                 alt="google icon"
                 src={GoogleIcon}
-                className="absolute left-20 w-5 h-5"
+                className="absolute left-4 sm:left-20 w-5 h-5"
               />
               <div className="font-bold text-md">Sign in with Google</div>
             </button>
-            <div className="flex items-center mt-4">
+            <div className="flex flex-col sm:flex-row items-center mt-4">
               <div className="text-pink-600 opacity-60">
                 Don't have an account?
               </div>
               <div
                 onClick={() => setIsSignUp((prev) => !prev)}
-                className="cursor-pointer font-bold text-pink-600 ml-4"
+                className="cursor-pointer font-bold text-pink-600 ml-0 sm:ml-4"
               >
                 Sign Up
               </div>
@@ -204,9 +208,9 @@ export default function Profile() {
                 value={signUpName}
                 onChange={(e) => setSignUpName(e.target.value)}
                 required
-                className="w-[400px] h-12 text-white bg-slate-900
+                className="w-full h-12 text-white bg-slate-900
                  border-2 border-indigo-600 caret-indigo-600
-                 rounded-xl focus:outline-none mt-10 px-8"
+                 rounded-xl focus:outline-none mt-4 px-8"
               ></input>
               <input
                 name="sign up email"
@@ -215,7 +219,7 @@ export default function Profile() {
                 value={signUpEmail}
                 onChange={(e) => setSignUpEmail(e.target.value)}
                 required
-                className="w-[400px] h-12 text-white bg-slate-900
+                className="w-full h-12 text-white bg-slate-900
                 border-2 border-indigo-600 caret-indigo-600
                 rounded-xl focus:outline-none mt-4 px-8"
               ></input>
@@ -226,25 +230,25 @@ export default function Profile() {
                 value={signUpPassword}
                 onChange={(e) => setSignUpPassword(e.target.value)}
                 required
-                className="w-[400px] h-12 text-white bg-slate-900
+                className="w-full h-12 text-white bg-slate-900
                 border-2 border-indigo-600 caret-indigo-600
                 rounded-xl focus:outline-none mt-4 px-8"
               ></input>
               <button
                 type="submit"
-                className="w-[400px] h-12 text-white hover:text-indigo-600
+                className="w-full h-12 text-white hover:text-indigo-600
                 bg-indigo-600 hover:bg-white font-bold text-lg rounded-xl mt-4 px-8"
               >
                 Sign Up
               </button>
             </form>
-            <div className="flex items-center mt-4">
+            <div className="flex flex-col sm:flex-row items-center mt-4">
               <div className="text-pink-600 opacity-60">
                 Already have an account?
               </div>
               <div
                 onClick={() => setIsSignUp((prev) => !prev)}
-                className="cursor-pointer font-bold text-pink-600 ml-4"
+                className="cursor-pointer font-bold text-pink-600 sm:ml-4"
               >
                 Sign In
               </div>

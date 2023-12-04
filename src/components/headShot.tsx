@@ -24,7 +24,7 @@ export default function HeadShot() {
           )}
         </div>
       ) : (
-        <div className="ml-16">
+        <div className="h-[36px] flex items-center sm:ml-16">
           <div>Login</div>
         </div>
       )}

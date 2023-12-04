@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { ConvertedFramesData } from "@/types";
 import { Tab } from "@headlessui/react";
@@ -14,9 +14,17 @@ const Collection: React.FC<CollectionProps> = ({ frameData }) => {
   const scStyleRef = useRef<HTMLDivElement>(null);
 
   const [frameIsScaled, setFrameIsScaled] = useState(false);
-  const [frameIsFilled, setFrameIsFilled] = useState(true);
+  const [frameIsFilled, setFrameIsFilled] = useState(false);
   const [codePanelIsScaled, setCodePanelIsScaled] = useState(false);
   const [copied, setCopied] = useState("");
+  const handleResize = () => {
+    setFrameIsFilled(window.innerWidth >= 1024);
+  };
+  useEffect(() => {
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [window]);
 
   const classNames = (...classes: string[]) => {
     return classes.filter(Boolean).join(" ");
@@ -27,21 +35,25 @@ const Collection: React.FC<CollectionProps> = ({ frameData }) => {
   });
 
   const scaleFrame = () => {
-    if (frameIsFilled) {
-      setFrameIsScaled((prev) => !prev);
-      setTimeout(() => {
-        setFrameIsFilled((prev) => !prev);
-      }, 100);
-    } else {
-      setFrameIsFilled((prev) => !prev);
-      setTimeout(() => {
+    if (window.innerWidth >= 1024) {
+      if (frameIsFilled) {
         setFrameIsScaled((prev) => !prev);
-      }, 200);
+        setTimeout(() => {
+          setFrameIsFilled((prev) => !prev);
+        }, 100);
+      } else {
+        setFrameIsScaled((prev) => !prev);
+        setTimeout(() => {
+          setFrameIsFilled((prev) => !prev);
+        }, 100);
+      }
     }
   };
 
   const scaleCodePanel = () => {
-    setCodePanelIsScaled((prev) => !prev);
+    if (window.innerWidth >= 1024) {
+      setCodePanelIsScaled((prev) => !prev);
+    }
   };
 
   const handleCopied = (e: React.MouseEvent<SVGSVGElement>, style: string) => {
@@ -73,26 +85,45 @@ const Collection: React.FC<CollectionProps> = ({ frameData }) => {
   };
 
   return (
-    <div className="relative w-full h-80 flex rounded-3xl mb-10">
+    <div
+      className="relative w-full h-[496px] sm:h-[656px] lg:h-80
+    flex flex-col lg:flex-row rounded-3xl mb-10"
+    >
       <div
         className={`
-        ${codePanelIsScaled && "w-0 border-0"}
-      ${frameIsScaled ? "w-full" : "w-80"}
-      transition-all
-       absolute h-full z-10 rounded-xl overflow-scroll
-        border-2 border-purple-300 hover:border-violet-500
-        cursor-pointer 
+        absolute transition-all ease-in h-40 sm:h-80 lg:h-full  z-10 rounded-xl overflow-scroll
+      border-purple-300 hover:border-violet-500 lg:cursor-pointer 
+        ${
+          codePanelIsScaled
+            ? "w-0 border-0 opacity-0"
+            : frameIsScaled
+            ? "w-full border-2 opacity-100"
+            : "w-full lg:w-80 border-2 opacity-100"
+        }
+        
       `}
       >
         {frameData.imageUrl ? (
-          frameIsFilled ? (
+          frameIsScaled ? (
+            <Image
+              src={frameData.imageUrl}
+              alt="Frame"
+              width={2000}
+              height={2000}
+              priority={true}
+              className="max-w-full"
+              onClick={scaleFrame}
+            />
+          ) : frameIsFilled ? (
             <Image
               src={frameData.imageUrl}
               alt="Frame"
               fill
               sizes="2000px"
               priority={true}
-              className="object-cover object-top rounded-xl"
+              className={`object-cover object-left-top rounded-xl 
+              transition-transform ease-in delay-500 
+              }`}
               onClick={scaleFrame}
             />
           ) : (
@@ -102,7 +133,8 @@ const Collection: React.FC<CollectionProps> = ({ frameData }) => {
               width={2000}
               height={2000}
               priority={true}
-              className="rounded-xl"
+              className={`min-h-full max-w-fit"
+              `}
               onClick={scaleFrame}
             />
           )
@@ -119,11 +151,15 @@ const Collection: React.FC<CollectionProps> = ({ frameData }) => {
           </div>
         )}
       </div>
-      <div className={`${codePanelIsScaled ? "w-0" : "w-80"} h-80`}></div>
       <div
         className={`${
-          codePanelIsScaled ? "w-full" : "w-[calc(100%-336px)] ml-4"
-        } h-full rounded-3xl`}
+          codePanelIsScaled ? "lg:w-0" : "lg:w-80"
+        } w-full h-40 sm:h-80`}
+      ></div>
+      <div
+        className={`${
+          codePanelIsScaled ? "w-full" : "lg:w-[calc(100%-336px)] lg:ml-4"
+        } h-80 lg:h-full rounded-3xl mt-4 lg:mt-0`}
       >
         <Tab.Group>
           <Tab.List className="h-16 flex space-x-1 rounded-xl bg-neutral-900 text-lg">
@@ -132,7 +168,7 @@ const Collection: React.FC<CollectionProps> = ({ frameData }) => {
                 key={category}
                 className={({ selected }) =>
                   classNames(
-                    "w-full rounded-lg py-2.5 text-md font-bold tracking-wide leading-5",
+                    "w-full rounded-lg py-2.5 text-sm font-bold tracking-wide leading-5",
                     "focus:outline-none",
                     selected
                       ? "bg-gradient-to-r from-rose-300 to-violet-500  text-slate-100 border-2 border-purple-300"
@@ -146,7 +182,7 @@ const Collection: React.FC<CollectionProps> = ({ frameData }) => {
           </Tab.List>
           <Tab.Panels
             onClick={scaleCodePanel}
-            className="w-full h-[calc(100%-80px)] rounded-xl mt-4 cursor-pointer"
+            className="w-full h-[calc(100%-80px)] rounded-xl mt-4 lg:cursor-pointer"
           >
             <Tab.Panel
               className={classNames(
@@ -198,7 +234,7 @@ const Collection: React.FC<CollectionProps> = ({ frameData }) => {
             </Tab.Panel>
             <Tab.Panel
               className={classNames(
-                "h-full divide-x flex rounded-xl bg-[#1a1b26] shadow-[inset_0_0px_10px_0px_rgba(15,23,42,1)] border-2 border-purple-300 p-4 "
+                "h-full divide-x divide-purple-300 flex rounded-xl bg-[#1a1b26] shadow-[inset_0_0px_10px_0px_rgba(15,23,42,1)] border-2 border-purple-300 p-4 "
               )}
             >
               <div className="w-1/2 pr-4 relative">

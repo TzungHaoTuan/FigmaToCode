@@ -76,7 +76,10 @@ const Collection = () => {
   };
 
   return (
-    <div className="flex justify-center items-center w-screen min-h-screen bg-slate-900 py-48 px-36">
+    <div
+      className="flex justify-center items-center w-screen min-h-screen
+     bg-slate-900 py-[252px] sm:py-36 px-12 sm:px-24 lg:px-36"
+    >
       {isLogin ? (
         <>
           {!userCollection ? (

@@ -41,19 +41,20 @@ export default function Header() {
     <Provider store={store}>
       <div
         ref={scrollRef}
-        className="fixed w-screen sm:h-36 flex justify-center items-center z-20"
+        className="fixed w-screen sm:h-36 flex z-20
+         px-12 sm:px-24 lg:px-36 py-8 sm:py-0"
       >
         <div
-          className="w-[270px] sm:w-3/4 md:w-4/5 flex flex-col sm:flex-row  justify-between items-center 
-           text-slate-100 font-semibold pt-16 sm:pt-0"
+          className="w-full flex flex-col sm:flex-row sm:justify-between items-center
+           text-slate-100 font-semibold"
         >
           <Link
             href="/"
-            className="text-4xl sm:text-3xl font-black bg-gradient-to-r from-[#f24d18] via-[#a358ff] to-[#13bdfe] text-transparent bg-clip-text bg-300% animate-gradient"
+            className="text-2xl sm:text-3xl font-black bg-gradient-to-r from-[#f24d18] via-[#a358ff] to-[#13bdfe] text-transparent bg-clip-text bg-300% animate-gradient"
           >
             Figma to Code
           </Link>
-          <div className="flex flex-col-reverse justify-center sm:flex-row items-center mt-8 sm:mt-0">
+          <div className="flex flex-col-reverse sm:flex-row justify-center items-center mt-4 sm:mt-0 gap-2 sm:gap-0">
             <CollectCategory />
             <HeadShot />
           </div>

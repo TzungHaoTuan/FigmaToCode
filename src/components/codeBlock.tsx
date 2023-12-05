@@ -205,7 +205,7 @@ export default function CodeBlock(): JSX.Element {
   });
 
   return (
-    <div className="w-full xl:w-1/2 h-screen xl:h-4/5 flex flex-col items-center justify-start xl:justify-between pt-56 sm:pt-36 xl:pt-0 pb-12 xl:pb-0 ">
+    <div className="w-full xl:w-1/2 h-screen xl:h-4/5 flex flex-col items-center  pt-[180px] sm:pt-36 xl:pt-0 pb-16 xl:pb-0 ">
       {/* Tab */}
       <Tab.Group>
         <Tab.List className="w-full flex space-x-1 rounded-xl bg-blue-900/20">
@@ -221,13 +221,12 @@ export default function CodeBlock(): JSX.Element {
                     : " text-violet-300 hover:text-pink hover:shadow-[0_0px_20px_0px_rgba(0,0,0,1)] hover:shadow-violet-600"
                 )
               }
-              // onClick={() => handleCodeStyle(category)}
             >
               {category}
             </Tab>
           ))}
         </Tab.List>
-        <Tab.Panels className="w-full h-[calc(100%-60px)] xl:h-[calc(100%-112px)] pt-12 xl:pt-0">
+        <Tab.Panels className="w-full h-[calc(100%-64px)] pt-8">
           <Tab.Panel
             className={classNames(
               "relative h-full rounded-xl bg-[#1a1b26] shadow-[inset_0_0px_10px_0px_rgba(15,23,42,1)] ring-1 ring-violet-100 p-4"
@@ -270,7 +269,7 @@ export default function CodeBlock(): JSX.Element {
             {frameChildren ? (
               <div
                 ref={taiRef}
-                className="w-full h-[calc(100%-16px)]  overflow-auto no-scrollbar rounded"
+                className="w-full h-full  overflow-auto no-scrollbar rounded"
               >
                 <HighLight frameChildren={frameChildren.tailwind} />
               </div>
@@ -283,7 +282,7 @@ export default function CodeBlock(): JSX.Element {
               "h-full  divide-y rounded-xl bg-[#1a1b26] shadow-[inset_0_0px_10px_0px_rgba(15,23,42,1)] ring-1 ring-violet-100 p-4"
             )}
           >
-            <div className="relative w-full h-1/2">
+            <div className="relative w-full h-1/2 pb-4">
               {isCopied && styleCopied === "scTagRef" ? (
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -319,7 +318,7 @@ export default function CodeBlock(): JSX.Element {
                 </svg>
               )}
               {frameChildren ? (
-                <pre className="w-full h-[calc(100%-16px)]  overflow-auto no-scrollbar rounded whitespace-nowrap pl-4">
+                <pre className="w-full h-full  overflow-auto no-scrollbar rounded whitespace-nowrap pl-4">
                   <code ref={scTagRef}>
                     {convertToSCTagEdit(frameChildren.styledComponentsTag)}
                   </code>

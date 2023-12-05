@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { setCurrentPage } from "@/store/currentPageSlice";
 import { setCurrentFrame } from "@/store/currentFrameSlice";
 import { Listbox, Transition } from "@headlessui/react";
+import Image from "next/image";
 
 import {
   Pages,
@@ -50,7 +51,7 @@ export default function ImageSlider(): JSX.Element {
   };
 
   return (
-    <div className="w-full h-[calc(100%-48px)] flex flex-col items-center ">
+    <div className="w-full h-[calc(100%-48px)] flex flex-col items-center">
       <div className="w-full flex justify-between">
         <div className="w-[calc((100%-24px)/2)] xl:w-[calc((100%-32px)/2)]">
           {/* page 選單*/}
@@ -125,63 +126,38 @@ export default function ImageSlider(): JSX.Element {
                     className="absolute w-full mt-1 max-h-60  overflow-auto rounded-md bg-white  text-lg
                     shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
                   >
-                    {pages && currentPage === "Pages"
-                      ? pages[0]?.children.map((frame) => (
-                          <Listbox.Option
-                            key={frame.id}
-                            className={({ active }) =>
-                              `relative w-full h-12 flex  justify-center items-center cursor-default select-none  ${
-                                active
-                                  ? "bg-violet-300 text-violet-900 drop-shadow-xl"
-                                  : "bg-violet-200  text-slate-900"
-                              } ${
-                                currentFrame.name === frame.name
-                                  ? "font-extrabold"
-                                  : "font-bold"
-                              }`
-                            }
-                            value={frame.name}
-                          >
-                            <div
-                              className="w-full h-full flex justify-center items-center"
-                              onClick={() => handleFrame(frame.id, frame.name)}
-                            >
-                              {frame.name}
-                            </div>
-                          </Listbox.Option>
-                        ))
-                      : pages
-                          .filter((page) => page.name === currentPage)
-                          .map((page) =>
-                            page.children
-                              ? page.children.map((frame) => (
-                                  <Listbox.Option
-                                    key={frame.id}
-                                    className={({ active }) =>
-                                      `relative w-full h-12 flex  justify-center items-center cursor-default select-none  ${
-                                        active
-                                          ? "bg-violet-300 text-violet-900 drop-shadow-xl"
-                                          : "bg-violet-200  text-slate-900"
-                                      } ${
-                                        currentFrame.name === frame.name
-                                          ? "font-extrabold"
-                                          : "font-bold"
-                                      }`
-                                    }
-                                    value={frame.name}
-                                  >
-                                    <div
-                                      className="w-full h-full flex justify-center items-center"
-                                      onClick={() => {
-                                        handleFrame(frame.id, frame.name);
-                                      }}
-                                    >
-                                      {frame.name}
-                                    </div>
-                                  </Listbox.Option>
-                                ))
-                              : null
-                          )}
+                    {pages
+                      .filter((page) => page.name === currentPage)
+                      .map((page) =>
+                        page.children
+                          ? page.children.map((frame) => (
+                              <Listbox.Option
+                                key={frame.id}
+                                className={({ active }) =>
+                                  `relative w-full h-12 flex  justify-center items-center cursor-default select-none ${
+                                    active
+                                      ? "bg-violet-300 text-violet-900"
+                                      : "bg-violet-200  text-slate-900"
+                                  } ${
+                                    currentFrame.name === frame.name
+                                      ? "font-extrabold"
+                                      : "font-bold"
+                                  }`
+                                }
+                                value={frame.name}
+                              >
+                                <div
+                                  className="w-full h-full flex justify-center items-center"
+                                  onClick={() => {
+                                    handleFrame(frame.id, frame.name);
+                                  }}
+                                >
+                                  {frame.name}
+                                </div>
+                              </Listbox.Option>
+                            ))
+                          : null
+                      )}
                   </Listbox.Options>
                 )}
               </Transition>
@@ -189,21 +165,22 @@ export default function ImageSlider(): JSX.Element {
           </Listbox>
         </div>
       </div>
-      <div className="w-full h-full flex shrink justify-center items-center pt-12">
+      <div className="w-full h-[calc(100%-64px)] flex justify-center items-center py-8">
         {frameImages.length !== 0 ? (
           currentPage === "Pages" || currentFrame.name === "Frames" ? (
             frameImages.map(
               (frameImage) =>
                 frameImage.page === pages[0].name &&
                 frameImage.id === pages[0].children[0].id && (
-                  <div key={frameImage.id} className="h-full">
-                    <img
-                      key={frameImage.id}
-                      src={frameImage.url}
-                      alt="ImageImage"
-                      className="h-[calc(100%-114px)] xl:h-[calc(100%-100px)]"
-                    />
-                  </div>
+                  <Image
+                    key={frameImage.id}
+                    src={frameImage.url}
+                    alt="Frame"
+                    width={2000}
+                    height={2000}
+                    priority={true}
+                    className=""
+                  />
                 )
             )
           ) : (
@@ -211,12 +188,17 @@ export default function ImageSlider(): JSX.Element {
               (frameImage) =>
                 frameImage.page === currentPage &&
                 frameImage.id === currentFrame.id && (
-                  <div key={frameImage.id} className="h-full">
-                    <img
-                      key={frameImage.id}
+                  <div
+                    key={frameImage.id}
+                    className="w-full h-full flex justify-center items-center"
+                  >
+                    <Image
                       src={frameImage.url}
-                      alt="ImageImage"
-                      className="h-[calc(100%-114px)] xl:h-[calc(100%-100px)]"
+                      alt="Frame"
+                      width={1000}
+                      height={1000}
+                      priority={true}
+                      className="object-contain max-h-full"
                     />
                   </div>
                 )
@@ -226,10 +208,10 @@ export default function ImageSlider(): JSX.Element {
           // skeleton
           <div
             role="status"
-            className={`w-full  h-full ${isCoverting ? "animate-pulse" : ""}
+            className={`w-full h-full ${isCoverting ? "animate-pulse" : ""}
              md:space-y-0 md:space-x-8`}
           >
-            <div className="flex items-center justify-center w-full h-[calc(100%-48px)] bg-slate-300 rounded-lg  dark:bg-slate-700 pd-12">
+            <div className="flex items-center justify-center w-full h-full bg-slate-300 rounded-lg  dark:bg-slate-700">
               <svg
                 className="w-16 h-16 text-slate-200 dark:text-slate-600"
                 aria-hidden="true"

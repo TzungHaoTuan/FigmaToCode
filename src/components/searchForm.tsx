@@ -27,7 +27,7 @@ const SearchForm: React.FC = () => {
 
     const url = urlRef.current?.value;
     if (!url) return;
-    const figmaUrl = "https://www.figma.com/file";
+    const figmaUrl = "https://www.figma.com/design";
     if (!url.startsWith(figmaUrl)) {
       setIsIncorrect(true);
       return;

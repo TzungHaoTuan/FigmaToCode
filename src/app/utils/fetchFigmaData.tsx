@@ -86,7 +86,7 @@ const getFrameImages = async (
 export const handleFetch = async (url: string) => {
   if (!url) return;
 
-  const fileStartIndex = url.indexOf("file/") + 5;
+  const fileStartIndex = url.indexOf("design/") + 7;
   const fileEndIndex = url.indexOf("/", fileStartIndex);
   const fileKey = url.substring(fileStartIndex, fileEndIndex);
 

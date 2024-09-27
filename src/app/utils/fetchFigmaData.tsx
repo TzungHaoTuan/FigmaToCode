@@ -1,8 +1,15 @@
 "use client";
 import api from "@/app/utils/api";
-
 const token = process.env.NEXT_PUBLIC_FIGMA_TOKEN as string;
 
+type ElementSize = {
+  width: number;
+  height: number;
+};
+type ElementPosition = {
+  x: number;
+  y: number;
+};
 type PageData = {
   id: string;
   name: string;
@@ -11,6 +18,7 @@ type PageData = {
 type FrameData = {
   id: string;
   name: string;
+  absoluteBoundingBox: ElementSize & ElementPosition;
   children: object[];
 };
 interface Page {
@@ -21,6 +29,7 @@ interface Page {
 interface Frames {
   id: string;
   name: string;
+  absoluteBoundingBox: ElementSize & ElementPosition;
   children: object[];
 }
 interface Frame {
@@ -91,15 +100,18 @@ export const handleFetch = async (url: string) => {
   const fileKey = url.substring(fileStartIndex, fileEndIndex);
 
   const file = await getFile(fileKey);
+  console.log(file);
+
   const images = await getImages(fileKey);
 
   if (!file) return;
-  const pages = file.document.children.map((page: PageData) => ({
+  const pages = file.document.children.map((page: any) => ({
     id: page.id,
     name: page.name,
-    children: page.children.map((frame: FrameData) => ({
+    children: page.children.map((frame: any) => ({
       id: frame.id,
       name: frame.name,
+      absoluteBoundingBox: frame.absoluteBoundingBox,
       children: frame.children,
     })),
   }));

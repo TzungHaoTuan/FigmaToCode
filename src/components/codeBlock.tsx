@@ -54,13 +54,19 @@ export default function CodeBlock(): JSX.Element {
     const selectedPage = pages.filter(
       (page: Page) => page.name === currentPage
     )[0];
+
     const selectedFrame = selectedPage.children.filter(
       (frame: Frame) => frame.name === currentFrame
     )[0];
     if (selectedFrame) {
       frameChildren = selectedFrame.children;
+      const frameXY = [
+        selectedFrame.absoluteBoundingBox.x,
+        selectedFrame.absoluteBoundingBox.y,
+      ];
+      const justifyContent = selectedFrame.primaryAxisAlignItems;
       if (frameChildren.length !== 0) {
-        const tailwind = ConvertToTai(frameChildren);
+        const tailwind = ConvertToTai(frameChildren, frameXY, justifyContent);
         const styledComponentsTag = frameChildren;
         const styledComponentsStyle = ConvertToSCStyle(frameChildren);
         setFrameChildren({

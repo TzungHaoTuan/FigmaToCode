@@ -1,6 +1,8 @@
 export interface Frame {
     id: string;
     name: string;
+    absoluteBoundingBox: ElementSize & ElementPosition;
+    primaryAxisAlignItems?: string
     children: Element[];
 }
 
@@ -57,7 +59,7 @@ export enum ElementType {
 export interface ElementFill {
     type: string
     imageRef?: string
-    color?: Color
+    color: Color
 }
 export interface ElementSize {
     width: number
@@ -92,6 +94,8 @@ export interface Element {
     style?: ElementFontStyle;
     characters?: string;
     cornerRadius?: number;
+    primaryAxisAlignItems?: string;
+    layoutMode?: string;
     children?: Element[];
 }
 export interface Color {

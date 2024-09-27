@@ -23,9 +23,15 @@ const Collections: React.FC = () => {
     for (const frameId in collectedFrames) {
       if (collectedFrames.hasOwnProperty(frameId)) {
         const children = collectedFrames[frameId].children;
+        const frameXY = [
+          collectedFrames[frameId].absoluteBoundingBox.x,
+          collectedFrames[frameId].absoluteBoundingBox.y,
+        ];
+        const justifyContent = collectedFrames[frameId].primaryAxisAlignItems;
+
         convertedFrames[frameId] = {
           imageUrl: null,
-          tailwind: ConvertToTai(children),
+          tailwind: ConvertToTai(children, frameXY, justifyContent),
           styledComponentsTag: ConvertToSCTag(children),
           styledComponentsStyle: ConvertToSCStyle(children),
         };

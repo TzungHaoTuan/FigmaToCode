@@ -156,7 +156,7 @@ export interface FigmaData {
 }
 
 export interface CollectionFrames {
-    [frameId: string]: { imagePath: string; children: Element[] };
+    [frameId: string]: { imagePath: string; children: Element[]; absoluteBoundingBox: { x: number, y: number }; primaryAxisAlignItems: string };
 }
 export interface ConvertedFrames {
     [frameId: string]: ConvertedFramesData

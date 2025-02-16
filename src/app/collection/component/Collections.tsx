@@ -24,8 +24,8 @@ const Collections: React.FC = () => {
       if (collectedFrames.hasOwnProperty(frameId)) {
         const children = collectedFrames[frameId].children;
         const frameXY = [
-          collectedFrames[frameId].absoluteBoundingBox.x,
-          collectedFrames[frameId].absoluteBoundingBox.y,
+          collectedFrames[frameId].absoluteBoundingBox?.x,
+          collectedFrames[frameId].absoluteBoundingBox?.y,
         ];
         const justifyContent = collectedFrames[frameId].primaryAxisAlignItems;
 
